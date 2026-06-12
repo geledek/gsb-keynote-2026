@@ -1,6 +1,8 @@
 # GSB Keynote 2026
 
-**Live deck:** https://gsb-eai-ppt.vercel.app
+**Live deck:** https://gsb-eai-ppt.vercel.app  
+**Short URL:** https://rayhan.ai/gsb  
+**Related:** [enterprise-ai-transformation-skills](https://github.com/geledek/enterprise-ai-transformation-skills)
 
 ---
 
