@@ -1330,7 +1330,7 @@
      ============================================================ -->
 <section class="slide accent" data-layout="SWISS-COVER" data-animate="hero">
   <div class="canvas-card">
-    <canvas class="ascii-bg" aria-hidden="true"></canvas>
+
     <div class="chrome-min" style="position:relative;z-index:1">
       <div class="l" style="color:rgba(255,255,255,.78)">STANFORD GSB CHAPTER SINGAPORE</div>
       <div class="r"></div>
@@ -1409,7 +1409,7 @@
     <div data-anim="jcurve-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:1.6vh">
       <div class="t-meta" style="letter-spacing:.22em;font-weight:600;color:rgba(255,255,255,.7)">EVERY NEW TECH ADOPTION FOLLOWS THE PATTERN</div>
       <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
-        The <span style="font-style:italic;font-weight:300;color:#fff">Productivity</span> J-Curve
+        The <span style="font-style:italic;font-weight:300;color:#fff">J-Curve</span>
       </h2>
     </div>
 
@@ -1461,120 +1461,6 @@
 </section>
 
 <!-- ============================================================
-     SLIDE 5 · THE RESEARCH · 21 sources, 2024–2026
-     Paper carousel. Stanford first, then grid reveal.
-     ============================================================ -->
-<section class="slide" data-layout="SWISS-CAROUSEL" data-animate="paper-carousel">
-  <div class="canvas-card">
-    <div class="chrome-min">
-      <div class="l">THE RESEARCH BASE</div>
-      <div class="r"></div>
-    </div>
-
-    <!-- head -->
-    <div data-anim="line" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:2vh">
-      <div class="t-meta" style="color:var(--accent);letter-spacing:.22em">21 SOURCES · 2024–2026</div>
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.8vh);line-height:1;letter-spacing:-.025em;color:var(--text-primary)">
-        These findings are not mine alone.
-      </h2>
-      <div class="t-body" style="max-width:64ch;color:var(--text-secondary);font-weight:400">
-        Stanford, MIT, McKinsey, BCG, Deloitte, PwC, Accenture, NIST, EU AI Act, IMDA, WEF — and a few million tokens of AI-assisted reading. Every claim in this talk is sourced.
-      </div>
-    </div>
-
-    <!-- carousel stage -->
-    <div class="paper-stage">
-      <div class="paper-track" id="paper-track-1">
-        <!-- 18 paper covers, Stanford AI Index first.
-             Each is positioned absolutely; recipe sets transform. -->
-        <!-- Stanford Enterprise AI Playbook is the hero: shown alone first, then anchors the grid -->
-        <div class="paper-cover" data-i="0" data-hero data-title="Stanford Enterprise AI Playbook 2026">
-          <img src="images/papers/23-stanford-playbook.jpg" alt="Stanford Playbook" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='STANFORD<br/>PLAYBOOK<br/>2026'"/>
-          <div class="paper-tag">Stanford Playbook 2026</div>
-        </div>
-        <!-- Rest of the covers — hidden until grid reveal -->
-        <div class="paper-cover" data-i="1" data-title="Stanford AI Index 2026">
-          <img src="images/papers/01-stanford-ai-index.jpg" alt="Stanford AI Index 2026" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='STANFORD<br/>AI INDEX<br/>2026'"/>
-          <div class="paper-tag">Stanford AI Index 2026</div>
-        </div>
-        <div class="paper-cover" data-i="2" data-title="MIT NANDA 2025">
-          <img src="images/papers/02-mit-nanda.jpg" alt="MIT NANDA" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='MIT NANDA<br/>2025'"/>
-          <div class="paper-tag">MIT NANDA 2025</div>
-        </div>
-        <div class="paper-cover" data-i="3" data-title="Deloitte AI Leaders 2026">
-          <img src="images/papers/05-deloitte-ai-leaders.jpg" alt="Deloitte AI Leaders" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='DELOITTE<br/>AI LEADERS<br/>2026'"/>
-          <div class="paper-tag">Deloitte 2026</div>
-        </div>
-        <div class="paper-cover" data-i="4" data-title="PwC ROI 2026">
-          <img src="images/papers/06-pwc-roi.jpg" alt="PwC ROI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='PwC<br/>ROI 2026'"/>
-          <div class="paper-tag">PwC ROI 2026</div>
-        </div>
-        <div class="paper-cover" data-i="5" data-title="PwC Agentic AI Playbook">
-          <img src="images/papers/07-pwc-agentic.jpg" alt="PwC Agentic" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='PwC<br/>AGENTIC<br/>2026'"/>
-          <div class="paper-tag">PwC Agentic 2026</div>
-        </div>
-        <div class="paper-cover" data-i="6" data-title="Accenture Co-Intelligence 2026">
-          <img src="images/papers/08-accenture-cointelligence.jpg" alt="Accenture Co-Intelligence" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ACCENTURE<br/>CO-INTEL<br/>2026'"/>
-          <div class="paper-tag">Accenture 2026</div>
-        </div>
-        <div class="paper-cover" data-i="7" data-title="Accenture AI Maturity">
-          <img src="images/papers/09-accenture-maturity.jpg" alt="Accenture Maturity" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ACCENTURE<br/>MATURITY'"/>
-          <div class="paper-tag">Accenture Maturity</div>
-        </div>
-        <div class="paper-cover" data-i="8" data-title="NIST AI RMF 100-1">
-          <img src="images/papers/11-nist-rmf.jpg" alt="NIST RMF" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>AI RMF'"/>
-          <div class="paper-tag">NIST RMF</div>
-        </div>
-        <div class="paper-cover" data-i="9" data-title="NIST AI RMF Playbook">
-          <img src="images/papers/12-nist-playbook.jpg" alt="NIST Playbook" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>PLAYBOOK'"/>
-          <div class="paper-tag">NIST Playbook</div>
-        </div>
-        <div class="paper-cover" data-i="10" data-title="NIST AI 600-1 GenAI">
-          <img src="images/papers/13-nist-genai.jpg" alt="NIST GenAI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>GENAI'"/>
-          <div class="paper-tag">NIST GenAI</div>
-        </div>
-        <div class="paper-cover" data-i="11" data-title="EU AI Act 2024">
-          <img src="images/papers/14-eu-ai-act.jpg" alt="EU AI Act" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='EU<br/>AI ACT<br/>2024'"/>
-          <div class="paper-tag">EU AI Act 2024</div>
-        </div>
-        <div class="paper-cover" data-i="12" data-title="IMDA Agentic AI 2026">
-          <img src="images/papers/15-imda-agentic.jpg" alt="IMDA" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='IMDA<br/>AGENTIC<br/>2026'"/>
-          <div class="paper-tag">IMDA 2026</div>
-        </div>
-        <div class="paper-cover" data-i="13" data-title="WEF Responsible AI">
-          <img src="images/papers/16-wef-rai.jpg" alt="WEF RAI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='WEF<br/>RAI'"/>
-          <div class="paper-tag">WEF RAI</div>
-        </div>
-        <div class="paper-cover" data-i="14" data-title="WEF Strategic Choices 2026">
-          <img src="images/papers/17-wef-strategic.jpg" alt="WEF Strategic" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='WEF<br/>STRATEGIC<br/>2026'"/>
-          <div class="paper-tag">WEF Strategic 2026</div>
-        </div>
-        <div class="paper-cover" data-i="15" data-title="Landing AI Playbook">
-          <img src="images/papers/18-landing-ai.jpg" alt="Landing AI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='LANDING AI<br/>PLAYBOOK'"/>
-          <div class="paper-tag">Landing AI</div>
-        </div>
-        <div class="paper-cover" data-i="16" data-title="ISG Enterprise GenAI 2025">
-          <img src="images/papers/19-isg-genai.jpg" alt="ISG" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ISG<br/>GENAI<br/>2025'"/>
-          <div class="paper-tag">ISG 2025</div>
-        </div>
-        <div class="paper-cover" data-i="17" data-title="Deloitte State of GenAI Q4 2024">
-          <img src="images/papers/22-deloitte-q4.jpg" alt="Deloitte Q4" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='DELOITTE<br/>Q4 2024'"/>
-          <div class="paper-tag">Deloitte Q4 2024</div>
-        </div>
-
-        <div class="paper-caption" id="paper-caption-1">Stanford AI Index 2026</div>
-      </div>
-    </div>
-
-    <!-- foot -->
-    <div data-anim="foot" style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:2vh">
-      <div class="t-meta">21 SOURCES · 2024–2026</div>
-      <div class="t-meta">SOURCE LIST AT END · QR CODE PROVIDED</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
      SLIDE 4 · THE ICEBERG OF CHALLENGES
      Full-bleed iceberg photo as background. 77% INVISIBLE highlighted.
      23% TECHNICAL minor label above waterline. No SVG, no axis labels.
@@ -1589,25 +1475,21 @@
 
   <div class="canvas-card" style="background:transparent;color:#fff;position:relative;z-index:1">
     <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">STANFORD PLAYBOOK · 2026</div>
+      <div class="l"></div>
       <div class="r"></div>
     </div>
 
     <!-- headline (top) -->
     <div data-anim="iceberg-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:auto">
-      <div class="t-meta" style="color:var(--accent-bright);letter-spacing:.22em;font-weight:600">THE ICEBERG OF CHALLENGES</div>
       <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
-        Only 23% <span style="font-style:italic;font-weight:300;color:var(--accent-bright)">Challenges</span> are Technical
+        Non-Technical Challenges
       </h2>
     </div>
 
     <!-- 77% INVISIBLE label · positioned absolutely over the underwater iceberg portion -->
-    <div data-anim="iceberg-77" style="position:absolute;left:0;right:0;top:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none">
-      <div style="font-family:var(--sans);font-weight:200;font-size:min(22vw,32vh);line-height:.86;letter-spacing:-.05em;color:var(--accent-bright);font-feature-settings:'tnum';text-shadow:0 4px 28px rgba(0,0,0,.55)">
+    <div data-anim="iceberg-77" style="position:absolute;left:0;right:0;top:44%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none">
+      <div style="font-family:var(--sans);font-weight:200;font-size:min(32vw,46vh);line-height:.86;letter-spacing:-.05em;color:var(--accent-bright);font-feature-settings:'tnum';text-shadow:0 4px 28px rgba(0,0,0,.55)">
         77<span style="font-size:.42em;font-weight:300;opacity:.88;vertical-align:.55em;margin-left:.02em">%</span>
-      </div>
-      <div class="t-meta" style="color:#fff;letter-spacing:.32em;font-weight:600;font-size:max(14px,1.1vw);margin-top:1.2vh;text-shadow:0 2px 16px rgba(0,0,0,.7)">
-        INVISIBLE CHALLENGES
       </div>
     </div>
 
@@ -1620,204 +1502,291 @@
 </section>
 
 <!-- ============================================================
-     SLIDE 6 · DEFINITION
-     Hero quote, click-by-click word transforms into framework labels.
-     5 clicks: technology → process → people → governance → value
+     SLIDE 4 · STRATEGY FOR VALUE · 3 patterns (moved from pillar 5)
+     Now placed immediately after J-curve: establishes "why" before "how"
+     Paper bg. Three cardinal-accented pattern cards.
      ============================================================ -->
-<section class="slide" data-layout="SWISS-DEFINITION" data-animate="definition" data-stage="0">
+<section class="slide" data-layout="SWISS-STRATEGY" data-animate="pillar-fade">
   <div class="canvas-card">
     <div class="chrome-min">
-      <div class="l">DEFINITION</div>
+      <div class="l"></div>
       <div class="r"></div>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0">
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.4vw,9.2vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
-        Enterprise AI <span style="font-style:italic;color:var(--accent)">success</span> means
+    <div style="display:flex;flex-direction:column;gap:1vh;margin-bottom:2.4vh">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.4vw,9vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
+        Value Beyond Efficiency
       </h2>
-      <p class="def-text" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.4vw,5.8vh);line-height:1.45;letter-spacing:-.02em;color:var(--text-primary);max-width:90ch">
-        <span class="def-phrase" data-word="TECHNOLOGY" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">Solid technology foundation</span>,
-        <span class="def-phrase" data-word="PROCESS" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">workflows redesigned around AI</span>,
-        <span class="def-phrase" data-word="PEOPLE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">people unlocked in that new environment</span>
-        —
-        <span class="def-phrase" data-word="GOVERNANCE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">governed from day one</span>,
-        and
-        <span class="def-phrase" data-word="VALUE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">proven in the P&amp;L, not the pilot count</span>.
-      </p>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:1vh">
-      <div class="t-meta">→ CLICK TO REVEAL THE FRAMEWORK</div>
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;min-height:0;align-items:stretch">
+
+      <!-- Pattern 1 -->
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:4vh 2.5vw;background:var(--grey-1)">
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4.2vw,7.2vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+          Personalisation<br/>that converts,<br/>win deals
+        </div>
+      </div>
+
+      <!-- Pattern 2 -->
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:4vh 2.5vw;background:var(--grey-1)">
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4.2vw,7.2vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+          Internal tools<br/>packaged as<br/>products
+        </div>
+      </div>
+
+      <!-- Pattern 3 -->
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:4vh 2.5vw;background:var(--grey-1)">
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4.2vw,7.2vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+          Work previously<br/>impossible
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:2vh">
+      <div class="t-meta">MCKINSEY 2025 · PwC ROI 2026 · Efficiency-only 1.6× vs reinvention 2.6×</div>
+      <div class="t-meta">05 OF 13</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     SLIDE 7 · HOUSE OF ENTERPRISE AI
-     Cardinal red solid bg, clean PNG church, enlarged image + labels.
-     ============================================================ -->
-<section class="slide accent" data-layout="SWISS-HOUSE-IMG" data-animate="pillar-fade">
-  <div class="canvas-card" style="background:var(--accent);position:relative;overflow:hidden">
-    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">THE FRAMEWORK</div>
-      <div class="r"></div>
-    </div>
 
-    <!-- title -->
-    <div style="margin-bottom:1.2vh;position:relative;z-index:2">
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.8vh);line-height:1;letter-spacing:-.025em;color:#fff">
-        House of Enterprise AI
+<!-- ============================================================
+     SLIDE 6b · THREE LAYERS STACK
+     Three horizontal bars, bottom→top reveal on click.
+     Technology (bottom) → Process (middle) → People (top)
+     Percentages appear last after all three bars are shown.
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-THREE-LAYERS" data-animate="layers-stack" data-stage="0">
+  <div class="canvas-card" style="padding:3.5vh 5vw 2.4vh;display:flex;flex-direction:column;gap:0;justify-content:space-between">
+
+    <!-- TITLE -->
+    <div style="margin-bottom:2vh;flex-shrink:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.8vw,8vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
+        Enterprise AI Success
       </h2>
     </div>
 
-    <!-- church image + labels container — overflow allowed so 150% image bleeds up -->
-    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;overflow:visible">
+    <!-- LAYOUT ROW: governance bar left + three horizontal bars right -->
+    <div style="flex:1;display:flex;flex-direction:row;gap:.6vw;min-height:0;margin-bottom:2vh">
 
-      <!-- church PNG — 150% wide, centred, anchored to bottom -->
-      <img src="images/06-stanford-church.png" alt="House of Enterprise AI"
-           style="width:150%;max-height:138%;object-fit:contain;object-position:bottom center;display:block;position:relative;z-index:1;margin-left:-25%;margin-right:-25%"/>
-
-      <!-- STRATEGY FOR VALUE — roof peak -->
-      <div style="position:absolute;top:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(19px,1.5vw);font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.55vh 1.6vw;display:inline-block">VALUE</div>
+      <!-- GOVERNANCE — narrow vertical bar, ~10% width, dark grey, text rotated, hidden initially -->
+      <div id="gov-bar" style="width:10%;display:flex;align-items:center;justify-content:center;background:var(--grey-3);flex-shrink:0;
+                                opacity:0;transform:translateX(-40px);transition:opacity .55s cubic-bezier(.2,0,.38,.9),transform .55s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);letter-spacing:.04em;color:rgba(255,255,255,.9);
+                     writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap">
+          Governance
+        </span>
       </div>
 
-      <!-- TECHNOLOGY — left arch -->
-      <div style="position:absolute;bottom:24%;left:18%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">TECHNOLOGY</div>
-      </div>
+      <!-- THREE HORIZONTAL BARS — fills remaining 90% -->
+      <div class="layers-bars" style="flex:1;display:flex;flex-direction:column;gap:.6vh;min-height:0">
 
-      <!-- PROCESS — centre column -->
-      <div style="position:absolute;bottom:24%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">PROCESS</div>
-      </div>
+        <!-- TOP — People -->
+        <div class="layer-bar" data-layer="people"
+             style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--accent);min-height:0;
+                    opacity:0;transform:translateX(60px);transition:opacity .55s cubic-bezier(.2,0,.38,.9),transform .55s cubic-bezier(.2,0,.38,.9)">
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:#fff">
+            People
+          </span>
+          <span class="layer-pct" data-pct="people"
+                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:rgba(255,255,255,.5);
+                       opacity:0;transition:opacity .45s ease .1s">
+            70%
+          </span>
+        </div>
 
-      <!-- PEOPLE — right arch -->
-      <div style="position:absolute;bottom:24%;left:82%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">PEOPLE</div>
-      </div>
+        <!-- MIDDLE — Process -->
+        <div class="layer-bar" data-layer="process"
+             style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-2);min-height:0;
+                    opacity:0;transform:translateX(60px);transition:opacity .55s cubic-bezier(.2,0,.38,.9),transform .55s cubic-bezier(.2,0,.38,.9)">
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--ink)">
+            Process
+          </span>
+          <span class="layer-pct" data-pct="process"
+                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
+                       opacity:0;transition:opacity .45s ease .1s">
+            20%
+          </span>
+        </div>
 
-      <!-- GOVERNANCE — base plinth, overlapping the building base -->
-      <div style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(19px,1.5vw);font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.55vh 2.4vw;display:inline-block">GOVERNANCE</div>
+        <!-- BOTTOM — Technology -->
+        <div class="layer-bar" data-layer="technology"
+             style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-1);min-height:0;border-bottom:3px solid var(--accent);
+                    opacity:0;transform:translateX(60px);transition:opacity .55s cubic-bezier(.2,0,.38,.9),transform .55s cubic-bezier(.2,0,.38,.9)">
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--text-secondary)">
+            Technology
+          </span>
+          <span class="layer-pct" data-pct="technology"
+                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
+                       opacity:0;transition:opacity .45s ease .1s">
+            10%
+          </span>
+        </div>
+
       </div>
     </div>
+
+    <!-- FOOTER -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh">
+      <div class="t-meta">BCG AI WORKFORCE TRANSFORMATION 2026 · SOURCE 09 OF 21</div>
+      <div class="t-meta">06 OF 11</div>
+    </div>
+
   </div>
 </section>
 
 <!-- ============================================================
-     SLIDE 8 · TECHNOLOGY · bullet points, click-reveal
+     SLIDE 7 · TECHNOLOGY ARCHITECTURE
+     Four-layer stack: Data → Orchestration → Models → AI Tools
+     Bottom-to-top reveal on click. Data = moat, Models = commodity.
      ============================================================ -->
-<section class="slide" data-layout="SWISS-PILLAR-TECH" data-animate="bullet-reveal" data-stage="0">
-  <div class="canvas-card">
-    <div class="chrome-min">
-      <div class="l">PILLAR 01</div>
-      <div class="r"></div>
-    </div>
+<section class="slide" data-layout="SWISS-TECH-ARCH" data-animate="tech-arch" data-stage="0">
+  <div class="canvas-card" style="padding:3.5vh 5vw 2.4vh;display:flex;flex-direction:column;gap:0;justify-content:space-between">
 
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(8vw,14vh);line-height:.96;letter-spacing:-.035em;color:var(--text-primary)">
+    <!-- TITLE -->
+    <div style="margin-bottom:2vh;flex-shrink:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.8vw,8vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
         Technology
       </h2>
-
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:3.2vh">
-        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
-          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
-          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">23% of the challenges — but key enablers</span>
-        </li>
-        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
-          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
-          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">Architect data, AI tools, and integration</span>
-        </li>
-        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
-          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
-          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">Buy vs Build decision</span>
-        </li>
-        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
-          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
-          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">It's not about models, it's about your organization</span>
-        </li>
-      </ul>
     </div>
+
+    <!-- FOUR LAYER BARS — bottom to top reveal -->
+    <div style="flex:1;display:flex;flex-direction:column;gap:.6vh;min-height:0;margin-bottom:2vh">
+
+      <!-- LAYER 1 (TOP) — AI Tools -->
+      <div class="arch-bar" data-arch="tools"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-1);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4vw,6.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-secondary)">
+          AI Tools
+        </span>
+        <span style="margin-left:2vw;font-family:var(--mono);font-size:max(12px,.9vw);color:var(--text-helper);letter-spacing:.12em">
+          Copilots · Agents · RAG apps · SaaS
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(11px,.85vw);color:var(--accent);font-weight:600;letter-spacing:.14em;white-space:nowrap">
+        </span>
+      </div>
+
+      <!-- LAYER 2 — Models -->
+      <div class="arch-bar" data-arch="models"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-1);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4vw,6.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-secondary)">
+          Models
+        </span>
+        <span style="margin-left:2vw;font-family:var(--mono);font-size:max(12px,.9vw);color:var(--text-helper);letter-spacing:.12em">
+          GPT · Claude · Gemini · Llama · Mistral
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(11px,.85vw);color:var(--text-helper);letter-spacing:.14em;white-space:nowrap">
+          42% WAS INTERCHANGEABLE
+        </span>
+      </div>
+
+      <!-- LAYER 3 — Orchestration -->
+      <div class="arch-bar" data-arch="orchestration"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-2);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4vw,6.8vh);line-height:1;letter-spacing:-.03em;color:var(--ink)">
+          Orchestration
+        </span>
+        <span style="margin-left:2vw;font-family:var(--mono);font-size:max(12px,.9vw);color:var(--text-helper);letter-spacing:.12em">
+          Routing · Memory · Workflows · Agents
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(11px,.85vw);color:var(--text-helper);letter-spacing:.14em;white-space:nowrap">
+          YOU OWN THIS
+        </span>
+      </div>
+
+      <!-- LAYER 4 (BOTTOM) — Data + Knowledge — Cardinal red, the moat -->
+      <div class="arch-bar" data-arch="data"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--accent);min-height:0;border-bottom:3px solid var(--ink);
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(4vw,6.8vh);line-height:1;letter-spacing:-.03em;color:#fff">
+          Data + Knowledge
+        </span>
+        <span style="margin-left:2vw;font-family:var(--mono);font-size:max(12px,.9vw);color:rgba(255,255,255,.65);letter-spacing:.12em">
+          Your docs · processes · domain IP · history
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(11px,.85vw);color:#fff;font-weight:600;letter-spacing:.14em;white-space:nowrap">
+          YOUR MOAT
+        </span>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh">
+      <div class="t-meta">STANFORD ENTERPRISE AI PLAYBOOK 2026 · MIT NANDA 2025</div>
+      <div class="t-meta">07 OF 11</div>
+    </div>
+
   </div>
 </section>
 
 <!-- ============================================================
-     SLIDE 9 · PROCESS
-     Cardinal bg. Two parallel tracks: sin curve (top) + straight line (bottom).
-     Sin curve has slow breathing halo. Straight line has faster plain ball.
+     SLIDE 8 · BUY VS BUILD
+     Large 2× stat. Two-column split: what to buy / what to build.
      ============================================================ -->
-<section class="slide accent" data-layout="SWISS-PILLAR-PROCESS" data-animate="process-tracks">
-  <div class="canvas-card" style="background:var(--accent)">
-    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">PILLAR 02</div>
+<section class="slide" data-layout="SWISS-BUY-BUILD" data-animate="buy-build">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l"></div>
       <div class="r"></div>
     </div>
 
-    <!-- headline -->
-    <div data-anim="process-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:1.6vh">
-      <div class="t-meta" style="letter-spacing:.22em;font-weight:600;color:rgba(255,255,255,.7)">REDESIGN, DON'T BOLT ON</div>
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
-        Process
+    <!-- TITLE -->
+    <div style="margin-bottom:2.4vh;flex-shrink:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.8vw,8vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
+        Buy or Build
       </h2>
     </div>
 
-    <!-- two-track SVG canvas -->
-    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:stretch;margin-top:1vh">
-      <svg class="process-svg" viewBox="0 0 1000 480" preserveAspectRatio="xMidYMid meet"
-           style="width:100%;height:100%;display:block;overflow:visible" aria-hidden="true">
+    <!-- TWO EQUAL COLUMNS -->
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:2vw;min-height:0;align-items:stretch">
 
-        <!-- track labels -->
-        <text x="40" y="130" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#fff" opacity=".55" letter-spacing="2">OLD PROCESS</text>
-        <text x="40" y="340" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#fff" opacity=".55" letter-spacing="2">AI-REDESIGNED</text>
+      <!-- LEFT — BUY -->
+      <div class="bb-buy" style="display:flex;flex-direction:column;padding:3vh 2.4vw;background:var(--grey-1);border-top:4px solid var(--accent);gap:1.6vh;
+                                  opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <div style="font-family:var(--mono);font-size:max(12px,.9vw);letter-spacing:.18em;color:var(--accent);font-weight:600">BUY</div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.1;letter-spacing:-.02em;color:var(--text-primary)">
+          AI tools, models,<br/>SaaS capabilities
+        </div>
+        <!-- 2× hero stat — hidden until click 3 -->
+        <div class="bb-stat" style="margin-top:auto;opacity:0;transition:opacity .45s ease">
+          <div style="font-family:var(--sans);font-weight:200;font-size:min(16vw,24vh);line-height:.88;letter-spacing:-.05em;color:var(--accent);font-feature-settings:'tnum'">
+            2×
+          </div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(2vw,3.4vh);line-height:1.3;letter-spacing:-.01em;color:var(--text-secondary);margin-top:.8vh">
+            more likely to reach deployment
+          </div>
+        </div>
+      </div>
 
-        <!-- ── TOP TRACK: sin curve, centre y=160, amplitude ±30 ── -->
-        <path class="process-sin-path"
-              d="M 80,160
-                 C 150,160 170,130 220,130
-                 C 270,130 290,190 360,190
-                 C 430,190 450,130 500,130
-                 C 550,130 570,190 640,190
-                 C 710,190 730,130 780,130
-                 C 830,130 850,190 920,190"
-              fill="none" stroke="#fff" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round"
-              stroke-dasharray="2200" stroke-dashoffset="2200"
-              style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .3s"/>
+      <!-- RIGHT — BUILD -->
+      <div class="bb-build" style="display:flex;flex-direction:column;padding:3vh 2.4vw;background:var(--accent);border-top:4px solid var(--ink);gap:1.6vh;
+                                    opacity:0;transform:translateY(20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <div style="font-family:var(--mono);font-size:max(12px,.9vw);letter-spacing:.18em;color:rgba(255,255,255,.7);font-weight:600">BUILD</div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.1;letter-spacing:-.02em;color:#fff">
+          Your data layer,<br/>orchestration, context
+        </div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(2vw,3.4vh);line-height:1.4;color:rgba(255,255,255,.75);margin-top:auto">
+          No vendor can give you this.<br/>This is your moat.
+        </div>
+      </div>
 
-        <!-- sin halo: starts at cx=80 cy=160, motion path is delta from there -->
-        <circle class="process-sin-halo" cx="80" cy="160" r="16" fill="#fff" opacity="0">
-          <animate attributeName="opacity" from="0" to=".45" begin="2.6s" dur=".4s" fill="freeze"/>
-          <animate attributeName="r" values="16;24;16" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
-          <animate attributeName="opacity" values=".45;.14;.45" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" additive="replace"/>
-          <animateMotion dur="8s" begin="2.8s" repeatCount="indefinite"
-            path="M 0,0 C 70,0 90,-30 140,-30 C 190,-30 210,30 280,30 C 350,30 370,-30 420,-30 C 470,-30 490,30 560,30 C 630,30 650,-30 700,-30 C 750,-30 770,30 840,30"/>
-        </circle>
-
-        <!-- ── BOTTOM TRACK: straight line, y=360 ── -->
-        <path class="process-line-path"
-              d="M 80,360 L 920,360"
-              fill="none" stroke="#fff" stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-dasharray="840" stroke-dashoffset="840"
-              style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .6s"/>
-
-        <!-- straight ball: starts at cx=80 cy=360, moves purely horizontal (dy=0) -->
-        <circle class="process-line-ball" cx="80" cy="360" r="12" fill="#fff" opacity="0">
-          <animate attributeName="opacity" from="0" to=".85" begin="2.9s" dur=".3s" fill="freeze"/>
-          <animateMotion dur="5s" begin="3s" repeatCount="indefinite"
-            path="M 0,0 L 840,0"/>
-        </circle>
-
-      </svg>
     </div>
 
-    <!-- footer -->
-    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:1.6vh;margin-top:1vh">
-      <div class="t-meta" style="color:rgba(255,255,255,.6)">SOURCE · MCKINSEY STATE OF AI 2025 · STANFORD PLAYBOOK 2026</div>
+    <!-- FOOTER -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:2vh">
+      <div class="t-meta">MIT NANDA · STATE OF AI IN BUSINESS · 2025 · P.19 — CORRELATIONAL, NOT CAUSAL</div>
+      <div class="t-meta">08 OF 11</div>
     </div>
   </div>
 </section>
+
 
 <!-- ============================================================
      SLIDE 9B · STEPS TO REDESIGN WORKFLOWS
@@ -1826,347 +1795,99 @@
 <section class="slide accent" data-layout="SWISS-WORKFLOW-STEPS" data-animate="flow-reveal" data-stage="0">
   <div class="canvas-card" style="background:var(--accent)">
     <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">PROCESS · HOW TO</div>
+      <div class="l"></div>
       <div class="r"></div>
     </div>
 
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0">
       <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.4vw,7.4vh);line-height:1;letter-spacing:-.03em;color:#fff">
-        Steps to redesign workflows
+        Process
       </h2>
 
-      <!-- flowchart: 6 boxes in a row connected by arrows -->
-      <div style="display:flex;align-items:center;gap:0;flex:1;max-height:46vh">
+      <!-- 4 boxes + 3 arrows -->
+      <div style="display:flex;align-items:stretch;gap:0;flex:1;max-height:52vh;overflow:hidden">
 
-        <!-- box 1 -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">01</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Fix the<br/>process</div>
+        <!-- box 1 — Fix it first -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;
+             background:#fff;padding:3.2vh 2vw;text-align:center">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+            Fix it<br/>first
+          </div>
         </div>
 
-        <!-- arrow 1→2 -->
-        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- arrow -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .6vw">
+          <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
-        <!-- box 2 -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">02</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Start<br/>small</div>
+        <!-- box 2 — Start at the edges -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;
+             background:#fff;padding:3.2vh 2vw;text-align:center">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+            Start at<br/>the edges
+          </div>
         </div>
 
-        <!-- arrow 2→3 -->
-        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- arrow -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .6vw">
+          <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
-        <!-- box 3 -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">03</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Eliminate<br/>hand-offs</div>
+        <!-- box 3 — Redesign -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;
+             background:#fff;padding:3.2vh 2vw;text-align:center">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+            Redesign,<br/>don't decorate
+          </div>
         </div>
 
-        <!-- arrow 3→4 -->
-        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- arrow -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .6vw">
+          <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
-        <!-- box 4 -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">04</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Decision<br/>points</div>
-        </div>
-
-        <!-- arrow 4→5 -->
-        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- box 5 -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">05</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Copilot<br/>mode</div>
-        </div>
-
-        <!-- arrow 5→6 -->
-        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- box 6 · accent highlight for Scale -->
-        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:rgba(255,255,255,.18);border:2px solid #fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
-          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.55)">06</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.45vw);line-height:1.1;letter-spacing:-.015em;color:#fff">Scale.</div>
+        <!-- box 4 — Earn autonomy -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;
+             background:#fff;padding:3.2vh 2vw;text-align:center">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.03em;color:var(--accent)">
+            Earn<br/>autonomy
+          </div>
         </div>
 
       </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.2);padding-top:1.6vh">
+      <div class="t-meta" style="color:rgba(255,255,255,.55)">STANFORD PLAYBOOK 2026 · MCKINSEY 2025 · NEARLY 3× WORKFLOW REDESIGN ADVANTAGE</div>
+      <div class="t-meta" style="color:rgba(255,255,255,.55)">09 OF 11</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     SLIDE 10 · PEOPLE · AI is a Team Sport
-     Split: left = 5 persona tiles, right = Lovart soccer illustration
+     SLIDE 10 · PEOPLE — Hero statement
      ============================================================ -->
-<section class="slide" data-layout="SWISS-PILLAR-PEOPLE" data-animate="pillar-fade">
+<section class="slide accent" data-layout="SWISS-PEOPLE-HERO" data-animate="hero">
   <div class="canvas-card">
+
     <div class="chrome-min">
-      <div class="l">PILLAR 03 · PEOPLE</div>
+      <div class="l"></div>
       <div class="r"></div>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0;position:relative">
-
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6vw,10vh);line-height:.96;letter-spacing:-.03em;color:var(--text-primary)">
-        AI is a <span style="font-style:italic;font-weight:300;color:var(--accent)">Team Sport.</span>
-      </h2>
-
-      <!-- table wrapper: leaves 5vw on the right for the training bar -->
-      <div style="display:grid;grid-template-columns:14ch 1fr;gap:0;border-top:2px solid var(--ink);margin-right:5vw">
-
-        <!-- header -->
-        <div style="padding:1.2vh 1.4vw 1.2vh 0;border-bottom:1px solid var(--border-subtle)">
-          <div class="t-cat" style="color:var(--text-helper)">ROLE</div>
-        </div>
-        <div style="padding:1.2vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
-          <div class="t-cat" style="color:var(--text-helper)">JOB IN AI</div>
-        </div>
-
-        <!-- CEO -->
-        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">CEO</div>
-        </div>
-        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Set the ceiling. Own the outcome. Remove blockers.</div>
-        </div>
-
-        <!-- Managers -->
-        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">Managers</div>
-        </div>
-        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Transmit. Role-model. Source use cases. Own change.</div>
-        </div>
-
-        <!-- HR -->
-        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">HR</div>
-        </div>
-        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Redesign the architecture before AI does it by default.</div>
-        </div>
-
-        <!-- Everyone -->
-        <div style="padding:2.8vh 1.4vw 2.8vh 0">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">Everyone</div>
-        </div>
-        <div style="padding:2.8vh 1.4vw;border-left:1px solid var(--border-subtle)">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Use AI responsibly. Report issues. Own quality.</div>
-        </div>
-
-      </div>
-
-      <!-- TRAINING SYSTEM bar: absolutely positioned on the right, full table height -->
-      <div style="position:absolute;right:0;top:0;bottom:0;width:4vw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh">
-        <!-- vertical bar -->
-        <div style="position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:3px;background:var(--accent)"></div>
-        <!-- label rotated, sits centred on the bar -->
-        <div style="font-family:var(--mono);font-size:max(12px,.82vw);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);writing-mode:vertical-lr;transform:rotate(180deg);white-space:nowrap;position:relative;z-index:1;background:var(--paper);padding:.6vh 0">TRAINING SYSTEM</div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SLIDE 11 · GOVERNANCE · Hero message
-     Cardinal bg. Big statement. Day-one design vs end-gate.
-     ============================================================ -->
-<section class="slide accent" data-layout="SWISS-GOVERNANCE" data-animate="pillar-fade">
-  <div class="canvas-card" style="background:var(--accent)">
-    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">PILLAR 04 · GOVERNANCE</div>
-      <div class="r"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0">
+      <h1 data-anim="title" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(9vw,15vh);line-height:.96;letter-spacing:-.04em;color:#fff">
+        Enterprise AI<br/>is a<br/>Team Sport.
+      </h1>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
-
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(7.2vw,12vh);line-height:.96;letter-spacing:-.035em;color:#fff">
-        Design it in.<br/>
-        <span style="font-style:italic;font-weight:300;color:rgba(255,255,255,.7)">Don't bolt it on.</span>
-      </h2>
-
-      <div style="display:flex;flex-direction:column;gap:2vh;max-width:72ch">
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.6vw;align-items:start;padding-top:2.4vh;border-top:1px solid rgba(255,255,255,.22)">
-          <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:#fff;font-feature-settings:'tnum'">35%</div>
-          <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:.6vh">
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:rgba(255,255,255,.92)">of AI projects cite staff-function resistance as the primary barrier</div>
-            <div class="t-meta" style="color:rgba(255,255,255,.5)">STANFORD PLAYBOOK · 2026</div>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.6vw;align-items:start;padding-top:2.4vh;border-top:1px solid rgba(255,255,255,.22)">
-          <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:#fff;font-feature-settings:'tnum'">18%</div>
-          <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:.6vh">
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:rgba(255,255,255,.92)">cite legal and compliance blocking as root cause of failure</div>
-            <div class="t-meta" style="color:rgba(255,255,255,.5)">STANFORD PLAYBOOK · 2026</div>
-          </div>
-        </div>
-
-        <div style="padding:1.8vh 1.8vw;background:rgba(255,255,255,.12);border-left:3px solid #fff;margin-top:.6vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(16px,1.15vw);line-height:1.5;color:#fff">
-            The solution: embed compliance, ethics, and observability <strong style="font-weight:600">from the start</strong> — not as a gate the build must pass through.
-          </div>
-          <div class="t-meta" style="color:rgba(255,255,255,.5);margin-top:.8vh">ISG ENTERPRISE AI ADOPTION · 2025</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SLIDE 12 · STRATEGY FOR VALUE · 3 patterns
-     Paper bg. Three cardinal-accented pattern cards.
-     ============================================================ -->
-<section class="slide" data-layout="SWISS-STRATEGY" data-animate="pillar-fade">
-  <div class="canvas-card">
-    <div class="chrome-min">
-      <div class="l">PILLAR 05 · STRATEGY FOR VALUE</div>
-      <div class="r"></div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:1vh;margin-bottom:2.4vh">
-      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.4vw,9vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
-        Beyond cost savings — <span style="font-style:italic;font-weight:300;color:var(--accent)">3 patterns.</span>
-      </h2>
-    </div>
-
-    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;min-height:0;align-items:stretch">
-
-      <!-- Pattern 1 -->
-      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
-        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">01</div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
-          Personalisation that converts.<br/>Speed that wins deals.
-        </div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
-          AI-generated, context-aware interactions at scale — faster than any human team could produce.
-        </div>
-      </div>
-
-      <!-- Pattern 2 -->
-      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
-        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">02</div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
-          Internal tools repackaged as products.
-        </div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
-          Internal AI capability becomes an external revenue stream — the tool your team built becomes the product you sell.
-        </div>
-      </div>
-
-      <!-- Pattern 3 -->
-      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
-        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">03</div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
-          AI enabling work that was previously impossible.
-        </div>
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
-          New capabilities, not just faster old ones. Work that had no viable path before AI — now it does.
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SLIDE 13 · RECAP · House of Enterprise AI — with punchlines
-     Same layout as S7: cardinal bg, Stanford church image, 5 labels.
-     Labels now carry one-line punchlines instead of bare names.
-     ============================================================ -->
-<section class="slide accent" data-layout="SWISS-RECAP" data-animate="pillar-fade">
-  <div class="canvas-card" style="background:var(--accent);position:relative;overflow:hidden">
-    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">RECAP · HOUSE OF ENTERPRISE AI</div>
-      <div class="r"></div>
-    </div>
-
-    <!-- church image + labels -->
-    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;overflow:visible">
-
-      <img src="images/06-stanford-church.png" alt="House of Enterprise AI recap"
-           style="width:150%;max-height:138%;object-fit:contain;object-position:bottom center;display:block;position:relative;z-index:1;margin-left:-25%;margin-right:-25%"/>
-
-      <!-- VALUE — roof -->
-      <div style="position:absolute;top:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(13px,1vw);font-weight:700;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.4vw;display:inline-block">VALUE · Proven in the P&L, not the pilot count</div>
-      </div>
-
-      <!-- TECHNOLOGY — left arch -->
-      <div style="position:absolute;bottom:24%;left:18%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">TECHNOLOGY · Foundation, not advantage</div>
-      </div>
-
-      <!-- PROCESS — centre column -->
-      <div style="position:absolute;bottom:24%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">PROCESS · Redesign, don't bolt on</div>
-      </div>
-
-      <!-- PEOPLE — right arch -->
-      <div style="position:absolute;bottom:24%;left:82%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">PEOPLE · AI is a team sport</div>
-      </div>
-
-      <!-- GOVERNANCE — base plinth -->
-      <div style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
-        <div style="font-family:var(--mono);font-size:max(13px,1vw);font-weight:700;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 2vw;display:inline-block">GOVERNANCE · Design it in, don't bolt it on</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SLIDE 14 · SKILLS · Opinion statement
-     Cardinal bg. Hero quote. Repo CTA.
-     ============================================================ -->
-<section class="slide accent" data-layout="SWISS-SKILLS" data-animate="pillar-fade">
-  <div class="canvas-card" style="background:var(--accent)">
-    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
-      <div class="l">THE PUNCHLINE</div>
-      <div class="r"></div>
-    </div>
-
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
-
-      <!-- opinion quote -->
-      <div style="display:flex;flex-direction:column;gap:2.4vh">
-        <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.28em">" "</div>
-        <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.6vw,9.4vh);line-height:1.05;letter-spacing:-.03em;color:#fff;max-width:22ch">
-          Every Company's First AI Strategy Should Be a
-          <span style="font-style:italic;font-weight:300;color:rgba(255,255,255,.85)"> Skill Library.</span>
-        </h2>
-      </div>
-
-      <!-- what skills are + repo CTA -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3vw;padding-top:3vh;border-top:1px solid rgba(255,255,255,.22)">
-        <div style="display:flex;flex-direction:column;gap:1.2vh">
-          <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.22em">WHAT IS A SKILL?</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(16px,1.2vw);line-height:1.55;color:rgba(255,255,255,.88)">
-            Skills are tools an AI agent can call — tasks it can execute automatically. They encode your organisation's know-how and make it reusable.
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:1.2vh">
-          <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.22em">THE REPO</div>
-          <div style="font-family:var(--mono);font-size:max(14px,.95vw);color:rgba(255,255,255,.88);line-height:1.6;word-break:break-all">
-            github.com/geledek/<br/>enterprise-ai-transformation-skills
-          </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(14px,.95vw);color:rgba(255,255,255,.65)">
-            Built from the patterns of success and failure in this research.
-          </div>
-        </div>
-      </div>
-
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:1.6vh">
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">BCG 2026 · 70% of AI value sits in the People dimension</div>
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">10 OF 10</div>
     </div>
   </div>
 </section>
@@ -3602,6 +3323,108 @@ if(motion){
     };
   }
 
+  /* ---------- recipe: buy-build · slide 8 ----------
+     Click 1: BUY column fades up
+     Click 2: 2× stat fades in
+     Click 3: BUILD column fades up
+     Click 4: advance
+  */
+  function rBuyBuild(slide, all){
+    const buy  = slide.querySelector('.bb-buy');
+    const build = slide.querySelector('.bb-build');
+    const stat  = slide.querySelector('.bb-stat');
+    let stage = 0;
+
+    if(buy)  { buy.style.opacity  = '0'; buy.style.transform  = 'translateY(20px)'; }
+    if(build){ build.style.opacity = '0'; build.style.transform = 'translateY(20px)'; }
+    if(stat) { stat.style.opacity  = '0'; }
+
+    window.__pipeAdvance = function(){
+      if(stage === 0){
+        if(buy){ buy.style.opacity = '1'; buy.style.transform = 'translateY(0)'; }
+        stage++; return true;
+      } else if(stage === 1){
+        if(stat){ stat.style.opacity = '1'; }
+        stage++; return true;
+      } else if(stage === 2){
+        if(build){ build.style.opacity = '1'; build.style.transform = 'translateY(0)'; }
+        stage++; return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: tech-arch · slide 7 (four-layer architecture diagram) ----------
+     Bars reveal bottom→top on click:
+     Click 1: Data + Knowledge (bottom, Cardinal red)
+     Click 2: Orchestration
+     Click 3: Models
+     Click 4: AI Tools (top)
+     Click 5: advance to next slide
+  */
+  function rTechArch(slide, all){
+    const bars = [...slide.querySelectorAll('.arch-bar')];
+    // DOM order: tools(0), models(1), orchestration(2), data(3)
+    // Reveal bottom→top: data first (3), then orchestration(2), models(1), tools(0)
+    const revealOrder = [bars[0], bars[1], bars[2], bars[3]]; // top to bottom: Tools → Models → Orchestration → Data
+    let stage = 0;
+
+    bars.forEach(b => { b.style.opacity = '0'; b.style.transform = 'translateY(-20px)'; });
+
+    window.__pipeAdvance = function(){
+      if(stage < 4){
+        const bar = revealOrder[stage];
+        bar.style.opacity = '1';
+        bar.style.transform = 'translateY(0)';
+        stage++;
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: layers-stack · slide 6 (Technology / Process / People / Governance) ----------
+     Click 1: Technology slides in from right
+     Click 2: Process slides in from right
+     Click 3: People slides in from right
+     Click 4: Governance slides in from left
+     Click 5: All percentages fade in simultaneously
+     Click 6: advance to next slide
+  */
+  function rLayersStack(slide, all){
+    const bars = [...slide.querySelectorAll('.layer-bar')];
+    const revealOrder = [bars[2], bars[1], bars[0]];
+    const pcts = [...slide.querySelectorAll('.layer-pct')];
+    const govBar = slide.querySelector('#gov-bar');
+    let stage = 0;
+
+    bars.forEach(b => { b.style.opacity = '0'; b.style.transform = 'translateX(60px)'; });
+    pcts.forEach(p => { p.style.opacity = '0'; });
+    if(govBar){ govBar.style.opacity = '0'; govBar.style.transform = 'translateX(-40px)'; }
+
+    window.__pipeAdvance = function(){
+      if(stage < 3){
+        const bar = revealOrder[stage];
+        bar.style.opacity = '1';
+        bar.style.transform = 'translateX(0)';
+        stage++;
+        return true;
+      } else if(stage === 3){
+        if(govBar){ govBar.style.opacity = '1'; govBar.style.transform = 'translateX(0)'; }
+        stage++;
+        return true;
+      } else if(stage === 4){
+        pcts.forEach(p => { p.style.opacity = '1'; });
+        stage++;
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
   const RECIPES = {
     'hero': rHero,
     'hook-95': rHook95,
@@ -3613,6 +3436,9 @@ if(motion){
     'process-tracks': rProcessTracks,
     'house-roman': rHouseRoman,
     'pillar-fade': rPillarFade,
+    'layers-stack': rLayersStack,
+    'tech-arch': rTechArch,
+    'buy-build': rBuyBuild,
     'paper-carousel': rPaperCarousel,
     'finding-iceberg': rFindingIceberg, /* deprecated · slide removed */
     'finding-jcurve': rFindingJCurve,   /* deprecated · slide removed */
