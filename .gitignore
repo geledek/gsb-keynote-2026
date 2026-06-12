@@ -1,0 +1,7 @@
+.DS_Store
+*.pdf
+backups/
+.playwright-mcp/
+slide2-phase1.png
+slide2-phase2.png
+images.zip

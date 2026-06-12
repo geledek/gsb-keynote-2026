@@ -1,0 +1,3813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in Practice · What Actually Works · Ray Han · GSB Alumni Workshop · 2026-06-16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ============ 主题色(默认: 🔵 克莱因蓝 IKB) ============
+       切换主题: 从 references/themes-swiss.md 复制对应的 :root 块
+       整体替换标有"主题色"注释的所有变量,其他散落的 var() 引用无需逐处改 */
+    --paper:#fafaf8;          /* 主底色: 高级灰白 */
+    --paper-rgb:250,250,248;
+    --ink:#0a0a0a;            /* 文字主色: 近黑 */
+    --ink-rgb:10,10,10;
+    --grey-1:#f0f0ee;         /* 浅灰底 */
+    --grey-2:#d4d4d2;         /* 中灰(分割线) */
+    --grey-3:#737373;         /* 暗灰(辅助文字) */
+    --accent:#8C1515;         /* 高亮色: Stanford Cardinal Red */
+    --accent-rgb:140,21,21;
+    --accent-on:#ffffff;      /* accent 上的反色文字 */
+    --accent-bright:#C4322D;  /* 暗底高亮: Cardinal 提亮版 */
+    --secondary:#002FA7;      /* 二级强调: Klein 蓝 IKB */
+    --secondary-rgb:0,47,167;
+
+    /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
+       亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
+       暗底:  inverse 自动反向 */
+    --text-primary:#0a0a0a;        /* = ink, 100% */
+    --text-secondary:#525252;      /* gray 70 */
+    --text-helper:#737373;         /* gray 60 */
+    --text-placeholder:#a3a3a3;    /* gray 40 */
+    --text-on-color:#ffffff;       /* accent/dark 反色 */
+    --border-subtle:#e0e0e0;       /* gray 20, 极细分隔 */
+    --border-strong:#a3a3a3;       /* gray 40, 强分隔 */
+
+    /* ============ 字体(跨主题固定) ============ */
+    --sans:"Inter","Helvetica Neue","Helvetica","Arial","Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+    --sans-zh:"PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans SC","Microsoft YaHei UI","Microsoft YaHei","微软雅黑",sans-serif;
+    --mono:"JetBrains Mono","IBM Plex Mono","SF Mono","Cascadia Code","Consolas","Courier New",ui-monospace,monospace;
+
+    /* ============ Carbon 2x Grid 间距模数 (基础 8px) ============
+       参考: https://carbondesignsystem.com/elements/2x-grid/overview/
+       任何 padding/gap/margin 优先用这套 token,确保 8px 基线对齐 */
+    --sp-3:8px;     /* 02 token */
+    --sp-4:12px;    /* 03 */
+    --sp-5:16px;    /* 04 */
+    --sp-6:24px;    /* 05 */
+    --sp-7:32px;    /* 06 */
+    --sp-8:40px;    /* 07 */
+    --sp-9:48px;    /* 08 */
+    --sp-10:64px;   /* 09 */
+    --sp-11:80px;   /* 10 */
+    --sp-12:96px;   /* 11 */
+    --sp-13:160px;  /* 12 */
+
+    /* ============ Carbon Motion tokens ============
+       https://carbondesignsystem.com/guidelines/motion/overview/
+       两套体系:productive (功能) 短 + 锐 / expressive (叙事) 长 + 软 */
+    --ease-prod:cubic-bezier(.2,0,.38,.9);          /* productive standard */
+    --ease-exp:cubic-bezier(.4,.14,.3,1);            /* expressive standard */
+    --ease-entry-prod:cubic-bezier(0,0,.38,.9);     /* productive entrance */
+    --ease-entry-exp:cubic-bezier(0,0,.3,1);         /* expressive entrance */
+    --dur-fast-1:.07s;   /* 70ms */
+    --dur-fast-2:.11s;   /* 110ms */
+    --dur-mod-1:.15s;    /* 150ms */
+    --dur-mod-2:.24s;    /* 240ms */
+    --dur-slow-1:.4s;    /* 400ms */
+    --dur-slow-2:.7s;    /* 700ms */
+
+    /* 底部分页组件安全区: 主内容最低处不要进入这条区域 */
+    --nav-safe-bottom:8vh;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    width:100%;height:100%;overflow:hidden;
+    background:var(--paper);color:var(--ink);
+    font-family:var(--sans),var(--sans-zh);
+    font-feature-settings:"ss01","cv11";
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility
+  }
+
+  /* ============ WebGL 网格背景 ============ */
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;opacity:.55;mix-blend-mode:multiply;pointer-events:none}
+  body.dark-bg canvas.bg{mix-blend-mode:screen;opacity:.42}
+  body.low-power canvas.bg,
+  body.low-power canvas.ascii-bg{display:none!important}
+
+  /* ============ Deck 容器 + 翻页 ============ */
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{
+    width:100vw;height:100vh;flex:0 0 100vw;
+    position:relative;
+    padding:5.5vh 5vw 7vh 5vw;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    background:var(--paper);color:var(--ink);
+  }
+  .slide.grey{background:var(--grey-1)}
+  .slide.dark{background:var(--ink);color:var(--paper)}
+  .slide.dark .grey-only{display:none}
+  .slide.accent{background:var(--accent);color:var(--accent-on)}
+  .slide.accent .accent-block{background:var(--accent-on);color:var(--accent)}
+
+  /* Hero 页透出网格背景多一点 */
+  .slide.hero{background:transparent}
+  .slide.hero.grey{background:rgba(var(--paper-rgb),.86);backdrop-filter:blur(1px)}
+  .slide.hero.dark{background:rgba(var(--ink-rgb),.92);color:var(--paper)}
+
+  /* ============ 装饰: 极细分隔线 + 点阵矩阵 ============ */
+  .rule{width:100%;height:1px;background:currentColor;opacity:.18;margin:0}
+  .rule.thick{height:2px;opacity:.85}
+  .rule.accent{background:var(--accent);opacity:1;height:2px}
+  .rule.v{width:1px;height:100%;margin:0}
+
+  /* 点阵矩阵 (dot matrix) - 用 radial-gradient */
+  .dots{
+    background-image:radial-gradient(currentColor 1px, transparent 1px);
+    background-size:12px 12px;
+    background-position:0 0;
+    opacity:.18;
+  }
+  .dots-fine{
+    background-image:radial-gradient(currentColor 0.8px, transparent 0.8px);
+    background-size:8px 8px;
+    opacity:.14;
+  }
+  .dots-bold{
+    background-image:radial-gradient(currentColor 1.4px, transparent 1.4px);
+    background-size:18px 18px;
+    opacity:.22;
+  }
+
+  /* ============ Chrome (顶部 meta) + Foot (底部) ============ */
+  .chrome{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+    opacity:.7;margin-bottom:auto
+  }
+  .chrome .l,.chrome .r{display:flex;gap:1.6em;align-items:center}
+  .chrome .sep{width:24px;height:1px;background:currentColor;opacity:.5}
+
+  .foot{
+    margin-top:auto;
+    display:flex;justify-content:space-between;align-items:flex-end;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+    opacity:.55;
+    padding-top:2vh;
+    border-top:1px solid currentColor;
+    border-color:rgba(127,127,127,.25)
+  }
+  .foot .nb{font-family:var(--sans);font-weight:600;letter-spacing:.04em}
+
+  /* ============ Tag / Kicker / Meta 标签 ============ */
+  .kicker{
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:.24em;text-transform:uppercase;
+    opacity:.65;margin-bottom:2.4vh;
+    display:inline-flex;align-items:center;gap:.8em
+  }
+  .kicker::before{
+    content:"";width:24px;height:1px;background:currentColor;opacity:.6
+  }
+  .kicker.no-line::before{display:none}
+  .kicker.accent{color:var(--accent);opacity:1;font-weight:600}
+
+  .tag{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:.18em;text-transform:uppercase;
+    padding:5px 10px;border:1px solid currentColor;opacity:.85
+  }
+  .tag.solid{background:currentColor;color:var(--paper);border-color:transparent}
+  .tag.accent{background:var(--accent);color:var(--accent-on);border-color:transparent;opacity:1}
+
+  /* ============ 标题层级 (无衬线 · 极轻字重 · 极致字号对比) ============ */
+  .h-hero{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:200;
+    font-size:11vw;
+    line-height:.92;
+    letter-spacing:-.04em;
+  }
+  .h-hero-zh{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:200;
+    font-size:8.4vw;
+    line-height:.96;
+    letter-spacing:-.025em;
+  }
+  .h-xl{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:200;
+    font-size:6vw;
+    line-height:1;
+    letter-spacing:-.03em;
+  }
+  .h-xl-zh{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:200;
+    font-size:5vw;
+    line-height:1.05;
+    letter-spacing:-.025em;
+  }
+  .h-md{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:300;
+    font-size:2.6vw;
+    line-height:1.18;
+    letter-spacing:-.015em;
+  }
+  .h-sub{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:2.2vw;
+    line-height:1.3;
+    letter-spacing:-.01em;
+    opacity:.7;
+  }
+
+  /* ============ 正文 / 引语 / 元数据 ============ */
+  .lead{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:1.55vw;
+    line-height:1.4;
+    letter-spacing:-.005em;
+    opacity:.86;
+  }
+  .body{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(18px,1.08vw);
+    line-height:1.6;
+    letter-spacing:0;
+    opacity:.78;
+  }
+  .body-sm{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(16px,.92vw);
+    line-height:1.55;
+    opacity:.7;
+  }
+  .meta{
+    font-family:var(--mono);
+    font-size:max(14px,.82vw);
+    letter-spacing:.18em;text-transform:uppercase;
+    opacity:.6;
+  }
+  .meta-row{
+    display:flex;gap:1.4em;align-items:baseline;flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:max(14px,.88vw);letter-spacing:.16em;text-transform:uppercase;
+    opacity:.65;
+  }
+  .meta-row span:not(.dot){display:inline-block}
+  .meta-row .dot{
+    display:inline-block;width:4px;height:4px;border-radius:50%;
+    background:currentColor;opacity:.5;vertical-align:middle
+  }
+
+  /* ============ KPI Hero (视觉英雄数据) ============ */
+  .kpi-hero{
+    font-family:var(--sans);
+    font-weight:800;
+    font-size:22vw;
+    line-height:.82;
+    letter-spacing:-.05em;
+    font-feature-settings:"tnum","ss01";
+  }
+  .kpi-hero .unit{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:.18em;
+    letter-spacing:0;
+    opacity:.5;
+    margin-left:.12em;
+    vertical-align:.5em;
+  }
+  .kpi-hero.accent{color:var(--accent)}
+  .kpi-big{
+    font-family:var(--sans);
+    font-weight:800;
+    font-size:11vw;
+    line-height:.85;
+    letter-spacing:-.04em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-mid{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:6vw;
+    line-height:.88;
+    letter-spacing:-.03em;
+    font-feature-settings:"tnum"
+  }
+
+  /* ============ Stat Card (数据卡片 · 极简) ============ */
+  .stat-card{
+    display:flex;flex-direction:column;
+    gap:.6vh;align-items:flex-start;
+    padding-top:1.6vh;
+    border-top:2px solid currentColor;
+  }
+  .stat-card.thin{border-top-width:1px;border-color:rgba(127,127,127,.4)}
+  .stat-card.accent-top{border-top-color:var(--accent);border-top-width:3px}
+  .stat-card .stat-label{
+    font-family:var(--mono);
+    font-size:max(14px,.82vw);
+    letter-spacing:.24em;text-transform:uppercase;
+    opacity:.6;
+  }
+  .stat-card .stat-nb{
+    font-family:var(--sans);
+    font-weight:800;
+    font-size:5.6vw;
+    line-height:.88;
+    letter-spacing:-.035em;
+    font-feature-settings:"tnum";
+    margin-top:.4vh;
+  }
+  .stat-card .stat-nb .stat-unit{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:.32em;
+    letter-spacing:0;
+    opacity:.6;
+    margin-left:.14em;
+    vertical-align:.4em;
+  }
+  .stat-card .stat-note{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(16px,.98vw);
+    line-height:1.5;
+    opacity:.7;
+    margin-top:.6vh;
+  }
+  .grid-4 .stat-card .stat-nb{font-size:4.6vw}
+  .grid-3 .stat-card .stat-nb{font-size:6.4vw}
+  .grid-6 .stat-card .stat-nb{font-size:4vw}
+
+  /* ============ Accent Block (高亮色块包裹内容) ============ */
+  .accent-block{
+    background:var(--accent);color:var(--accent-on);
+    padding:2.4vh 2vw;
+  }
+  .accent-block.tight{padding:1.4vh 1.4vw}
+  .accent-block .h-md,.accent-block .h-xl,.accent-block .kpi-mid{color:var(--accent-on)}
+
+  .ink-block{
+    background:var(--ink);color:var(--paper);
+    padding:2.4vh 2vw
+  }
+  .grey-block{
+    background:var(--grey-1);
+    padding:2.4vh 2vw
+  }
+
+  /* 高亮文字 (mark 风格) */
+  .mark{
+    background:var(--accent);color:var(--accent-on);
+    padding:0 .2em;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+  .mark.ink{background:var(--ink);color:var(--paper)}
+  .underline-accent{
+    background-image:linear-gradient(to bottom, transparent 70%, var(--accent) 70%, var(--accent) 96%, transparent 96%);
+    padding:0 .05em
+  }
+
+  /* ============ Pipeline / Step ============ */
+  .pipeline-section{margin-top:3.2vh;padding-top:2.2vh;border-top:1px solid rgba(127,127,127,.3)}
+  .pipeline-section:first-of-type{border-top:0;padding-top:0;margin-top:2.4vh}
+  .pipeline-label{
+    font-family:var(--mono);
+    font-size:max(14px,.84vw);
+    letter-spacing:.24em;text-transform:uppercase;
+    opacity:.6;margin-bottom:1.8vh;
+  }
+  .pipeline{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:1vw;
+  }
+  .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
+  .pipeline[data-cols="4"]{grid-template-columns:repeat(4,1fr)}
+  .pipeline[data-cols="6"]{grid-template-columns:repeat(6,1fr)}
+  .step{
+    display:flex;flex-direction:column;gap:.6vh;
+    padding-top:1.2vh;
+    border-top:2px solid currentColor;
+  }
+  .step.accent-top{border-top-color:var(--accent);border-top-width:3px}
+  .step-nb{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:max(14px,1vw);
+    opacity:.5;letter-spacing:.04em
+  }
+  .step-title{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:700;
+    font-size:1.4vw;
+    letter-spacing:-.01em;
+    line-height:1.2;
+  }
+  .step-desc{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(16px,.94vw);
+    line-height:1.45;
+    opacity:.7;
+  }
+
+  /* ============ 网格系统 (模块化网格) ============ */
+  .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .frame.grid-2-7-5,
+  .frame.grid-2-6-6,
+  .frame.grid-2-8-4,
+  .frame.grid-2-4-8,
+  .frame.grid-3-3,
+  .frame.grid-12,
+  .frame.grid-6,
+  .frame.grid-4,
+  .frame.grid-3{display:grid}
+
+  /* 12 列模块化网格 (瑞士风核心) */
+  .grid-12{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:2vh 1.2vw;
+    align-items:start;
+  }
+  .span-2{grid-column:span 2}
+  .span-3{grid-column:span 3}
+  .span-4{grid-column:span 4}
+  .span-5{grid-column:span 5}
+  .span-6{grid-column:span 6}
+  .span-7{grid-column:span 7}
+  .span-8{grid-column:span 8}
+  .span-9{grid-column:span 9}
+  .span-12{grid-column:span 12}
+
+  /* 经典分栏 */
+  .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:3vw 4vh;align-items:start}
+  .grid-2-6-6{display:grid;grid-template-columns:1fr 1fr;gap:3vw 4vh;align-items:start}
+  .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:3vw 4vh;align-items:start}
+  .grid-2-4-8{display:grid;grid-template-columns:4fr 8fr;gap:3vw 4vh;align-items:start}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:3vw 4vh;align-items:start}
+  .grid-3-3{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr);gap:2.4vh 2vw}
+  .grid-4{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:3vh 3vw;flex:1;align-content:center}
+  .grid-6{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:3vh 2.4vw;flex:1;align-content:center}
+
+  /* 工具类 */
+  .col{display:flex;flex-direction:column;gap:2vh}
+  .row{display:flex;align-items:center;gap:2vw}
+  .fill{flex:1}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .right{text-align:right;justify-self:end}
+  .top{align-self:start}
+  .bottom{align-self:end}
+  .va-center{align-self:center}
+  .nowrap{white-space:nowrap}
+
+  /* 非对称定位 */
+  .pos-absolute{position:absolute}
+  .bottom-left{position:absolute;left:5vw;bottom:8vh;max-width:50vw}
+  .bottom-right{position:absolute;right:5vw;bottom:8vh;max-width:50vw;text-align:right}
+  .top-right{position:absolute;right:5vw;top:5.5vh;text-align:right}
+  .top-left{position:absolute;left:5vw;top:5.5vh}
+
+  /* ============ Callout (引用框 · 极简) ============ */
+  .callout{
+    padding:2vh 2vw;
+    border-left:3px solid var(--accent);
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(14px,1vw);
+    line-height:1.55;
+    opacity:.9;
+  }
+  .callout.ink{border-left-color:currentColor}
+  .callout .cite,.callout .callout-src{
+    display:block;margin-top:1.2vh;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+    opacity:.6;
+  }
+
+  /* ============ Icons (Lucide via CDN) ============ */
+  .ico{width:1em;height:1em;display:inline-block;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .ico-lg,.ico-md,.ico-sm{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .ico-lg{width:2.4vw;height:2.4vw;stroke-width:1.4;display:inline-block}
+  .ico-md{width:1.6vw;height:1.6vw;stroke-width:1.6;display:inline-block;vertical-align:-.4em}
+  .ico-sm{width:1vw;height:1vw;stroke-width:1.8;display:inline-block;vertical-align:-.15em;opacity:.7}
+
+  /* ============ 几何小图标 (装饰) ============ */
+  .geo-dot{width:.7vw;height:.7vw;border-radius:50%;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-square{width:.7vw;height:.7vw;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-line{width:2vw;height:2px;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-circle-o{width:.9vw;height:.9vw;border:2px solid currentColor;border-radius:50%;display:inline-block;vertical-align:middle}
+
+  /* ============ 图片 frame-img ============ */
+  .frame-img{overflow:hidden;position:relative;background:var(--paper);box-sizing:border-box;width:100%}
+  .slide.dark .frame-img{background:rgba(255,255,255,.06)}
+  .frame-img > img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+  .frame-img.fit-contain > img{object-fit:contain;object-position:center center}
+  .frame-img.pos-top > img{object-position:top center}
+  .frame-img.pos-face > img{object-position:center 35%}
+  .frame-img.r-16x9{aspect-ratio:16/9;max-height:64vh}
+  .frame-img.r-21x9{aspect-ratio:21/9;max-height:54vh}
+  .frame-img.r-16x10{aspect-ratio:16/10;max-height:56vh}
+  .frame-img.r-4x3{aspect-ratio:4/3;max-height:56vh}
+  .frame-img.r-3x2{aspect-ratio:3/2;max-height:46vh}
+  .frame-img.r-3x4{aspect-ratio:3/4;max-height:60vh}
+  .frame-img.r-1x1{aspect-ratio:1/1;max-height:50vh}
+  .frame-img.h-16{height:16vh}
+  .frame-img.h-18{height:18vh}
+  .frame-img.h-22{height:22vh}
+  .frame-img.h-26{height:26vh}
+  .frame-img.h-28{height:28vh}
+  .frame-img.h-32{height:32vh}
+  .frame-img.swiss-lined{border-top:2px solid var(--accent)}
+  .frame-img.swiss-keyline{border:0}
+
+  /* P22 Image Hero: 下半屏内容区必须和图片拉开距离,不要贴在图下沿 */
+  .image-hero-body{
+    display:grid;grid-template-columns:6fr 6fr;gap:3vw;
+    padding:6.6vh 5vw 4.4vh;flex:1;align-content:start
+  }
+  .image-hero-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;align-items:start
+  }
+  .img-cap{
+    display:block;margin-top:.8vh;
+    font-family:var(--mono);
+    font-size:max(14px,.82vw);
+    letter-spacing:.2em;text-transform:uppercase;
+    opacity:.6;
+  }
+  figure.frame-img,figure.tile{margin:0;display:flex;flex-direction:column;min-width:0}
+  figure.tile > .frame-img{flex:0 0 auto}
+
+  /* 瑞士风图文混排: 只用直角、发丝线、单一 accent；图像容器不加圆角/阴影 */
+  .swiss-img-split{display:grid;grid-template-columns:5fr 7fr;gap:3vw;align-items:start;flex:1;min-height:0}
+  .swiss-img-split.reverse{grid-template-columns:7fr 5fr}
+  .swiss-img-split.align-bottom{align-items:end}
+  .swiss-img-split.align-bottom .swiss-img-copy{align-self:end}
+  .swiss-img-split.align-image-bottom{align-items:end;padding-bottom:var(--nav-safe-bottom)}
+  .swiss-img-split.align-image-bottom .swiss-img-copy{align-self:end}
+  .swiss-img-split.align-image-bottom figure.tile{align-self:end;position:relative}
+  .swiss-img-split.align-image-bottom figure.tile > .swiss-img-caption{
+    position:absolute;left:0;right:0;top:calc(100% + var(--sp-4));margin-top:0
+  }
+  .nav-safe-bottom{padding-bottom:var(--nav-safe-bottom)}
+  .nav-safe-bottom-tight{padding-bottom:calc(var(--nav-safe-bottom) * .65)}
+  .swiss-img-copy{display:flex;flex-direction:column;gap:var(--sp-6);min-width:0}
+  .swiss-img-copy .rule{margin:0}
+  .swiss-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5);align-items:start;margin-top:var(--sp-7)}
+  .swiss-img-grid.two{grid-template-columns:repeat(2,1fr)}
+  .swiss-img-grid.tight{margin-top:0}
+  .swiss-img-caption{
+    display:flex;justify-content:space-between;gap:var(--sp-5);
+    margin-top:var(--sp-4);
+    font-family:var(--mono);font-size:max(14px,.74vw);
+    letter-spacing:.16em;text-transform:uppercase;color:var(--text-helper);
+    border-top:1px solid var(--border-subtle);padding-top:var(--sp-4)
+  }
+  .swiss-img-caption strong{
+    font-family:var(--sans),var(--sans-zh);font-size:max(16px,.9vw);
+    font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-primary)
+  }
+
+  /* ============ Bar Chart (扁平几何图表) ============ */
+  .bar-chart{display:flex;flex-direction:column;gap:1.4vh}
+  .bar-row{display:grid;grid-template-columns:8em 1fr 4em;gap:1.4vw;align-items:center}
+  .bar-row .bar-label{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+  .bar-row .bar-track{height:14px;background:rgba(127,127,127,.18);position:relative}
+  .bar-row .bar-fill{height:100%;background:var(--accent);position:absolute;left:0;top:0}
+  .bar-row .bar-fill.ink{background:currentColor}
+  .bar-row .bar-value{font-family:var(--sans);font-weight:700;font-size:max(16px,1.05vw);text-align:right;font-feature-settings:"tnum"}
+
+  /* ============ 导航 ============ */
+  /* 底部分页导航: 仅保留方块本身,无背景无描边 */
+  #nav{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:0;background:transparent;border:0}
+  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,.28);cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
+  #nav .dot:hover{background:rgba(0,0,0,.55)}
+  #nav .dot.active{background:var(--accent);width:18px}
+  body.dark-bg #nav .dot{background:rgba(255,255,255,.32)}
+  body.dark-bg #nav .dot.active{background:var(--accent)}
+
+  #hint{position:fixed;bottom:2.4vh;right:2.5vw;z-index:30;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;opacity:.4;color:var(--ink-tint, currentColor)}
+  body.dark-bg #hint{color:var(--paper);opacity:.4}
+  body.low-power #hint{color:var(--accent);opacity:.72}
+  body.dark-bg.low-power #hint{color:var(--paper);opacity:.72}
+
+  /* ESC 索引页: 动画元素强制可见 (覆盖 motion-ready 的 opacity:0) */
+  #overview [data-anim]{opacity:1!important;transform:none!important}
+  #overview .slide *{animation:none!important;transition:none!important}
+
+  /* 统一卡片样式 token: card-fill (默认灰底 · 中性) + card-ink (反转高对比) + card-accent (单一焦点) */
+  .card-fill{background:#f5f5f4;border:0;color:var(--text-primary)}
+  .card-ink{background:var(--ink);border:0;color:var(--paper)}
+  .card-ink .t-meta,.card-ink .t-cat{color:rgba(255,255,255,.6)}
+  .card-accent{background:var(--accent);border:0;color:var(--accent-on)}
+  .card-accent .t-meta,.card-accent .t-cat{color:var(--accent-on)}
+
+  /* ============ 动效 (与原模板一致) ============ */
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  body.motion-ready [data-animate="pipeline"] [data-anim]{opacity:.15}
+  body.low-power #deck{transition:none!important}
+  body.low-power *,
+  body.low-power *::before,
+  body.low-power *::after{animation:none!important;transition:none!important}
+  body.low-power.motion-ready [data-anim],
+  body.low-power [data-anim]{opacity:1!important;transform:none!important}
+
+  /* ============================================================
+     ↓↓↓ V2 EXTENSIONS · Canvas Mode + 参考图新类
+     验证效果后沉淀回 template-swiss.html
+     ============================================================ */
+
+  /* Windows 适配:雅黑没有 ExtraLight 200,中文大字号字重补偿 */
+  body.is-win .name-mega,
+  body.is-win .num-mega,
+  body.is-win .kpi-thin,
+  body.is-win .tl-node .multi{
+    font-weight:300;letter-spacing:-.02em;
+  }
+  body.is-win [style*="font-weight:200"]{font-weight:300 !important}
+
+  /* 全屏铺满模式 · 关闭 WebGL · 卡片即页面 */
+  body.canvas-mode{background:var(--paper)}
+  body.canvas-mode canvas.bg{display:none !important}
+  body.canvas-mode .slide{background:var(--paper);padding:0;align-items:stretch;justify-content:stretch}
+  body.canvas-mode .slide.hero{background:var(--paper)}
+
+  .canvas-card{
+    width:100vw;
+    height:100vh;
+    background:var(--paper);color:var(--ink);
+    padding:5.6vh 5vw 4.4vh;
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    box-shadow:none;
+    border-radius:0;
+  }
+  .slide.dark .canvas-card{background:var(--ink);color:var(--paper)}
+  .slide.accent .canvas-card{background:var(--accent);color:var(--accent-on)}
+  .slide.grey .canvas-card{background:var(--grey-1);color:var(--ink)}
+  .slide.split .canvas-card{padding:0;flex-direction:row}
+
+  /* ============ ASCII 点阵呼吸场 · IKB 封面/封底专用 ============
+     用法:在 .canvas-card(或 split .half.b-accent)内首位插入 <canvas class="ascii-bg" aria-hidden="true">.
+     动画由本文件底部的 ASCII IIFE 自动启动,所有 canvas.ascii-bg 都会被扫到.
+     其他内容靠 .canvas-card > *:not(.ascii-bg){z-index:1} 自动浮在上层. */
+  canvas.ascii-bg{
+    position:absolute;inset:0;width:100%;height:100%;
+    pointer-events:none;z-index:0;
+    mix-blend-mode:screen;opacity:.92;
+  }
+  .canvas-card > *:not(.ascii-bg){position:relative;z-index:1}
+  .slide.accent .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
+  .slide.accent .canvas-card .t-meta{color:rgba(255,255,255,.7)}
+  .split-half > .half.b-accent .chrome-min{color:rgba(255,255,255,.62)}
+
+  /* 编号目录页 · 超大数字 + 国家名风格 — 越大越细 */
+  .num-mega{
+    font-family:var(--sans);font-weight:200;
+    font-size:9vw;line-height:1;letter-spacing:-.04em;
+    font-feature-settings:"tnum"
+  }
+  .num-mega.thin{font-weight:200}
+  .name-mega{
+    font-family:var(--sans);font-weight:200;
+    font-size:9vw;line-height:1;letter-spacing:-.035em;
+  }
+  .name-mega.muted{color:var(--grey-3)}
+
+  /* 细体超大 KPI — 字号越大权重越低 */
+  .kpi-thin{
+    font-family:var(--sans);font-weight:200;
+    font-size:14vw;line-height:.92;letter-spacing:-.045em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-thin .unit{font-size:.3em;font-weight:300;opacity:.55;margin-left:.15em;vertical-align:.6em}
+  .kpi-thin.accent{color:var(--accent)}
+  .kpi-thin-sm{
+    font-family:var(--sans);font-weight:250;
+    font-size:5.6vw;line-height:1.04;letter-spacing:-.03em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-thin-sm .unit{font-size:.3em;font-weight:300;opacity:.55;margin-left:.12em;vertical-align:.45em}
+
+  /* 4 列细线 KPI 行 — 顶部一根 hairline,内部不再加竖线 */
+  /* 4 列 KPI: 用纵向分割线建立网格感 (Carbon 2x grid 模数) */
+  .kpi-row-4{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:0;padding-top:2.4vh;
+    border-top:1px solid var(--grey-2)
+  }
+  .kpi-row-4 > .kpi-cell{
+    padding:1.6vh 1.6vw 0;
+    border-left:1px solid var(--grey-2)
+  }
+  .kpi-row-4 > .kpi-cell:first-child{padding-left:0;border-left:none}
+  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-bottom:1.2vh}
+  .kpi-cell .nb{font-family:var(--sans);font-weight:250;font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
+  .kpi-cell .nb .unit{font-size:.32em;font-weight:300;opacity:.6;margin-left:.1em;vertical-align:.4em}
+  .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
+
+  /* 时间线轴 — 通用 axis token, 横纵共享
+     axis 列 = 24px 固定宽,dot 直径 8px,绝对居中在 axis 列中线 (12px)
+     虚线绝对定位 left:12px,与 dot 中心严格对齐 */
+  .timeline-v{
+    --tl-axis-w:24px;        /* axis 列固定宽度 */
+    --tl-dot:8px;            /* 圆点直径 */
+    position:relative;margin-top:var(--sp-7)
+  }
+  .timeline-v::before{
+    content:"";position:absolute;
+    left:calc(var(--tl-axis-w) / 2);
+    transform:translateX(-50%);
+    top:var(--sp-5);bottom:var(--sp-5);
+    width:1px;
+    background:repeating-linear-gradient(to bottom,currentColor 0 4px,transparent 4px 8px);
+    opacity:.35;pointer-events:none;z-index:0
+  }
+  .tl-node{
+    position:relative;
+    display:grid;
+    grid-template-columns:var(--tl-axis-w) minmax(0,7em) minmax(0,7.6em) 1fr;
+    gap:0 var(--sp-5);
+    align-items:center;
+    padding:var(--sp-7) 0
+  }
+  /* 进度点: 纯色实心圆,无背景无描边,精确居中在 axis 列中线 */
+  .tl-node .dot{
+    width:var(--tl-dot);height:var(--tl-dot);
+    border-radius:50%;
+    background:currentColor;
+    justify-self:center;
+    z-index:1
+  }
+  .tl-node.accent .dot{background:var(--accent)}
+  .tl-node .yr{
+    font-family:var(--mono);font-weight:500;
+    font-size:max(14px,1vw);letter-spacing:.04em
+  }
+  .tl-node .multi{
+    font-family:var(--sans);font-weight:200;
+    font-size:clamp(28px,2.8vw,56px);
+    line-height:.95;letter-spacing:-.025em;
+    white-space:nowrap;
+    overflow:hidden;
+    min-width:0
+  }
+  .tl-node .multi .unit{
+    font-size:.36em;font-weight:300;opacity:.6;
+    margin-left:.2em;
+    vertical-align:.42em;
+    letter-spacing:0
+  }
+  .tl-node.accent .multi{color:var(--accent)}
+  .tl-node .desc{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,.94vw);line-height:1.55;opacity:.78;
+    min-width:0
+  }
+
+  /* 横向时间线 (.timeline-h) — 与 .timeline-v 共享 axis token, 视觉语言一致 */
+  .timeline-h{
+    --tl-axis-w:8px;
+    --tl-dot:8px;
+    position:relative;
+    flex:1;
+    display:flex;align-items:center
+  }
+  .timeline-h::before{
+    content:"";position:absolute;
+    top:50%;left:5%;right:5%;height:1px;
+    transform:translateY(-50%);
+    background:repeating-linear-gradient(to right,currentColor 0 4px,transparent 4px 8px);
+    opacity:.35;pointer-events:none;z-index:0
+  }
+  .timeline-h .tl-row{
+    position:relative;width:100%;
+    display:grid;grid-template-columns:repeat(5,1fr);
+    align-items:center
+  }
+  .timeline-h .th-node{
+    position:relative;display:flex;justify-content:center
+  }
+  /* 横向 dot: 8px 纯色实心,无描边无阴影 (与 P2 保持一致) */
+  .timeline-h .th-node .dot{
+    width:var(--tl-dot);height:var(--tl-dot);
+    border-radius:50%;
+    background:var(--ink);
+    z-index:1;position:relative
+  }
+  .timeline-h .th-node.accent .dot{background:var(--accent)}
+  .timeline-h .th-node .label{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:13vw;text-align:center;
+    display:flex;flex-direction:column;gap:.4vh
+  }
+  .timeline-h .th-node.up .label{bottom:calc(50% + 22px)}
+  .timeline-h .th-node.down .label{top:calc(50% + 22px)}
+  .timeline-h .th-node .yr{
+    font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.05em;
+    color:var(--text-helper);font-weight:500
+  }
+  .timeline-h .th-node.accent .yr{color:var(--accent)}
+  .timeline-h .th-node .name{
+    font-family:var(--sans);font-size:max(16px,1.05vw);font-weight:400;
+    color:var(--text-primary);line-height:1.2;letter-spacing:-.005em
+  }
+  .timeline-h .th-node.accent .name{color:var(--accent)}
+  .timeline-h .th-node .desc{
+    font-family:var(--sans),var(--sans-zh);font-size:max(14px,.84vw);
+    color:var(--text-secondary);font-weight:400;line-height:1.4
+  }
+
+  /* 几何图示 (参考图 5) — SVG-friendly 容器 */
+  .geo-icon{width:5vw;height:5vw;display:block;margin-bottom:2.2vh;color:var(--ink);flex-shrink:0}
+  .slide.dark .geo-icon{color:var(--paper)}
+  .geo-icon svg{width:100%;height:100%;overflow:visible}
+  .geo-icon .stroke{fill:none;stroke:currentColor;stroke-width:1.4}
+  .geo-icon .stroke-accent{fill:none;stroke:var(--accent);stroke-width:1.4}
+  .geo-icon .fill-accent{fill:var(--accent)}
+
+  /* 卡片网格 (参考图 1 卡片漂浮) — 在 canvas-card 内部再分卡 */
+  .sub-grid-3-2{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.4vh 1.4vw;flex:1;align-content:stretch;margin-top:3vh}
+  .sub-card{
+    background:var(--grey-1);
+    padding:2.4vh 1.6vw 2vh;
+    display:flex;flex-direction:column;
+    position:relative;border-radius:3px;
+    min-height:0
+  }
+  .slide.dark .sub-card{background:rgba(255,255,255,.06)}
+  .sub-card.accent{background:var(--accent);color:var(--accent-on)}
+  .sub-card.ink{background:var(--ink);color:var(--paper)}
+  .sub-card .nb-corner{
+    position:absolute;top:1.6vh;right:1.4vw;
+    font-family:var(--mono);font-size:max(14px,.8vw);
+    letter-spacing:.16em;opacity:.55
+  }
+  .sub-card .ttl{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(17px,1.5vw);line-height:1.2;letter-spacing:-.015em;margin-bottom:1vh}
+  .sub-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;margin-top:auto}
+  .sub-card .lucide{width:2.4vw;height:2.4vw;stroke-width:1.4;color:currentColor;margin-bottom:1.6vh;flex-shrink:0}
+  .sub-card.accent .lucide{color:var(--accent-on)}
+
+  /* 三层架构纯色块拼图 (参考图 4 + 6) — 横排等高色块 */
+  .stack-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6vw;flex:1;margin-top:6vh;align-items:stretch}
+  .stack-block{
+    display:flex;flex-direction:column;
+    padding:3.2vh 1.8vw 2.4vh;
+    position:relative;
+    min-height:0
+  }
+  .stack-block.b-accent{background:var(--accent);color:var(--accent-on)}
+  .stack-block.b-grey{background:var(--grey-1);color:var(--ink)}
+  .stack-block.b-ink{background:var(--ink);color:var(--paper)}
+  .stack-block .layer-nb{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.18em;opacity:.65;margin-bottom:auto}
+  .stack-block .layer-icon{margin-bottom:1.6vh}
+  .stack-block .layer-icon svg{width:3vw;height:3vw}
+  .stack-block .layer-icon .stroke{fill:none;stroke:currentColor;stroke-width:1.6}
+  .stack-block .layer-ttl{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(17px,2vw);line-height:1.1;margin-top:1vh;letter-spacing:-.02em}
+  .stack-block .layer-desc{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(16px,.94vw);line-height:1.55;opacity:.88;margin-top:1.4vh}
+  .stack-block .lucide{width:2.6vw;height:2.6vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0}
+  .stack-block .layer-tag{font-family:var(--mono);font-size:max(14px,.74vw);letter-spacing:.16em;text-transform:uppercase;opacity:.7;margin-top:1.6vh;border-top:1px solid currentColor;padding-top:1vh}
+
+  /* 不等高柱状 KPI 塔 (参考图 6) */
+  .bar-towers{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1.2vw;flex:1;align-items:end;margin-top:auto
+  }
+  .bar-tower{
+    display:flex;flex-direction:column;justify-content:flex-end;
+    min-height:0;height:100%
+  }
+  .bar-tower .cap{
+    background:var(--grey-1);
+    height:5.6vh;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:.4vh
+  }
+  .bar-tower .cap svg{width:1.6vw;height:1.6vw;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .bar-tower .body-block{
+    flex:0 1 auto;
+    padding:2vh 1.2vw 2vh;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    min-height:18vh
+  }
+  .bar-tower .body-block.h-1{min-height:22vh}
+  .bar-tower .body-block.h-2{min-height:30vh}
+  .bar-tower .body-block.h-3{min-height:38vh}
+  .bar-tower .body-block.h-4{min-height:46vh}
+  /* 默认所有 KPI 塔统一为浅描边卡 — 不抢戏;只有 .b-accent 突出为 IKB */
+  .bar-tower .body-block{background:var(--paper);color:var(--ink);border:1px solid var(--grey-2)}
+  .bar-tower .body-block.b-accent{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+  .bar-tower .lbl{font-family:var(--mono);font-size:max(14px,.82vw);letter-spacing:.16em;text-transform:uppercase;opacity:.65;margin-bottom:1vh}
+  .bar-tower .nb{font-family:var(--sans);font-weight:250;font-size:max(20px,2.8vw);line-height:1;letter-spacing:-.03em;font-feature-settings:"tnum"}
+  .bar-tower .body-block.b-accent .nb{font-weight:300}
+  .bar-tower .nb .unit{font-size:.36em;font-weight:300;opacity:.7;margin-left:.08em;vertical-align:.4em}
+  .bar-tower .sub{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);opacity:.75;margin-top:1.2vh;line-height:1.5}
+  .bar-tower .cap{background:var(--grey-1);color:var(--ink)}
+  .bar-tower .lucide{width:1.6vw;height:1.6vw;stroke-width:1.4}
+
+  /* ============ Carbon Productive Type Tokens ============
+     用于 PPT 中的"productive 时刻": 列表、表格行、说明文、章节标签
+     固定 px 字号,密集紧凑;与 vw-based 的 Expressive 巨字形成双极对比 */
+
+  /* category label / eyebrow / section tag — small, bold, uppercase */
+  .t-cat{
+    font-family:var(--mono);
+    font-size:14px;font-weight:600;
+    letter-spacing:.15em;text-transform:uppercase;
+    color:var(--text-helper);line-height:1.3
+  }
+  .t-cat.accent{color:var(--accent)}
+  .t-cat.on-dark{color:rgba(255,255,255,.78)}
+
+  /* page chrome / breadcrumb / running header — extra-small mono */
+  .t-meta{
+    font-family:var(--mono);
+    font-size:14px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--text-helper);line-height:1.45
+  }
+
+  /* helper / caption — secondary text */
+  .t-helper{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:14px;font-weight:400;
+    color:var(--text-helper);line-height:1.5;
+    letter-spacing:.005em
+  }
+
+  /* body small — list items, table rows, captions */
+  .t-body-sm{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:16px;font-weight:400;
+    color:var(--text-secondary);line-height:1.55;
+    letter-spacing:0
+  }
+
+  /* body — paragraphs, descriptions */
+  .t-body{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:18px;font-weight:400;
+    color:var(--text-primary);line-height:1.5;
+    letter-spacing:-.005em
+  }
+
+  /* body emphasis — 强调正文 */
+  .t-body-emp{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:18px;font-weight:600;       /* SemiBold per Carbon */
+    color:var(--text-primary);line-height:1.5;
+    letter-spacing:-.005em
+  }
+
+  /* productive heading — section title within slide */
+  .t-h-prod{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:22px;font-weight:600;
+    color:var(--text-primary);line-height:1.4;
+    letter-spacing:-.01em
+  }
+
+  /* dark background variants */
+  .slide.dark .t-cat,.slide.dark .t-meta,.slide.dark .t-helper{color:rgba(255,255,255,.62)}
+  .slide.dark .t-body-sm{color:rgba(255,255,255,.78)}
+  .slide.dark .t-body,.slide.dark .t-body-emp,.slide.dark .t-h-prod{color:var(--paper)}
+  .split-half .half.b-ink .t-cat,.split-half .half.b-ink .t-meta,.split-half .half.b-ink .t-helper{color:rgba(255,255,255,.62)}
+  .split-half .half.b-ink .t-body-sm{color:rgba(255,255,255,.78)}
+  .split-half .half.b-ink .t-body,.split-half .half.b-ink .t-body-emp,.split-half .half.b-ink .t-h-prod{color:var(--paper)}
+
+  /* 斜杠点阵装饰 (参考图 6 左下) */
+  .hatch{
+    background-image:repeating-linear-gradient(135deg,currentColor 0 1px,transparent 1px 8px);
+    opacity:.55
+  }
+
+  /* ========== V3: 高级点阵装饰 — 圆点 / × 号 / 圆圈 ========== */
+  /* 实心圆点矩阵 — 用于大面积装饰 */
+  .dot-mat{
+    --d:14px;
+    background-image:radial-gradient(currentColor 1.4px,transparent 1.6px);
+    background-size:var(--d) var(--d);
+    background-position:0 0;
+    opacity:.5
+  }
+  .dot-mat.lg{--d:22px}
+  .dot-mat.xl{--d:34px}
+  .dot-mat.dense{--d:9px;opacity:.62}
+
+  /* 描边圆圈矩阵 — 工业感 */
+  .ring-mat{
+    --d:18px;
+    background-image:
+      radial-gradient(circle at 50% 50%,transparent 2px,currentColor 2px,currentColor 2.6px,transparent 2.7px);
+    background-size:var(--d) var(--d);
+    opacity:.55
+  }
+  .ring-mat.lg{--d:28px}
+
+  /* × 号矩阵 — SVG mask 实现真正的 × 网格平铺 */
+  .cross-mat{
+    --d:22px;
+    background-color:currentColor;
+    -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'><g stroke='black' stroke-width='1.4' stroke-linecap='round' fill='none'><line x1='8' y1='8' x2='14' y2='14'/><line x1='14' y1='8' x2='8' y2='14'/></g></svg>");
+            mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'><g stroke='black' stroke-width='1.4' stroke-linecap='round' fill='none'><line x1='8' y1='8' x2='14' y2='14'/><line x1='14' y1='8' x2='8' y2='14'/></g></svg>");
+    -webkit-mask-size:var(--d) var(--d);
+            mask-size:var(--d) var(--d);
+    -webkit-mask-repeat:repeat;mask-repeat:repeat;
+    opacity:.42
+  }
+  .cross-mat.lg{--d:32px}
+
+  /* ========== V3: 几何水平柱状图 ========== */
+  /* 横向柱图: 标签列 + 柱体列 + 数值列 — 严格瑞士网格 */
+  .h-bar-chart{
+    display:grid;
+    grid-template-columns:11em minmax(0,1fr) 8em;
+    gap:1.6vh 1.6vw;
+    align-items:center;
+    margin-top:2.4vh;
+    font-feature-settings:"tnum"
+  }
+  .h-bar-chart .row-lbl{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:max(14px,1vw);
+    letter-spacing:-.005em;
+    text-align:left
+  }
+  .h-bar-chart .row-track{
+    height:3.2vh;
+    background:var(--grey-1);
+    position:relative;
+    overflow:hidden
+  }
+  .h-bar-chart .row-fill{
+    height:100%;
+    background:var(--ink);
+    transition:width 1s cubic-bezier(.5,0,.2,1)
+  }
+  .h-bar-chart .row-fill.accent{background:var(--accent)}
+  .h-bar-chart .row-fill.grey{background:var(--grey-3)}
+  .h-bar-chart .row-val{
+    font-family:var(--sans);font-weight:250;
+    font-size:max(16px,1.5vw);
+    letter-spacing:-.02em;
+    line-height:1
+  }
+  .h-bar-chart .row-val .unit{
+    font-size:.5em;opacity:.55;font-weight:300;
+    margin-left:.15em;letter-spacing:.04em
+  }
+
+  /* 垂直柱图: 用于 KPI 对比页(章节 P8) */
+  .v-bar-chart{
+    display:grid;
+    grid-template-columns:repeat(var(--cols,4),1fr);
+    align-items:end;
+    gap:1.4vw;
+    height:50vh;
+    margin-top:3vh
+  }
+  .v-bar-chart .col{display:flex;flex-direction:column;gap:1.4vh;align-items:stretch;height:100%}
+  .v-bar-chart .col-bar{
+    flex:1 1 auto;
+    background:var(--grey-1);
+    border-top:2px solid var(--ink);
+    position:relative;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding-top:1vh
+  }
+  .v-bar-chart .col-bar.accent{background:var(--accent);border-top-color:var(--accent);color:var(--accent-on)}
+  .v-bar-chart .col-bar.ink{background:var(--ink);color:var(--paper);border-top-color:var(--ink)}
+  .v-bar-chart .col-bar .v{
+    font-family:var(--sans);font-weight:250;
+    font-size:max(18px,1.6vw);letter-spacing:-.02em
+  }
+  .v-bar-chart .col-lbl{
+    font-family:var(--mono);font-size:max(14px,.78vw);
+    letter-spacing:.14em;text-transform:uppercase;opacity:.6;
+    text-align:center;flex:0 0 auto
+  }
+
+  /* 对仗对比双栏 (章节 P9) */
+  .duo-compare{
+    display:grid;grid-template-columns:1fr 1px 1fr;
+    gap:0 3.4vw;
+    flex:1;align-items:stretch;margin-top:8vh
+  }
+  .duo-compare .vrule{background:var(--grey-2);width:1px;align-self:stretch}
+  .duo-compare .col{display:flex;flex-direction:column;gap:1.6vh;padding:0 .4vw}
+  .duo-compare .col-tag{
+    font-family:var(--mono);font-size:max(14px,.78vw);
+    letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey-3);
+    display:flex;align-items:center;gap:.6vw
+  }
+  .duo-compare .col-tag .num{
+    font-weight:600;color:var(--ink);
+    border:1px solid var(--ink);
+    padding:.2em .6em;font-size:.92em
+  }
+  .duo-compare .col.accent .col-tag .num{color:var(--accent);border-color:var(--accent)}
+  .duo-compare .col-ttl{
+    font-family:var(--sans),var(--sans-zh);font-weight:200;
+    font-size:3.6vw;line-height:1;letter-spacing:-.03em
+  }
+  .duo-compare .col.accent .col-ttl{color:var(--accent)}
+  .duo-compare .col-desc{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,1.04vw);line-height:1.55;opacity:.78;
+    max-width:30vw
+  }
+  .duo-compare .col-list{
+    list-style:none;display:flex;flex-direction:column;gap:1vh;
+    margin-top:auto;padding-top:2vh;border-top:1px solid var(--grey-2)
+  }
+  .duo-compare .col-list li{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,.94vw);line-height:1.5;
+    padding-left:1.4em;position:relative
+  }
+  .duo-compare .col-list li::before{
+    content:"";position:absolute;left:0;top:.6em;
+    width:.5em;height:1px;background:currentColor;opacity:.55
+  }
+  .duo-compare .col.accent .col-list li::before{background:var(--accent);opacity:1}
+
+  /* 半屏 statement (参考图 7) */
+  .split-half{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;align-items:stretch}
+  .split-half > .half{padding:5vh 3.4vw;display:flex;flex-direction:column;min-width:0}
+  .split-half > .half.r-border{border-left:1px solid rgba(127,127,127,.22)}
+  .split-half > .half.b-grey{background:var(--grey-1)}
+  .split-half > .half.b-accent{background:var(--accent);color:var(--accent-on)}
+  .split-half > .half.b-ink{background:var(--ink);color:var(--paper)}
+
+  /* 极简页眉 — t-meta 风格 (Carbon productive label-01) */
+  .canvas-card .chrome-min{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    font-family:var(--mono);font-size:14px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--text-helper);
+    flex:0 0 auto;
+    margin-bottom:var(--sp-9);   /* 48px */
+  }
+  .canvas-card .chrome-min.tight{margin-bottom:var(--sp-7)}   /* 32px */
+  .canvas-card .chrome-min .l, .canvas-card .chrome-min .r{
+    max-width:48vw;line-height:1.5
+  }
+  .slide.dark .canvas-card .chrome-min,.split-half .half.b-ink .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
+
+  /* 响应式降级 */
+  @media (max-width:900px){
+    .h-hero{font-size:16vw}
+    .h-hero-zh{font-size:13vw}
+    .h-xl{font-size:9vw}
+    .h-xl-zh{font-size:8vw}
+    .kpi-hero{font-size:32vw}
+    .kpi-big{font-size:16vw}
+    .pipeline{grid-template-columns:repeat(2,1fr)}
+    .grid-2-7-5,.grid-2-6-6,.grid-2-8-4,.grid-2-4-8{grid-template-columns:1fr}
+    .grid-12{grid-template-columns:repeat(6,1fr)}
+  }
+
+  /* ============================================================
+     Paper-cover carousel (slide 2) — fan layout, sequential reveal
+     ============================================================ */
+  .paper-stage{
+    position:relative;
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:visible;
+  }
+  .paper-stage .paper-track{
+    position:relative;
+    width:100%;
+    height:54vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .paper-cover{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:18vh;            /* paper-cover thumbnail width */
+    height:24vh;
+    background:#fff;
+    box-shadow:0 4px 28px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.12);
+    border:1px solid rgba(0,0,0,.08);
+    overflow:hidden;
+    transform-origin:center center;
+    /* default state — recipe will animate in */
+    will-change:transform,opacity;
+  }
+  .paper-cover img{
+    width:100%;height:100%;
+    object-fit:cover;
+    object-position:top center;
+    display:block;
+  }
+  .paper-cover .paper-tag{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:6px 10px;
+    font-family:var(--mono);
+    font-size:11px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+    text-align:center;
+  }
+  .paper-cover.placeholder{
+    background:#f0f0ee;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-helper);
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-align:center;padding:.6vw;line-height:1.3
+  }
+  /* one helper text shows current paper title */
+  .paper-caption{
+    display:none;
+  }
+
+  /* ---- paper-grid: grid reveal state ---- */
+  .paper-stage.grid-mode{
+    overflow:visible;
+  }
+  .paper-stage.grid-mode .paper-track{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:.8vh .6vw;
+    height:auto;
+    width:100%;
+    align-items:start;
+    position:static;
+  }
+  .paper-stage.grid-mode .paper-cover{
+    position:static;
+    transform:none !important;
+    width:100%;
+    height:auto;
+    aspect-ratio:3/4;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+    overflow:hidden;
+  }
+  .paper-stage.grid-mode .paper-cover img{
+    object-fit:contain;
+    object-position:top center;
+    background:#f5f5f3;
+  }
+  .paper-stage.grid-mode .paper-cover .paper-tag{
+    display:none;
+  }
+  .paper-stage.grid-mode .paper-caption{
+    display:none;
+  }
+</style>
+</head>
+<body class="canvas-mode">
+<script>
+  // Windows 平台标记 — 雅黑没有 ExtraLight,需要字重补偿
+  if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
+    document.body.classList.add('is-win');
+  }
+  (function(){
+    const KEY = 'guizang-ppt-low-power';
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stored = localStorage.getItem(KEY);
+    window.__lowPowerMode = stored === '1' || (stored === null && reduced);
+    function updateHint(){
+      const hint = document.getElementById('hint');
+      if(hint) hint.textContent = `← → 翻页 · B ${window.__lowPowerMode ? '动态' : '静态'} · ESC 索引`;
+    }
+    window.__setLowPowerMode = function(on, opts={}){
+      window.__lowPowerMode = !!on;
+      document.body.classList.toggle('low-power', window.__lowPowerMode);
+      if(opts.persist !== false) localStorage.setItem(KEY, window.__lowPowerMode ? '1' : '0');
+      if(window.__lowPowerMode && document.getAnimations){
+        document.getAnimations().forEach(a=>a.cancel());
+      }
+      updateHint();
+      dispatchEvent(new CustomEvent('swiss-low-power-change', {detail:{on:window.__lowPowerMode}}));
+      if(window.__playSlide) window.__playSlide(window.__currentSlideIndex || 0);
+    };
+    document.body.classList.toggle('low-power', window.__lowPowerMode);
+    addEventListener('DOMContentLoaded', updateHint, {once:true});
+  })();
+</script>
+
+<canvas id="bg-grid" class="bg"></canvas>
+<!-- <div id="hint">← → 翻页 · B 静态 · ESC 索引</div> -->
+
+<div id="deck">
+
+<!-- ============================================================
+     SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
+     页面骨架参考 references/layouts-swiss.md
+     主题色配置参考 references/themes-swiss.md
+     ============================================================ -->
+<!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
+     - 页面骨架直接从 references/layouts-swiss.md 拷贝
+     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一(P23/P24 可复用 grid-reveal)
+     - 主题色配置参考 references/themes-swiss.md (默认 IKB 克莱因蓝) -->
+
+<!-- ============================================================
+     SLIDE 1 · COVER · Stanford Cardinal Red full-bleed
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-COVER" data-animate="hero">
+  <div class="canvas-card">
+    <canvas class="ascii-bg" aria-hidden="true"></canvas>
+    <div class="chrome-min" style="position:relative;z-index:1">
+      <div class="l" style="color:rgba(255,255,255,.78)">STANFORD GSB CHAPTER SINGAPORE</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- Body: title at ~1/3 from top, footer pinned at bottom -->
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;position:relative;z-index:1">
+
+      <!-- spacer: pushes title down to ~1/3 from top -->
+      <div style="flex:1"></div>
+
+      <h1 data-anim="title" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(7vw,12vh);line-height:.96;letter-spacing:-.025em;color:#fff">
+        <span style="font-style:italic;font-weight:300">Enterprise AI Skills</span> in Practice<br/>
+        <span style="font-weight:200;font-size:.55em;line-height:1.1;display:inline-block;margin-top:1.4vh;color:rgba(255,255,255,.92)">From Stanford's Playbook to Skills You Can Use</span>
+      </h1>
+
+      <!-- spacer: fills space between title and footer -->
+      <div style="flex:2"></div>
+
+      <div data-anim="bottom" style="border-top:1px solid rgba(255,255,255,.22);padding-top:2vh">
+        <div style="display:flex;justify-content:space-between;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:.4vh">
+            <div class="t-meta" style="color:rgba(255,255,255,.78)">RAY HAN · PHD CS (NTU) · SEP'22 · SAP ENTERPRISE AI</div>
+            <div class="t-meta" style="color:rgba(255,255,255,.5)">2026.06.16</div>
+          </div>
+          <div class="t-meta" style="color:rgba(255,255,255,.6)">→ ARROW KEYS · ESC FOR INDEX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2 · THE HOOK · 95% — zero return on GenAI
+     Paper bg (hard tonal break from cardinal cover).
+     Single static stage: massive 95%, tiny source caption.
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-HOOK-95" data-animate="hook-95">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">THE GENAI DIVIDE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative;min-height:0">
+
+      <div data-anim="hook-num" style="display:flex;flex-direction:column;gap:0;width:100%">
+        <div style="font-family:var(--sans);font-weight:200;font-size:min(37vw,55vh);line-height:.82;letter-spacing:-.06em;color:var(--accent);font-feature-settings:'tnum';white-space:nowrap">
+          95<span style="font-size:.42em;font-weight:300;opacity:.78;vertical-align:.55em;margin-left:.02em;color:var(--accent)">%</span>
+        </div>
+        <div class="t-body" style="color:var(--text-secondary);font-size:max(22px,2vw);line-height:1.4;margin-top:2.4vh;max-width:52ch">
+          of enterprise GenAI projects failed with <span style="color:var(--accent);font-weight:600">zero ROI</span>?
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:2vh">
+      <div class="t-meta">SOURCE · MIT NANDA · STATE OF AI IN BUSINESS · 2025</div>
+      <div class="t-meta">02 OF 14</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3 · THE PRODUCTIVITY J-CURVE
+     Single canvas line graph. Animated light traces the curve.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-JCURVE-FRESH" data-animate="jcurve-fresh">
+  <div class="canvas-card" style="background:var(--accent)">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l"></div>
+      <div class="r"></div>
+    </div>
+
+    <!-- headline -->
+    <div data-anim="jcurve-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:1.6vh">
+      <div class="t-meta" style="letter-spacing:.22em;font-weight:600;color:rgba(255,255,255,.7)">EVERY NEW TECH ADOPTION FOLLOWS THE PATTERN</div>
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
+        The <span style="font-style:italic;font-weight:300;color:#fff">Productivity</span> J-Curve
+      </h2>
+    </div>
+
+    <!-- chart canvas -->
+    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:stretch;margin-top:1vh">
+      <svg class="jcurve-fresh-svg" viewBox="0 0 1000 480" preserveAspectRatio="xMidYMid meet"
+           style="width:100%;height:100%;display:block;overflow:visible" aria-hidden="true">
+
+        <!-- y-axis (value) -->
+        <line x1="60" y1="20" x2="60" y2="440" stroke="#fff" stroke-width="1" opacity=".5"/>
+        <!-- x-axis (time) -->
+        <line x1="60" y1="240" x2="980" y2="240" stroke="#fff" stroke-width="1" opacity=".5" stroke-dasharray="3 5"/>
+
+        <!-- axis labels -->
+        <text x="60" y="14" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#fff" opacity=".6" letter-spacing="2">VALUE</text>
+        <text x="980" y="232" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#fff" opacity=".6" letter-spacing="2">TIME →</text>
+        <text x="50" y="244" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#fff" opacity=".5" letter-spacing="2">0</text>
+
+        <!-- the curve · white on cardinal -->
+        <path class="jcurve-fresh-path"
+              d="M 80,240 C 200,255 360,420 520,380 C 660,345 800,120 960,30"
+              fill="none"
+              stroke="#fff"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="1600"
+              stroke-dashoffset="1600"
+              style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .35s"/>
+
+        <!-- glow halo · white on cardinal -->
+        <circle class="jcurve-fresh-light-halo" cx="80" cy="240" r="18" fill="#fff" opacity="0">
+          <animate attributeName="opacity" from="0" to=".55" begin="2.6s" dur=".4s" fill="freeze"/>
+          <!-- breathing pulse: radius 18→28→18, 8.4s cycle -->
+          <animate attributeName="r" values="18;28;18" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+          <animate attributeName="opacity" values=".55;.18;.55" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" additive="replace"/>
+          <animateMotion dur="6s" begin="2.8s" repeatCount="indefinite"
+            path="M 0,0 C 120,15 280,180 440,140 C 580,105 720,-120 880,-210"/>
+        </circle>
+      </svg>
+    </div>
+
+    <!-- footer -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:1.6vh;margin-top:1vh">
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">SOURCE · STANFORD ENTERPRISE AI PLAYBOOK · 2026</div>
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">03 OF 14</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5 · THE RESEARCH · 21 sources, 2024–2026
+     Paper carousel. Stanford first, then grid reveal.
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-CAROUSEL" data-animate="paper-carousel">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">THE RESEARCH BASE</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- head -->
+    <div data-anim="line" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:2vh">
+      <div class="t-meta" style="color:var(--accent);letter-spacing:.22em">21 SOURCES · 2024–2026</div>
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.8vh);line-height:1;letter-spacing:-.025em;color:var(--text-primary)">
+        These findings are not mine alone.
+      </h2>
+      <div class="t-body" style="max-width:64ch;color:var(--text-secondary);font-weight:400">
+        Stanford, MIT, McKinsey, BCG, Deloitte, PwC, Accenture, NIST, EU AI Act, IMDA, WEF — and a few million tokens of AI-assisted reading. Every claim in this talk is sourced.
+      </div>
+    </div>
+
+    <!-- carousel stage -->
+    <div class="paper-stage">
+      <div class="paper-track" id="paper-track-1">
+        <!-- 18 paper covers, Stanford AI Index first.
+             Each is positioned absolutely; recipe sets transform. -->
+        <!-- Stanford Enterprise AI Playbook is the hero: shown alone first, then anchors the grid -->
+        <div class="paper-cover" data-i="0" data-hero data-title="Stanford Enterprise AI Playbook 2026">
+          <img src="images/papers/23-stanford-playbook.jpg" alt="Stanford Playbook" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='STANFORD<br/>PLAYBOOK<br/>2026'"/>
+          <div class="paper-tag">Stanford Playbook 2026</div>
+        </div>
+        <!-- Rest of the covers — hidden until grid reveal -->
+        <div class="paper-cover" data-i="1" data-title="Stanford AI Index 2026">
+          <img src="images/papers/01-stanford-ai-index.jpg" alt="Stanford AI Index 2026" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='STANFORD<br/>AI INDEX<br/>2026'"/>
+          <div class="paper-tag">Stanford AI Index 2026</div>
+        </div>
+        <div class="paper-cover" data-i="2" data-title="MIT NANDA 2025">
+          <img src="images/papers/02-mit-nanda.jpg" alt="MIT NANDA" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='MIT NANDA<br/>2025'"/>
+          <div class="paper-tag">MIT NANDA 2025</div>
+        </div>
+        <div class="paper-cover" data-i="3" data-title="Deloitte AI Leaders 2026">
+          <img src="images/papers/05-deloitte-ai-leaders.jpg" alt="Deloitte AI Leaders" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='DELOITTE<br/>AI LEADERS<br/>2026'"/>
+          <div class="paper-tag">Deloitte 2026</div>
+        </div>
+        <div class="paper-cover" data-i="4" data-title="PwC ROI 2026">
+          <img src="images/papers/06-pwc-roi.jpg" alt="PwC ROI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='PwC<br/>ROI 2026'"/>
+          <div class="paper-tag">PwC ROI 2026</div>
+        </div>
+        <div class="paper-cover" data-i="5" data-title="PwC Agentic AI Playbook">
+          <img src="images/papers/07-pwc-agentic.jpg" alt="PwC Agentic" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='PwC<br/>AGENTIC<br/>2026'"/>
+          <div class="paper-tag">PwC Agentic 2026</div>
+        </div>
+        <div class="paper-cover" data-i="6" data-title="Accenture Co-Intelligence 2026">
+          <img src="images/papers/08-accenture-cointelligence.jpg" alt="Accenture Co-Intelligence" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ACCENTURE<br/>CO-INTEL<br/>2026'"/>
+          <div class="paper-tag">Accenture 2026</div>
+        </div>
+        <div class="paper-cover" data-i="7" data-title="Accenture AI Maturity">
+          <img src="images/papers/09-accenture-maturity.jpg" alt="Accenture Maturity" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ACCENTURE<br/>MATURITY'"/>
+          <div class="paper-tag">Accenture Maturity</div>
+        </div>
+        <div class="paper-cover" data-i="8" data-title="NIST AI RMF 100-1">
+          <img src="images/papers/11-nist-rmf.jpg" alt="NIST RMF" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>AI RMF'"/>
+          <div class="paper-tag">NIST RMF</div>
+        </div>
+        <div class="paper-cover" data-i="9" data-title="NIST AI RMF Playbook">
+          <img src="images/papers/12-nist-playbook.jpg" alt="NIST Playbook" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>PLAYBOOK'"/>
+          <div class="paper-tag">NIST Playbook</div>
+        </div>
+        <div class="paper-cover" data-i="10" data-title="NIST AI 600-1 GenAI">
+          <img src="images/papers/13-nist-genai.jpg" alt="NIST GenAI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='NIST<br/>GENAI'"/>
+          <div class="paper-tag">NIST GenAI</div>
+        </div>
+        <div class="paper-cover" data-i="11" data-title="EU AI Act 2024">
+          <img src="images/papers/14-eu-ai-act.jpg" alt="EU AI Act" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='EU<br/>AI ACT<br/>2024'"/>
+          <div class="paper-tag">EU AI Act 2024</div>
+        </div>
+        <div class="paper-cover" data-i="12" data-title="IMDA Agentic AI 2026">
+          <img src="images/papers/15-imda-agentic.jpg" alt="IMDA" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='IMDA<br/>AGENTIC<br/>2026'"/>
+          <div class="paper-tag">IMDA 2026</div>
+        </div>
+        <div class="paper-cover" data-i="13" data-title="WEF Responsible AI">
+          <img src="images/papers/16-wef-rai.jpg" alt="WEF RAI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='WEF<br/>RAI'"/>
+          <div class="paper-tag">WEF RAI</div>
+        </div>
+        <div class="paper-cover" data-i="14" data-title="WEF Strategic Choices 2026">
+          <img src="images/papers/17-wef-strategic.jpg" alt="WEF Strategic" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='WEF<br/>STRATEGIC<br/>2026'"/>
+          <div class="paper-tag">WEF Strategic 2026</div>
+        </div>
+        <div class="paper-cover" data-i="15" data-title="Landing AI Playbook">
+          <img src="images/papers/18-landing-ai.jpg" alt="Landing AI" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='LANDING AI<br/>PLAYBOOK'"/>
+          <div class="paper-tag">Landing AI</div>
+        </div>
+        <div class="paper-cover" data-i="16" data-title="ISG Enterprise GenAI 2025">
+          <img src="images/papers/19-isg-genai.jpg" alt="ISG" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='ISG<br/>GENAI<br/>2025'"/>
+          <div class="paper-tag">ISG 2025</div>
+        </div>
+        <div class="paper-cover" data-i="17" data-title="Deloitte State of GenAI Q4 2024">
+          <img src="images/papers/22-deloitte-q4.jpg" alt="Deloitte Q4" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='DELOITTE<br/>Q4 2024'"/>
+          <div class="paper-tag">Deloitte Q4 2024</div>
+        </div>
+
+        <div class="paper-caption" id="paper-caption-1">Stanford AI Index 2026</div>
+      </div>
+    </div>
+
+    <!-- foot -->
+    <div data-anim="foot" style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:2vh">
+      <div class="t-meta">21 SOURCES · 2024–2026</div>
+      <div class="t-meta">SOURCE LIST AT END · QR CODE PROVIDED</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4 · THE ICEBERG OF CHALLENGES
+     Full-bleed iceberg photo as background. 77% INVISIBLE highlighted.
+     23% TECHNICAL minor label above waterline. No SVG, no axis labels.
+     ============================================================ -->
+<section class="slide dark" data-layout="SWISS-ICEBERG-IMG" data-animate="iceberg-img">
+  <!-- background image · absolute fill · sits behind canvas-card content -->
+  <div class="iceberg-bg" style="position:absolute;inset:0;z-index:0;background:#0a0a0a">
+    <img src="images/04-iceberg-bg.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;opacity:.95"/>
+    <!-- subtle vignette/contrast overlay so text reads -->
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,10,10,.45) 0%, rgba(10,10,10,.15) 30%, rgba(10,10,10,.20) 65%, rgba(10,10,10,.65) 100%);pointer-events:none"></div>
+  </div>
+
+  <div class="canvas-card" style="background:transparent;color:#fff;position:relative;z-index:1">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">STANFORD PLAYBOOK · 2026</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- headline (top) -->
+    <div data-anim="iceberg-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:auto">
+      <div class="t-meta" style="color:var(--accent-bright);letter-spacing:.22em;font-weight:600">THE ICEBERG OF CHALLENGES</div>
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
+        Only 23% <span style="font-style:italic;font-weight:300;color:var(--accent-bright)">Challenges</span> are Technical
+      </h2>
+    </div>
+
+    <!-- 77% INVISIBLE label · positioned absolutely over the underwater iceberg portion -->
+    <div data-anim="iceberg-77" style="position:absolute;left:0;right:0;top:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none">
+      <div style="font-family:var(--sans);font-weight:200;font-size:min(22vw,32vh);line-height:.86;letter-spacing:-.05em;color:var(--accent-bright);font-feature-settings:'tnum';text-shadow:0 4px 28px rgba(0,0,0,.55)">
+        77<span style="font-size:.42em;font-weight:300;opacity:.88;vertical-align:.55em;margin-left:.02em">%</span>
+      </div>
+      <div class="t-meta" style="color:#fff;letter-spacing:.32em;font-weight:600;font-size:max(14px,1.1vw);margin-top:1.2vh;text-shadow:0 2px 16px rgba(0,0,0,.7)">
+        INVISIBLE CHALLENGES
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.18);padding-top:1.6vh;margin-top:auto;color:rgba(255,255,255,.6)">
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">SOURCE · STANFORD ENTERPRISE AI PLAYBOOK · 2026</div>
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">04 OF 14</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6 · DEFINITION
+     Hero quote, click-by-click word transforms into framework labels.
+     5 clicks: technology → process → people → governance → value
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-DEFINITION" data-animate="definition" data-stage="0">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">DEFINITION</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.4vw,9.2vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
+        Enterprise AI <span style="font-style:italic;color:var(--accent)">success</span> means
+      </h2>
+      <p class="def-text" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.4vw,5.8vh);line-height:1.45;letter-spacing:-.02em;color:var(--text-primary);max-width:90ch">
+        <span class="def-phrase" data-word="TECHNOLOGY" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">Solid technology foundation</span>,
+        <span class="def-phrase" data-word="PROCESS" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">workflows redesigned around AI</span>,
+        <span class="def-phrase" data-word="PEOPLE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">people unlocked in that new environment</span>
+        —
+        <span class="def-phrase" data-word="GOVERNANCE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">governed from day one</span>,
+        and
+        <span class="def-phrase" data-word="VALUE" style="color:var(--text-primary);transition:color .35s ease,font-weight .35s ease">proven in the P&amp;L, not the pilot count</span>.
+      </p>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh;margin-top:1vh">
+      <div class="t-meta">→ CLICK TO REVEAL THE FRAMEWORK</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 7 · HOUSE OF ENTERPRISE AI
+     Cardinal red solid bg, clean PNG church, enlarged image + labels.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-HOUSE-IMG" data-animate="pillar-fade">
+  <div class="canvas-card" style="background:var(--accent);position:relative;overflow:hidden">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">THE FRAMEWORK</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- title -->
+    <div style="margin-bottom:1.2vh;position:relative;z-index:2">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.8vh);line-height:1;letter-spacing:-.025em;color:#fff">
+        House of Enterprise AI
+      </h2>
+    </div>
+
+    <!-- church image + labels container — overflow allowed so 150% image bleeds up -->
+    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;overflow:visible">
+
+      <!-- church PNG — 150% wide, centred, anchored to bottom -->
+      <img src="images/06-stanford-church.png" alt="House of Enterprise AI"
+           style="width:150%;max-height:138%;object-fit:contain;object-position:bottom center;display:block;position:relative;z-index:1;margin-left:-25%;margin-right:-25%"/>
+
+      <!-- STRATEGY FOR VALUE — roof peak -->
+      <div style="position:absolute;top:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(19px,1.5vw);font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.55vh 1.6vw;display:inline-block">VALUE</div>
+      </div>
+
+      <!-- TECHNOLOGY — left arch -->
+      <div style="position:absolute;bottom:24%;left:18%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">TECHNOLOGY</div>
+      </div>
+
+      <!-- PROCESS — centre column -->
+      <div style="position:absolute;bottom:24%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">PROCESS</div>
+      </div>
+
+      <!-- PEOPLE — right arch -->
+      <div style="position:absolute;bottom:24%;left:82%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(17px,1.35vw);font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.1vw;display:inline-block">PEOPLE</div>
+      </div>
+
+      <!-- GOVERNANCE — base plinth, overlapping the building base -->
+      <div style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(19px,1.5vw);font-weight:700;letter-spacing:.24em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.55vh 2.4vw;display:inline-block">GOVERNANCE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 8 · TECHNOLOGY · bullet points, click-reveal
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-PILLAR-TECH" data-animate="bullet-reveal" data-stage="0">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">PILLAR 01</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(8vw,14vh);line-height:.96;letter-spacing:-.035em;color:var(--text-primary)">
+        Technology
+      </h2>
+
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:3.2vh">
+        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
+          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">23% of the challenges — but key enablers</span>
+        </li>
+        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
+          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">Architect data, AI tools, and integration</span>
+        </li>
+        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
+          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">Buy vs Build decision</span>
+        </li>
+        <li class="bullet-item" style="opacity:0;transform:translateX(-16px);transition:opacity .45s ease,transform .45s ease;display:flex;align-items:baseline;gap:1.4vw">
+          <span style="flex-shrink:0;width:.55em;height:.55em;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:.1em"></span>
+          <span style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(3vw,5.2vh);line-height:1.25;letter-spacing:-.015em;color:var(--text-primary)">It's not about models, it's about your organization</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9 · PROCESS
+     Cardinal bg. Two parallel tracks: sin curve (top) + straight line (bottom).
+     Sin curve has slow breathing halo. Straight line has faster plain ball.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-PILLAR-PROCESS" data-animate="process-tracks">
+  <div class="canvas-card" style="background:var(--accent)">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">PILLAR 02</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- headline -->
+    <div data-anim="process-headline" style="display:flex;flex-direction:column;gap:1.4vh;margin-bottom:1.6vh">
+      <div class="t-meta" style="letter-spacing:.22em;font-weight:600;color:rgba(255,255,255,.7)">REDESIGN, DON'T BOLT ON</div>
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.4vh);line-height:1;letter-spacing:-.025em;color:#fff">
+        Process
+      </h2>
+    </div>
+
+    <!-- two-track SVG canvas -->
+    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:stretch;margin-top:1vh">
+      <svg class="process-svg" viewBox="0 0 1000 480" preserveAspectRatio="xMidYMid meet"
+           style="width:100%;height:100%;display:block;overflow:visible" aria-hidden="true">
+
+        <!-- track labels -->
+        <text x="40" y="130" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#fff" opacity=".55" letter-spacing="2">OLD PROCESS</text>
+        <text x="40" y="340" font-family="ui-monospace,SFMono-Regular,monospace" font-size="13" fill="#fff" opacity=".55" letter-spacing="2">AI-REDESIGNED</text>
+
+        <!-- ── TOP TRACK: sin curve, centre y=160, amplitude ±30 ── -->
+        <path class="process-sin-path"
+              d="M 80,160
+                 C 150,160 170,130 220,130
+                 C 270,130 290,190 360,190
+                 C 430,190 450,130 500,130
+                 C 550,130 570,190 640,190
+                 C 710,190 730,130 780,130
+                 C 830,130 850,190 920,190"
+              fill="none" stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-dasharray="2200" stroke-dashoffset="2200"
+              style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .3s"/>
+
+        <!-- sin halo: starts at cx=80 cy=160, motion path is delta from there -->
+        <circle class="process-sin-halo" cx="80" cy="160" r="16" fill="#fff" opacity="0">
+          <animate attributeName="opacity" from="0" to=".45" begin="2.6s" dur=".4s" fill="freeze"/>
+          <animate attributeName="r" values="16;24;16" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
+          <animate attributeName="opacity" values=".45;.14;.45" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" additive="replace"/>
+          <animateMotion dur="8s" begin="2.8s" repeatCount="indefinite"
+            path="M 0,0 C 70,0 90,-30 140,-30 C 190,-30 210,30 280,30 C 350,30 370,-30 420,-30 C 470,-30 490,30 560,30 C 630,30 650,-30 700,-30 C 750,-30 770,30 840,30"/>
+        </circle>
+
+        <!-- ── BOTTOM TRACK: straight line, y=360 ── -->
+        <path class="process-line-path"
+              d="M 80,360 L 920,360"
+              fill="none" stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-dasharray="840" stroke-dashoffset="840"
+              style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .6s"/>
+
+        <!-- straight ball: starts at cx=80 cy=360, moves purely horizontal (dy=0) -->
+        <circle class="process-line-ball" cx="80" cy="360" r="12" fill="#fff" opacity="0">
+          <animate attributeName="opacity" from="0" to=".85" begin="2.9s" dur=".3s" fill="freeze"/>
+          <animateMotion dur="5s" begin="3s" repeatCount="indefinite"
+            path="M 0,0 L 840,0"/>
+        </circle>
+
+      </svg>
+    </div>
+
+    <!-- footer -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:1.6vh;margin-top:1vh">
+      <div class="t-meta" style="color:rgba(255,255,255,.6)">SOURCE · MCKINSEY STATE OF AI 2025 · STANFORD PLAYBOOK 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9B · STEPS TO REDESIGN WORKFLOWS
+     Cardinal bg (matches S9 Process). 6 steps, click-reveal one by one.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-WORKFLOW-STEPS" data-animate="flow-reveal" data-stage="0">
+  <div class="canvas-card" style="background:var(--accent)">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">PROCESS · HOW TO</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.4vw,7.4vh);line-height:1;letter-spacing:-.03em;color:#fff">
+        Steps to redesign workflows
+      </h2>
+
+      <!-- flowchart: 6 boxes in a row connected by arrows -->
+      <div style="display:flex;align-items:center;gap:0;flex:1;max-height:46vh">
+
+        <!-- box 1 -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">01</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Fix the<br/>process</div>
+        </div>
+
+        <!-- arrow 1→2 -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- box 2 -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">02</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Start<br/>small</div>
+        </div>
+
+        <!-- arrow 2→3 -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- box 3 -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">03</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Eliminate<br/>hand-offs</div>
+        </div>
+
+        <!-- arrow 3→4 -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- box 4 -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">04</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Decision<br/>points</div>
+        </div>
+
+        <!-- arrow 4→5 -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- box 5 -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:#fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(140,21,21,.5)">05</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(15px,1.15vw);line-height:1.25;letter-spacing:-.01em;color:var(--accent)">Copilot<br/>mode</div>
+        </div>
+
+        <!-- arrow 5→6 -->
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- box 6 · accent highlight for Scale -->
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh;background:rgba(255,255,255,.18);border:2px solid #fff;padding:2.8vh 1.2vw;min-height:26vh;text-align:center">
+          <div style="font-family:var(--mono);font-size:max(11px,.72vw);font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.55)">06</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.45vw);line-height:1.1;letter-spacing:-.015em;color:#fff">Scale.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10 · PEOPLE · AI is a Team Sport
+     Split: left = 5 persona tiles, right = Lovart soccer illustration
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-PILLAR-PEOPLE" data-animate="pillar-fade">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">PILLAR 03 · PEOPLE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:3vh;min-height:0;position:relative">
+
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6vw,10vh);line-height:.96;letter-spacing:-.03em;color:var(--text-primary)">
+        AI is a <span style="font-style:italic;font-weight:300;color:var(--accent)">Team Sport.</span>
+      </h2>
+
+      <!-- table wrapper: leaves 5vw on the right for the training bar -->
+      <div style="display:grid;grid-template-columns:14ch 1fr;gap:0;border-top:2px solid var(--ink);margin-right:5vw">
+
+        <!-- header -->
+        <div style="padding:1.2vh 1.4vw 1.2vh 0;border-bottom:1px solid var(--border-subtle)">
+          <div class="t-cat" style="color:var(--text-helper)">ROLE</div>
+        </div>
+        <div style="padding:1.2vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
+          <div class="t-cat" style="color:var(--text-helper)">JOB IN AI</div>
+        </div>
+
+        <!-- CEO -->
+        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">CEO</div>
+        </div>
+        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Set the ceiling. Own the outcome. Remove blockers.</div>
+        </div>
+
+        <!-- Managers -->
+        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">Managers</div>
+        </div>
+        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Transmit. Role-model. Source use cases. Own change.</div>
+        </div>
+
+        <!-- HR -->
+        <div style="padding:2.8vh 1.4vw 2.8vh 0;border-bottom:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">HR</div>
+        </div>
+        <div style="padding:2.8vh 1.4vw;border-bottom:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Redesign the architecture before AI does it by default.</div>
+        </div>
+
+        <!-- Everyone -->
+        <div style="padding:2.8vh 1.4vw 2.8vh 0">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:600;font-size:max(18px,1.4vw);color:var(--text-primary)">Everyone</div>
+        </div>
+        <div style="padding:2.8vh 1.4vw;border-left:1px solid var(--border-subtle)">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:var(--text-primary)">Use AI responsibly. Report issues. Own quality.</div>
+        </div>
+
+      </div>
+
+      <!-- TRAINING SYSTEM bar: absolutely positioned on the right, full table height -->
+      <div style="position:absolute;right:0;top:0;bottom:0;width:4vw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vh">
+        <!-- vertical bar -->
+        <div style="position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:3px;background:var(--accent)"></div>
+        <!-- label rotated, sits centred on the bar -->
+        <div style="font-family:var(--mono);font-size:max(12px,.82vw);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);writing-mode:vertical-lr;transform:rotate(180deg);white-space:nowrap;position:relative;z-index:1;background:var(--paper);padding:.6vh 0">TRAINING SYSTEM</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 · GOVERNANCE · Hero message
+     Cardinal bg. Big statement. Day-one design vs end-gate.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-GOVERNANCE" data-animate="pillar-fade">
+  <div class="canvas-card" style="background:var(--accent)">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">PILLAR 04 · GOVERNANCE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
+
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(7.2vw,12vh);line-height:.96;letter-spacing:-.035em;color:#fff">
+        Design it in.<br/>
+        <span style="font-style:italic;font-weight:300;color:rgba(255,255,255,.7)">Don't bolt it on.</span>
+      </h2>
+
+      <div style="display:flex;flex-direction:column;gap:2vh;max-width:72ch">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.6vw;align-items:start;padding-top:2.4vh;border-top:1px solid rgba(255,255,255,.22)">
+          <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:#fff;font-feature-settings:'tnum'">35%</div>
+          <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:.6vh">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:rgba(255,255,255,.92)">of AI projects cite staff-function resistance as the primary barrier</div>
+            <div class="t-meta" style="color:rgba(255,255,255,.5)">STANFORD PLAYBOOK · 2026</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.6vw;align-items:start;padding-top:2.4vh;border-top:1px solid rgba(255,255,255,.22)">
+          <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:#fff;font-feature-settings:'tnum'">18%</div>
+          <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:.6vh">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(18px,1.4vw);line-height:1.4;color:rgba(255,255,255,.92)">cite legal and compliance blocking as root cause of failure</div>
+            <div class="t-meta" style="color:rgba(255,255,255,.5)">STANFORD PLAYBOOK · 2026</div>
+          </div>
+        </div>
+
+        <div style="padding:1.8vh 1.8vw;background:rgba(255,255,255,.12);border-left:3px solid #fff;margin-top:.6vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(16px,1.15vw);line-height:1.5;color:#fff">
+            The solution: embed compliance, ethics, and observability <strong style="font-weight:600">from the start</strong> — not as a gate the build must pass through.
+          </div>
+          <div class="t-meta" style="color:rgba(255,255,255,.5);margin-top:.8vh">ISG ENTERPRISE AI ADOPTION · 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 · STRATEGY FOR VALUE · 3 patterns
+     Paper bg. Three cardinal-accented pattern cards.
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-STRATEGY" data-animate="pillar-fade">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">PILLAR 05 · STRATEGY FOR VALUE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:1vh;margin-bottom:2.4vh">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.4vw,9vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary)">
+        Beyond cost savings — <span style="font-style:italic;font-weight:300;color:var(--accent)">3 patterns.</span>
+      </h2>
+    </div>
+
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;min-height:0;align-items:stretch">
+
+      <!-- Pattern 1 -->
+      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
+        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">01</div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
+          Personalisation that converts.<br/>Speed that wins deals.
+        </div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
+          AI-generated, context-aware interactions at scale — faster than any human team could produce.
+        </div>
+      </div>
+
+      <!-- Pattern 2 -->
+      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
+        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">02</div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
+          Internal tools repackaged as products.
+        </div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
+          Internal AI capability becomes an external revenue stream — the tool your team built becomes the product you sell.
+        </div>
+      </div>
+
+      <!-- Pattern 3 -->
+      <div style="display:flex;flex-direction:column;gap:2vh;padding:3vh 2vw;border-top:4px solid var(--accent);background:var(--grey-1)">
+        <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.9;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">03</div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(18px,1.5vw);line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)">
+          AI enabling work that was previously impossible.
+        </div>
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.05vw);line-height:1.55;color:var(--text-secondary);margin-top:auto">
+          New capabilities, not just faster old ones. Work that had no viable path before AI — now it does.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 · RECAP · House of Enterprise AI — with punchlines
+     Same layout as S7: cardinal bg, Stanford church image, 5 labels.
+     Labels now carry one-line punchlines instead of bare names.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-RECAP" data-animate="pillar-fade">
+  <div class="canvas-card" style="background:var(--accent);position:relative;overflow:hidden">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">RECAP · HOUSE OF ENTERPRISE AI</div>
+      <div class="r"></div>
+    </div>
+
+    <!-- church image + labels -->
+    <div style="flex:1;position:relative;min-height:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;overflow:visible">
+
+      <img src="images/06-stanford-church.png" alt="House of Enterprise AI recap"
+           style="width:150%;max-height:138%;object-fit:contain;object-position:bottom center;display:block;position:relative;z-index:1;margin-left:-25%;margin-right:-25%"/>
+
+      <!-- VALUE — roof -->
+      <div style="position:absolute;top:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(13px,1vw);font-weight:700;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 1.4vw;display:inline-block">VALUE · Proven in the P&L, not the pilot count</div>
+      </div>
+
+      <!-- TECHNOLOGY — left arch -->
+      <div style="position:absolute;bottom:24%;left:18%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">TECHNOLOGY · Foundation, not advantage</div>
+      </div>
+
+      <!-- PROCESS — centre column -->
+      <div style="position:absolute;bottom:24%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">PROCESS · Redesign, don't bolt on</div>
+      </div>
+
+      <!-- PEOPLE — right arch -->
+      <div style="position:absolute;bottom:24%;left:82%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(12px,.88vw);font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.4vh 1vw;display:inline-block">PEOPLE · AI is a team sport</div>
+      </div>
+
+      <!-- GOVERNANCE — base plinth -->
+      <div style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);text-align:center;z-index:3;white-space:nowrap">
+        <div style="font-family:var(--mono);font-size:max(13px,1vw);font-weight:700;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;background:#fff;padding:.45vh 2vw;display:inline-block">GOVERNANCE · Design it in, don't bolt it on</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14 · SKILLS · Opinion statement
+     Cardinal bg. Hero quote. Repo CTA.
+     ============================================================ -->
+<section class="slide accent" data-layout="SWISS-SKILLS" data-animate="pillar-fade">
+  <div class="canvas-card" style="background:var(--accent)">
+    <div class="chrome-min" style="color:rgba(255,255,255,.7)">
+      <div class="l">THE PUNCHLINE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5vh;min-height:0">
+
+      <!-- opinion quote -->
+      <div style="display:flex;flex-direction:column;gap:2.4vh">
+        <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.28em">" "</div>
+        <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5.6vw,9.4vh);line-height:1.05;letter-spacing:-.03em;color:#fff;max-width:22ch">
+          Every Company's First AI Strategy Should Be a
+          <span style="font-style:italic;font-weight:300;color:rgba(255,255,255,.85)"> Skill Library.</span>
+        </h2>
+      </div>
+
+      <!-- what skills are + repo CTA -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3vw;padding-top:3vh;border-top:1px solid rgba(255,255,255,.22)">
+        <div style="display:flex;flex-direction:column;gap:1.2vh">
+          <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.22em">WHAT IS A SKILL?</div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(16px,1.2vw);line-height:1.55;color:rgba(255,255,255,.88)">
+            Skills are tools an AI agent can call — tasks it can execute automatically. They encode your organisation's know-how and make it reusable.
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.2vh">
+          <div class="t-meta" style="color:rgba(255,255,255,.6);letter-spacing:.22em">THE REPO</div>
+          <div style="font-family:var(--mono);font-size:max(14px,.95vw);color:rgba(255,255,255,.88);line-height:1.6;word-break:break-all">
+            github.com/geledek/<br/>enterprise-ai-transformation-skills
+          </div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(14px,.95vw);color:rgba(255,255,255,.65)">
+            Built from the patterns of success and failure in this research.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div id="nav"></div>
+
+<script>
+/* =============== WebGL 网格背景 (瑞士风专用) ===============
+   极简移动网格 + 微弱点阵叠加,营造"工业感、精准感"
+   - 主网格: 缓慢漂移的细线网格
+   - 次级: 鼠标附近的极细点阵微扰
+   - 颜色: 跟随主题(浅底深线 / 深底亮线),配合 mix-blend-mode
+*/
+const VS = `attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+const FS = `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform float u_dark; // 0 = light, 1 = dark
+uniform vec3 u_accent;
+
+float gridLine(vec2 uv, float spacing, float thickness){
+  vec2 g = abs(fract(uv / spacing) - 0.5);
+  float d = min(g.x, g.y);
+  return 1.0 - smoothstep(thickness - 0.005, thickness + 0.005, d);
+}
+
+float dot2(vec2 p){ return dot(p,p); }
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+  float aspect = u_resolution.x / u_resolution.y;
+  vec2 p = uv;
+  p.x *= aspect;
+
+  // 缓慢平移
+  vec2 drift = vec2(u_time * 0.008, u_time * 0.005);
+  vec2 gp = p + drift;
+
+  // 主细网格 (大间距)
+  float mainGrid = gridLine(gp, 0.12, 0.012);
+  // 次级网格 (更细更密)
+  float subGrid = gridLine(gp, 0.024, 0.04) * 0.4;
+
+  // 鼠标附近的强化
+  vec2 m = u_mouse;
+  m.x *= aspect;
+  float md = length(p - m);
+  float mInfluence = exp(-md * 4.0) * 0.5;
+
+  float gridStrength = (mainGrid + subGrid * 0.5) * (0.45 + mInfluence);
+
+  // 点阵 (作为基底)
+  vec2 dotGrid = fract(gp * 50.0) - 0.5;
+  float dotMask = 1.0 - smoothstep(0.05, 0.14, length(dotGrid));
+  // 用低频噪声调制点阵密度
+  float wave = sin(gp.x * 1.4 + u_time * 0.15) * cos(gp.y * 1.6 - u_time * 0.12);
+  dotMask *= smoothstep(-0.3, 0.6, wave) * 0.6;
+
+  // 颜色: 浅底用深线条,深底用浅线条;高亮处带 accent 痕迹
+  vec3 lineColor = mix(vec3(0.08), vec3(0.92), u_dark);
+  vec3 bgColor = mix(vec3(0.97, 0.97, 0.96), vec3(0.06, 0.06, 0.07), u_dark);
+
+  // accent 暗示 (鼠标附近偷渡一点 accent 色)
+  vec3 col = bgColor;
+  col = mix(col, lineColor, gridStrength * 0.55);
+  col = mix(col, lineColor, dotMask * 0.35);
+  col = mix(col, u_accent, mInfluence * 0.18);
+
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=1-e.clientY/innerHeight});
+
+function bootGL(canvasId, fsSrc){
+  const canvas=document.getElementById(canvasId);
+  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
+  if(!gl) return ()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));
+  gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fsSrc));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lRes=gl.getUniformLocation(prog,'u_resolution');
+  const lT=gl.getUniformLocation(prog,'u_time');
+  const lM=gl.getUniformLocation(prog,'u_mouse');
+  const lD=gl.getUniformLocation(prog,'u_dark');
+  const lA=gl.getUniformLocation(prog,'u_accent');
+  const resize=()=>{
+    const d=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  };
+  addEventListener('resize',resize);resize();
+
+  // 读取 CSS 变量,把 accent 颜色塞进 shader
+  function readAccent(){
+    const cs = getComputedStyle(document.documentElement);
+    const hex = cs.getPropertyValue('--accent').trim() || '#002FA7';
+    const m = hex.match(/^#([0-9a-f]{6})$/i);
+    if(!m) return [0, 0.18, 0.65];
+    const n = parseInt(m[1], 16);
+    return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
+  }
+  let accent = readAccent();
+  let dark = 0;
+
+  return (tSec, isDark)=>{
+    if(isDark !== undefined) dark = isDark ? 1 : 0;
+    accent = readAccent();
+    gl.uniform2f(lRes,canvas.width,canvas.height);
+    gl.uniform1f(lT,tSec);
+    gl.uniform2f(lM,mouse.x,mouse.y);
+    gl.uniform1f(lD,dark);
+    gl.uniform3f(lA,accent[0],accent[1],accent[2]);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+    return true;
+  };
+}
+// canvas-mode / low-power: skip WebGL draw loop (no active RAF loop)
+let darkMode=false;
+let gridCtrl=null, gridRAF=0, gridT0=Date.now();
+function startGrid(){
+  if(document.body.classList.contains('canvas-mode') || window.__lowPowerMode || gridRAF) return;
+  if(!gridCtrl) gridCtrl = bootGL('bg-grid',FS);
+  if(!gridCtrl) return;
+  gridT0=Date.now();
+  function loop(){
+    if(window.__lowPowerMode){gridRAF=0;return;}
+    const t=(Date.now()-gridT0)/1000;
+    gridCtrl(t, darkMode);
+    gridRAF=requestAnimationFrame(loop);
+  }
+  gridRAF=requestAnimationFrame(loop);
+}
+function stopGrid(){
+  if(gridRAF) cancelAnimationFrame(gridRAF);
+  gridRAF=0;
+}
+if(document.body.classList.contains('canvas-mode')){
+  const c=document.getElementById('bg-grid');
+  if(c) c.remove();
+}else{
+  startGrid();
+}
+addEventListener('swiss-low-power-change', e=>{e.detail.on ? stopGrid() : startGrid();});
+
+// =============== 导航 ===============
+const deck=document.getElementById('deck');
+const slides=deck.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+
+deck.style.width=(total*100)+'vw';
+
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));
+  b.onclick=()=>go(i);
+  nav.appendChild(b);
+});
+
+function go(n){
+  if(lock)return;
+  idx=Math.max(0,Math.min(total-1,n));
+  window.__currentSlideIndex = idx;
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx];
+  const isDark = el.classList.contains('dark') || el.classList.contains('accent');
+  document.body.classList.toggle('dark-bg', isDark);
+  darkMode = isDark;
+  if(window.__playSlide) setTimeout(()=>window.__playSlide(idx), 450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+/* =============== ESC 索引视图 =============== */
+let overviewOn=false;
+const ov=document.createElement('div');
+ov.id='overview';
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(250,250,248,.96);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+
+function buildOverview(){
+  ov.innerHTML='';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='cursor:pointer;overflow:hidden;border:2px solid '+(i===idx?'var(--accent)':'rgba(0,0,0,.12)')+';transition:border-color .2s';
+    card.onmouseenter=()=>card.style.borderColor='rgba(0,0,0,.4)';
+    card.onmouseleave=()=>card.style.borderColor=i===idx?'var(--accent)':'rgba(0,0,0,.12)';
+    const wrap=document.createElement('div');
+    const isDark = s.classList.contains('dark') || s.classList.contains('accent');
+    wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(isDark?'var(--ink)':'var(--paper)');
+    const clone=s.cloneNode(true);
+    clone.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    wrap.appendChild(clone);
+    const label=document.createElement('div');
+    /* ESC 索引卡 label */
+  label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:.7';
+    label.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);
+    card.appendChild(label);
+    card.onclick=()=>{toggleOverview();go(i)};
+    grid.appendChild(card);
+  });
+  ov.appendChild(grid);
+}
+
+function toggleOverview(){
+  overviewOn=!overviewOn;
+  if(overviewOn){buildOverview();ov.style.display='block';}
+  else{ov.style.display='none';}
+}
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOverview();return;}
+  if(e.key && e.key.toLowerCase()==='b' && !e.metaKey && !e.ctrlKey && !e.altKey){
+    e.preventDefault();
+    window.__setLowPowerMode(!window.__lowPowerMode);
+    return;
+  }
+  if(overviewOn)return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){
+    if(window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+1);
+    return;
+  }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);
+  if(e.key==='Home')go(0);
+  if(e.key==='End')go(total-1);
+});
+
+let wheelTO=null,wheelAcc=0;
+addEventListener('wheel',e=>{
+  wheelAcc+=e.deltaY+e.deltaX;
+  if(Math.abs(wheelAcc)>50){
+    if(wheelAcc>0 && window.__pipeAdvance && window.__pipeAdvance()){
+      wheelAcc=0;
+    }else{
+      go(idx+(wheelAcc>0?1:-1));wheelAcc=0;
+    }
+  }
+  clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150);
+},{passive:true});
+
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=(e.changedTouches[0].clientX-tx);
+  const dy=(e.changedTouches[0].clientY-ty);
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){
+    if(dx<0 && window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+(dx<0?1:-1));
+  }
+},{passive:true});
+
+const initialSlideParam = new URLSearchParams(location.search).get('slide');
+const initialSlide = initialSlideParam ? Number(initialSlideParam) - 1 : 0;
+go(Number.isFinite(initialSlide) ? initialSlide : 0);
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+<!-- Motion One 动效引擎 (与原模板一致) -->
+<script type="module">
+let motion;
+try {
+  motion = await import('./assets/motion.min.js');
+} catch(e1) {
+  try {
+    motion = await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');
+  } catch(e2) {
+    console.warn('[motion] local + CDN both failed, disabling animations', e1, e2);
+    document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+    document.querySelectorAll('[data-animate="pipeline"] [data-anim]').forEach(el=>el.style.opacity='1');
+  }
+}
+
+if(motion){
+  const { animate } = motion;
+  document.body.classList.add('motion-ready');
+
+  /* ============================================================
+     IBM Carbon Motion · 每个 recipe 服务一种表达
+     不是一刀切的 stagger,而是把动效绑在内容语义上
+     ============================================================ */
+  const EASE_PROD       = [.2, 0, .38, .9];
+  const EASE_ENTRY_EXP  = [0, 0, .3, 1];
+
+  const slides = [...document.querySelectorAll('.slide')];
+  let lastIdx = -1;
+
+  function resetAnims(slide){
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity='';
+      el.style.transform='';
+    });
+    /* 同时复位需要被 recipe 接管的元素 */
+    slide.querySelectorAll('.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.paper-cover,.finding,.finding-l,.finding-r')
+      .forEach(el=>{
+        el.style.opacity='';
+        el.style.transform='';
+      });
+  }
+
+  /* ---------- 通用工具 ---------- */
+  const fade = (el, opts={})=>animate(el,
+    {opacity:[0,1], y:[opts.y ?? 12, 0]},
+    {duration:opts.duration ?? .6, delay:opts.delay ?? 0,
+     easing:opts.easing ?? EASE_ENTRY_EXP});
+
+  /* ---------- recipe: hero · 封面索引 ----------
+     大编号一个个亮起 → 索引行最后落定 */
+  function rHero(slide, all){
+    const numRows = [...slide.querySelectorAll('.cover-row')];
+    const rest = all.filter(el=>!numRows.length || el !== numRows[0]);
+    /* 先入: chrome 240ms */
+    const chrome = slide.querySelector('.chrome-min');
+    if(chrome) animate(chrome, {opacity:[0,1]}, {duration:.24, easing:EASE_PROD});
+    /* 大编号 01/02/03 像点名一样依次亮 */
+    numRows.forEach((row, i)=>{
+      animate(row, {opacity:[0,1], x:[-12,0]},
+        {duration:.5, delay:.15 + i*.18, easing:EASE_ENTRY_EXP});
+    });
+    /* 索引底栏最后慢慢落定 */
+    const idx = slide.querySelector('[data-anim="line"]');
+    if(idx) fade(idx, {delay:.15 + numRows.length*.18 + .1, duration:.5, y:6});
+  }
+
+  /* ---------- recipe: progression · 1× → 10× → 1000× ----------
+     节点依次入场,每个节点的数字单独"递进生长"营造跃迁 */
+  function rProgression(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const nodes = [...slide.querySelectorAll('.tl-node')];
+    nodes.forEach((node, i)=>{
+      const base = .35 + i*.32;          /* 节点之间间隔大,营造时间感 */
+      /* 整个节点先轻微浮入 */
+      animate(node, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:base, easing:EASE_ENTRY_EXP});
+      /* 再让 multi(数字)从 .85 scale 弹到 1,延迟 100ms */
+      const multi = node.querySelector('.multi');
+      if(multi) animate(multi, {scale:[.92, 1], opacity:[0,1]},
+        {duration:.5, delay:base + .12, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 底部 KPI 4 列最后落定,内部 60ms stagger */
+    const kpis = [...slide.querySelectorAll('.kpi-cell')];
+    kpis.forEach((cell, i)=>{
+      animate(cell, {opacity:[0,1], y:[8, 0]},
+        {duration:.4, delay:1.4 + i*.07, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: statement · 大宣言 ----------
+     左半屏标题逐行落下,右半屏 leaked 信息晚 600ms 进 */
+  function rStatement(slide, all){
+    const halves = [...slide.querySelectorAll('.half')];
+    if(halves.length === 2){
+      animate(halves[0], {opacity:[0,1], y:[18,0]},
+        {duration:.7, delay:0, easing:EASE_ENTRY_EXP});
+      animate(halves[1], {opacity:[0,1], y:[18,0]},
+        {duration:.7, delay:.6, easing:EASE_ENTRY_EXP});
+    } else {
+      /* P9 Index Card — 三行像盖章一样依次落 */
+      const head = slide.querySelector('[data-anim="line"]');
+      if(head) fade(head, {duration:.5, y:6});
+      const blocks = all.filter(el=>el !== head);
+      blocks.forEach((el, i)=>{
+        animate(el, {opacity:[0,1], y:[20,0]},
+          {duration:.55, delay:.25 + i*.18, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: grid-reveal · 五个定义 ----------
+     卡片按 nb-corner 序号 01→02→03→04→05→Σ 依次揭示 */
+  function rGridReveal(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+    const cards = [...slide.querySelectorAll('.sub-card')];
+    cards.forEach((card, i)=>{
+      animate(card, {opacity:[0,1], y:[20,0], scale:[.96, 1]},
+        {duration:.5, delay:.3 + i*.09, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: stack-build · 三层架构 ----------
+     中间 thin 先入 → 上层 fat skills 从顶推下 → 下层 application 从底推上 */
+  function rStackBuild(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const blocks = [...slide.querySelectorAll('.stack-block')];
+    /* 先入: 中间薄层(LAYER 02) */
+    if(blocks[1]) animate(blocks[1], {opacity:[0,1], scaleY:[.85, 1]},
+      {duration:.55, delay:.3, easing:EASE_ENTRY_EXP});
+    /* 上推下: LAYER 01 fat skills 从顶部 push down */
+    if(blocks[0]) animate(blocks[0], {opacity:[0,1], y:[-22, 0]},
+      {duration:.6, delay:.6, easing:EASE_ENTRY_EXP});
+    /* 下推上: LAYER 03 application 从底部 push up */
+    if(blocks[2]) animate(blocks[2], {opacity:[0,1], y:[22, 0]},
+      {duration:.6, delay:.6, easing:EASE_ENTRY_EXP});
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: measure-up · YC KPI 塔 ----------
+     塔从底部 scaleY 0→1 生长 + 数字最后弹入 */
+  function rMeasureUp(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const towers = [...slide.querySelectorAll('.bar-tower')];
+    towers.forEach((tower, i)=>{
+      const block = tower.querySelector('.body-block');
+      if(block){
+        block.style.transformOrigin = 'bottom center';
+        animate(block, {opacity:[0,1], scaleY:[.05, 1]},
+          {duration:.7, delay:.35 + i*.12, easing:EASE_ENTRY_EXP});
+      }
+      /* cap (顶部图标) 等柱体长好后弹入 */
+      const cap = tower.querySelector('.cap');
+      if(cap) animate(cap, {opacity:[0,1], y:[-8, 0]},
+        {duration:.4, delay:.85 + i*.12, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: bar-grow · 90% 价值分布 ----------
+     标题先入 → hairline 从中点向两侧 stroke draw → bar 依次 width 0→target → 数值 fade in */
+  function rBarGrow(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    /* 中部 hairline:从 100% width 0 拉到 100% (transformOrigin: center) */
+    const midRow = slide.querySelector('[data-anim="up"]');
+    if(midRow){
+      const midLabel = midRow.querySelector('.t-cat');
+      const midLine = midRow.querySelector('div[style*="height:1px"]');
+      if(midLabel) animate(midLabel, {opacity:[0,1], x:[-8,0]},
+        {duration:.4, delay:.4, easing:EASE_PROD});
+      if(midLine){
+        midLine.style.transformOrigin = 'center';
+        animate(midLine, {opacity:[0,1], scaleX:[0, 1]},
+          {duration:.55, delay:.5, easing:EASE_ENTRY_EXP});
+      }
+    }
+
+    /* bar 行依次 width 增长 */
+    const fills = [...slide.querySelectorAll('.row-fill')];
+    const labels = [...slide.querySelectorAll('.row-lbl')];
+    const values = [...slide.querySelectorAll('.row-val')];
+    fills.forEach((fill, i)=>{
+      const target = fill.style.width;
+      fill.style.width = '0%';
+      if(labels[i]) animate(labels[i], {opacity:[0,1], x:[-12,0]},
+        {duration:.4, delay:.85 + i*.14, easing:EASE_PROD});
+      animate(fill, {width:['0%', target]},
+        {duration:.65, delay:.95 + i*.14, easing:EASE_ENTRY_EXP});
+      if(values[i]) animate(values[i], {opacity:[0,1]},
+        {duration:.3, delay:1.5 + i*.14, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
+     左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
+  function rDuoMirror(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const cols = [...slide.querySelectorAll('.duo-compare .col')];
+    const vrule = slide.querySelector('.duo-compare .vrule');
+    if(cols[0]) animate(cols[0], {opacity:[0,1], x:[-24, 0]},
+      {duration:.65, delay:.4, easing:EASE_ENTRY_EXP});
+    if(vrule){
+      vrule.style.transformOrigin = 'center';
+      animate(vrule, {opacity:[0,1], scaleY:[0, 1]},
+        {duration:.55, delay:.55, easing:EASE_ENTRY_EXP});
+    }
+    if(cols[1]) animate(cols[1], {opacity:[0,1], x:[24, 0]},
+      {duration:.65, delay:.7, easing:EASE_ENTRY_EXP});
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: split-statement · 收尾 ----------
+     左黑半屏的 once / forever 错位入场;右白半屏 takeaway list 后跟 */
+  function rSplitStatement(slide, all){
+    const halves = [...slide.querySelectorAll('.half')];
+    /* 左黑半屏 — once 先入,forever 间隔 600ms */
+    if(halves[0]){
+      animate(halves[0], {opacity:[0,1]}, {duration:.4, easing:EASE_PROD});
+      const kpis = halves[0].querySelectorAll('.kpi-thin');
+      kpis.forEach((k, i)=>{
+        animate(k, {opacity:[0,1], y:[24,0]},
+          {duration:.7, delay:.25 + i*.55, easing:EASE_ENTRY_EXP});
+      });
+    }
+    /* 右白半屏 — list 三条依次入,在左侧 once 出现后开始 */
+    if(halves[1]){
+      animate(halves[1], {opacity:[0,1]}, {duration:.4, delay:.3, easing:EASE_PROD});
+      const items = halves[1].querySelectorAll('.takeaway-list li');
+      items.forEach((li, i)=>{
+        animate(li, {opacity:[0,1], x:[20, 0]},
+          {duration:.45, delay:1.0 + i*.12, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: timeline-walk · P11 横向 evolution ----------
+     标题先入 → 横轴虚线 scaleX 拉开(伪) → 5 个 dot 按年代依次 scale 入 → label 跟随 */
+  function rTimelineWalk(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const tl = slide.querySelector('.timeline-h');
+    if(tl) animate(tl, {opacity:[0,1]}, {duration:.4, delay:.35, easing:EASE_PROD});
+
+    const nodes = [...slide.querySelectorAll('.timeline-h .th-node')];
+    nodes.forEach((node, i)=>{
+      const base = .55 + i*.18;
+      const dot = node.querySelector('.dot');
+      const label = node.querySelector('.label');
+      if(dot){
+        dot.style.transformOrigin='center';
+        animate(dot, {opacity:[0,1], scale:[.2, 1]},
+          {duration:.45, delay:base, easing:EASE_ENTRY_EXP});
+      }
+      if(label){
+        const fromY = node.classList.contains('up') ? 8 : -8;
+        /* 保留 CSS 的水平居中 translateX(-50%),避免动效覆盖后 label 与 dot 错位 */
+        animate(label, {opacity:[0,1], transform:[`translate(-50%, ${fromY}px)`, 'translate(-50%, 0px)']},
+          {duration:.5, delay:base + .12, easing:EASE_ENTRY_EXP});
+      }
+    });
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.7, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: manifesto · P12 Form & Found ----------
+     副标先入 → 大字两段错峰落 → 底部 ink 通栏条从下推上 */
+  function rManifesto(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head){
+      const cat = head.querySelector('.t-cat');
+      const title = head.querySelector('div:nth-child(2)');
+      if(cat) animate(cat, {opacity:[0,1], x:[-10,0]},
+        {duration:.4, delay:.1, easing:EASE_PROD});
+      if(title) animate(title, {opacity:[0,1], y:[26, 0]},
+        {duration:.85, delay:.3, easing:EASE_ENTRY_EXP});
+    }
+    /* 底部 ink 条从下推入 */
+    const foot = [...slide.querySelectorAll('[data-anim="up"]')];
+    foot.forEach((el, i)=>{
+      animate(el, {opacity:[0,1], y:[40, 0]},
+        {duration:.75, delay:.85 + i*.12, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: three-forces · P13 ----------
+     左 ink hero 先入 → 右 3 张卡按 1/2/3 依次从右滑入 + 每张大数字单独弹入 */
+  function rThreeForces(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(grid) animate(grid, {opacity:[0,1]}, {duration:.3, delay:.3, easing:EASE_PROD});
+
+    const heroBlock = grid?.querySelector(':scope > div:first-child');
+    if(heroBlock) animate(heroBlock, {opacity:[0,1], x:[-26, 0]},
+      {duration:.6, delay:.4, easing:EASE_ENTRY_EXP});
+
+    const cards = grid ? [...grid.querySelectorAll(':scope > div:nth-child(2) > .card-fill')] : [];
+    cards.forEach((card, i)=>{
+      const base = .6 + i*.18;
+      animate(card, {opacity:[0,1], x:[28, 0]},
+        {duration:.6, delay:base, easing:EASE_ENTRY_EXP});
+      const num = card.querySelector(':scope > div:first-child');
+      if(num) animate(num, {opacity:[0,1], scale:[.7, 1]},
+        {duration:.5, delay:base + .15, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: loop-form · P14 自学闭环 ----------
+     左 4 步像台阶依次入 → 右环图节点按时钟顺序入 → 中心 improves scale 入 */
+  function rLoopForm(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(grid) animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    /* 左侧 4 步台阶,每步从左滑入 */
+    const steps = grid ? [...grid.querySelectorAll(':scope > div:first-child > div')] : [];
+    steps.forEach((step, i)=>{
+      animate(step, {opacity:[0,1], x:[-18, 0]},
+        {duration:.5, delay:.5 + i*.14, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 右侧 SVG 节点 (4 个 circle + label) 按 01→04 顺序入 */
+    const svg = grid?.querySelector('svg');
+    if(svg){
+      const ring = svg.querySelector('circle:first-of-type');
+      if(ring) animate(ring, {opacity:[0,.25]}, {duration:.5, delay:.6, easing:EASE_PROD});
+
+      const nodeCircles = [...svg.querySelectorAll('circle')].slice(1);
+      nodeCircles.forEach((c, i)=>{
+        c.style.transformOrigin = `${c.getAttribute('cx')}px ${c.getAttribute('cy')}px`;
+        animate(c, {opacity:[0,1], scale:[.4, 1]},
+          {duration:.45, delay:.7 + i*.16, easing:EASE_ENTRY_EXP});
+      });
+
+      const arrows = [...svg.querySelectorAll('path[marker-end]')];
+      arrows.forEach((p, i)=>{
+        animate(p, {opacity:[0,1]},
+          {duration:.4, delay:.85 + i*.16, easing:EASE_PROD});
+      });
+
+      const center = [...svg.querySelectorAll('text')].slice(-2);
+      center.forEach((t, i)=>{
+        animate(t, {opacity:[0,1], scale:[.7, 1]},
+          {duration:.5, delay:1.55 + i*.1, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: matrix-fill · P15 skill 矩阵 ----------
+     标题入 → 12 张卡按对角线波 (i+j) 扫入 → 底部 20,000 大数字最后 fade 入 */
+  function rMatrixFill(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const matrix = slide.querySelector('[data-anim="up"]');
+    if(!matrix) return;
+    animate(matrix, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const cards = [...matrix.children];
+    const cols = 6;
+    cards.forEach((card, i)=>{
+      const row = Math.floor(i/cols), col = i%cols;
+      const wave = (row + col) * .055;
+      animate(card, {opacity:[0,1], y:[14, 0], scale:[.92, 1]},
+        {duration:.42, delay:.5 + wave, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 底部 20,000 区块 */
+    const foot = [...slide.querySelectorAll('[data-anim="up"]')][1];
+    if(foot){
+      animate(foot, {opacity:[0,1], y:[18, 0]},
+        {duration:.7, delay:1.4, easing:EASE_ENTRY_EXP});
+      const bigNum = foot.querySelector('div:nth-child(1) > div:nth-child(2)');
+      if(bigNum) animate(bigNum, {opacity:[0,1], scale:[.94, 1]},
+        {duration:.7, delay:1.55, easing:EASE_ENTRY_EXP});
+    }
+  }
+
+  /* ---------- recipe: field-notes · P16 散点观察 ----------
+     标题入 → 6 张卡按"散点"乱序延迟入,微小旋转复位 */
+  function rFieldNotes(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    /* 散点顺序: 用一个稍微打乱的索引数组,营造"乱中有序"感 */
+    const order = [0, 3, 1, 4, 2, 5];
+    const cards = [...grid.children];
+    order.forEach((idx, i)=>{
+      const card = cards[idx];
+      if(!card) return;
+      animate(card, {opacity:[0,1], y:[18, 0], rotate:[(idx%2?-.6:.6), 0]},
+        {duration:.55, delay:.5 + i*.11, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: system-diagram · P17 三圆系统图 ----------
+     标题入 → SVG 三组图依次入 + 中间同心圆从外向内 scale 入 → 下方注释列依次入 */
+  function rSystemDiagram(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const stage = slide.querySelector('[data-anim="up"]');
+    if(!stage) return;
+    animate(stage, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const svgs = [...stage.querySelectorAll('svg')];
+    svgs.forEach((svg, i)=>{
+      const base = .55 + i*.22;
+      const circles = [...svg.querySelectorAll('circle')];
+      /* 中间是同心圆: 从外圈到内圈依次 scale 入 */
+      if(circles.length > 1){
+        circles.forEach((c, j)=>{
+          c.style.transformOrigin = `${c.getAttribute('cx')}px ${c.getAttribute('cy')}px`;
+          animate(c, {opacity:[0,1], scale:[.4, 1]},
+            {duration:.5, delay:base + j*.13, easing:EASE_ENTRY_EXP});
+        });
+      } else if(circles[0]){
+        circles[0].style.transformOrigin = `${circles[0].getAttribute('cx')}px ${circles[0].getAttribute('cy')}px`;
+        animate(circles[0], {opacity:[0,1], scale:[.4, 1]},
+          {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+      }
+      const labels = [...svg.querySelectorAll('text')];
+      labels.forEach((t, j)=>{
+        animate(t, {opacity:[0,1]},
+          {duration:.4, delay:base + .25 + j*.06, easing:EASE_PROD});
+      });
+    });
+
+    /* 下方注释列 */
+    const cols = [...stage.querySelectorAll(':scope > div:last-child > div')];
+    cols.forEach((col, i)=>{
+      animate(col, {opacity:[0,1], y:[12, 0]},
+        {duration:.45, delay:1.3 + i*.1, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: why-now · P18 三列 + 巨大底数 ----------
+     标题入 → 三列文本入 → 三个底部巨数 01/02/03 错峰 scale 落定 */
+  function rWhyNow(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const cols = [...grid.children];
+    cols.forEach((col, i)=>{
+      const base = .5 + i*.16;
+      const body = col.querySelector(':scope > div:not(:last-child)');
+      const big = col.querySelector(':scope > div:last-child');
+      if(body) animate(body, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:base, easing:EASE_ENTRY_EXP});
+      if(big) animate(big, {opacity:[0,1], scale:[.7, 1]},
+        {duration:.7, delay:base + .35, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: four-cards · P19 4 列卡片 ----------
+     顶部红线 scaleX 0→1 → 标题入 → 4 卡按 01-04 依次入 */
+  function rFourCards(slide, all){
+    /* 顶部红线 */
+    const topRule = slide.querySelector('[data-anim="line"] > div:first-child');
+    if(topRule){
+      topRule.style.transformOrigin = 'left center';
+      animate(topRule, {opacity:[0,1], scaleX:[0, 1]},
+        {duration:.5, delay:.1, easing:EASE_ENTRY_EXP});
+    }
+
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head){
+      const title = head.querySelector(':scope > div:nth-child(2)');
+      if(title) animate(title, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:.4, easing:EASE_ENTRY_EXP});
+    }
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.55, easing:EASE_PROD});
+
+    const cards = [...grid.children];
+    cards.forEach((card, i)=>{
+      animate(card, {opacity:[0,1], y:[18, 0]},
+        {duration:.55, delay:.7 + i*.13, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ============ P20 · Stacked KPI Ledger · 4 行账单逐行点亮 + 行间发丝从左画 ============ */
+  function rStackedLedger(slide, all){
+    const ledger = slide.querySelector('[data-anim="ledger"]');
+    if(!ledger) return;
+    animate(ledger, {opacity:[0,1]}, {duration:.3, delay:.1, easing:EASE_PROD});
+
+    const rows = [...ledger.querySelectorAll('.ledger-row')];
+    rows.forEach((row, i)=>{
+      const base = .25 + i*.18;
+      const num   = row.querySelector('.ledger-num');
+      const label = row.querySelector('.ledger-label');
+      const icon  = row.querySelector('.ledger-icon');
+      if(num)   animate(num,   {opacity:[0,1], y:[20, 0]},   {duration:.7,  delay:base,        easing:EASE_ENTRY_EXP});
+      if(label) animate(label, {opacity:[0,1], x:[-12, 0]},  {duration:.55, delay:base + .12, easing:EASE_ENTRY_EXP});
+      if(icon)  animate(icon,  {opacity:[0,1], scale:[.6,1]},{duration:.55, delay:base + .22, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ============ P21 · Tech Spec Sheet · 标题分行 / KPI 顶线画出 + count 风感 / 竖线弹起 / 底巨数 ============ */
+  function rTechSpec(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+
+    const main = slide.querySelector('[data-anim="up"]');
+    if(main){
+      animate(main, {opacity:[0,1]}, {duration:.3, delay:.25, easing:EASE_PROD});
+
+      /* 左大标题分行 */
+      const titleLines = main.querySelector(':scope > div:first-child > div:first-child');
+      if(titleLines){
+        animate(titleLines, {opacity:[0,1], y:[18, 0]}, {duration:.7, delay:.35, easing:EASE_ENTRY_EXP});
+      }
+      const titleNote = main.querySelector(':scope > div:first-child > div:nth-child(2)');
+      if(titleNote){
+        animate(titleNote, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:.95, easing:EASE_ENTRY_EXP});
+      }
+
+      /* 三 KPI · 顶线 scaleX + 数字 fade-up + 副文字 */
+      const kpis = [...main.querySelectorAll(':scope > div:not([data-anim]):not(:first-child)')];
+      kpis.forEach((kpi, i)=>{
+        const base = .55 + i*.18;
+        const topRule = kpi.querySelector(':scope > div:first-child');
+        if(topRule){
+          topRule.style.transformOrigin = 'left center';
+          animate(topRule, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+        }
+        const num = kpi.querySelector('.kpi-num');
+        if(num) animate(num, {opacity:[0,1], y:[14, 0]}, {duration:.6, delay:base + .15, easing:EASE_ENTRY_EXP});
+        const otherKids = [...kpi.children].filter(el=>el !== topRule && el !== num);
+        otherKids.forEach((el, j)=>{
+          animate(el, {opacity:[0,1]}, {duration:.4, delay:base + .25 + j*.05, easing:EASE_PROD});
+        });
+      });
+
+    }
+
+    /* 底部 hero 区: 巨数 + goal + tags + 右下竖线 */
+    const hero = slide.querySelector('[data-anim="hero"]');
+    if(hero){
+      animate(hero, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+      const bottomHero = hero.querySelector('.bottom-hero');
+      if(bottomHero) animate(bottomHero, {opacity:[0,1], y:[24, 0], scale:[.92, 1]}, {duration:.7, delay:1.4, easing:EASE_ENTRY_EXP});
+      const middle = hero.querySelector(':scope > div:nth-child(2)');
+      if(middle){
+        const kids = [...middle.children];
+        kids.forEach((el, i)=>{
+          if(el.style && el.style.background === 'var(--ink)'){
+            el.style.transformOrigin = 'left center';
+            animate(el, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:1.6 + i*.1, easing:EASE_ENTRY_EXP});
+          } else {
+            animate(el, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:1.55 + i*.1, easing:EASE_ENTRY_EXP});
+          }
+        });
+      }
+      /* 右下: 文字先入, 9 根竖线再从底部 scaleY 弹起 */
+      const right = hero.querySelector(':scope > div:nth-child(3)');
+      if(right){
+        const rightText = right.querySelector(':scope > div:last-child');
+        if(rightText) animate(rightText, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:1.85, easing:EASE_ENTRY_EXP});
+      }
+      const bars = slide.querySelectorAll('[data-anim="bars"] .vbar');
+      bars.forEach((bar, i)=>{
+        bar.style.transformOrigin = 'bottom';
+        animate(bar, {scaleY:[0,1], opacity:[0,1]}, {duration:.5, delay:2.0 + i*.04, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ============ P22 · Image Hero · 图缓推 + 标题白块从左滑入 + 三 KPI 顶线画出 ============ */
+  function rImageHero(slide, all){
+    const img = slide.querySelector('[data-anim="img"] img');
+    if(img){
+      animate(img, {opacity:[0,1], scale:[1.06, 1]}, {duration:1.1, delay:.05, easing:EASE_ENTRY_EXP});
+    }
+
+    const titleBlock = slide.querySelector('[data-anim="title-block"]');
+    if(titleBlock){
+      titleBlock.style.transformOrigin = 'left center';
+      animate(titleBlock, {opacity:[0,1], scaleX:[0, 1]}, {duration:.7, delay:.45, easing:EASE_ENTRY_EXP});
+      const titleText = titleBlock.querySelector('div');
+      if(titleText) animate(titleText, {opacity:[0,1]}, {duration:.4, delay:.85, easing:EASE_PROD});
+    }
+
+    const kpiWrap = slide.querySelector('[data-anim="kpi"]');
+    if(kpiWrap){
+      animate(kpiWrap, {opacity:[0,1]}, {duration:.3, delay:.7, easing:EASE_PROD});
+
+      /* 段落 */
+      const para = kpiWrap.querySelector(':scope > div:first-child');
+      if(para) animate(para, {opacity:[0,1], y:[14, 0]}, {duration:.6, delay:.85, easing:EASE_ENTRY_EXP});
+
+      /* 三列 KPI · 顶线 scaleX + 数字升起 */
+      const cols = [...kpiWrap.querySelectorAll(':scope > div:nth-child(2) > div')];
+      cols.forEach((col, i)=>{
+        const base = 1.1 + i*.18;
+        const topRule = col.querySelector(':scope > div:first-child');
+        if(topRule){
+          topRule.style.transformOrigin = 'left center';
+          animate(topRule, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+        }
+        const cat = col.querySelector('.t-meta');
+        if(cat) animate(cat, {opacity:[0,1]}, {duration:.4, delay:base + .15, easing:EASE_PROD});
+        const hero = col.querySelector('.kpi-hero');
+        if(hero) animate(hero, {opacity:[0,1], y:[18, 0]}, {duration:.7, delay:base + .25, easing:EASE_ENTRY_EXP});
+        const handled = new Set([topRule, cat, hero]);
+        [...col.children]
+          .filter(el => !handled.has(el))
+          .forEach((el, j)=>{
+            animate(el, {opacity:[0,1]}, {duration:.4, delay:base + .45 + j*.05, easing:EASE_PROD});
+          });
+      });
+    }
+  }
+
+  /* ---------- recipe: paper-carousel · Phase 1: Stanford Playbook hero; Phase 2: grid reveal ----------
+     Phase 1 (on enter): Stanford Playbook cover zooms in large and centered.
+     Phase 2 (on first click/arrow): hero shrinks into grid position, all other covers
+     cascade in to fill a 6-column magazine-style grid. Second click advances slide. */
+  function rPaperCarousel(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const stage = slide.querySelector('.paper-stage');
+    const track = slide.querySelector('.paper-track');
+    const covers = [...slide.querySelectorAll('.paper-cover')];
+    const hero = slide.querySelector('.paper-cover[data-hero]');
+    const rest = covers.filter(c => !c.hasAttribute('data-hero'));
+    const foot = slide.querySelector('[data-anim="foot"]');
+
+    /* Reset grid-mode in case slide is revisited */
+    if(stage) stage.classList.remove('grid-mode');
+
+    /* ---- Phase 1: show only the hero, large and centered ---- */
+    /* Hide all non-hero covers */
+    rest.forEach(c => { c.style.opacity = '0'; c.style.pointerEvents = 'none'; });
+
+    /* Hero starts off-screen top, animates to center */
+    if(hero){
+      hero.style.opacity = '0';
+      hero.style.transform = 'translate(-50%, -50%) translateY(-40vh) scale(.5)';
+      hero.style.width = '33vh';
+      hero.style.height = '45vh';
+      hero.style.zIndex = '10';
+      animate(hero,
+        {
+          opacity:[0,1],
+          transform:[
+            'translate(-50%,-50%) translateY(-40vh) scale(.5)',
+            'translate(-50%,-50%) scale(1)'
+          ]
+        },
+        {duration:.7, delay:.35, easing:EASE_ENTRY_EXP}
+      );
+    }
+
+    /* foot hidden until grid reveal */
+    if(foot){ foot.style.opacity='0'; }
+
+    /* ---- Phase 2: intercept next-advance, reveal grid ---- */
+    let gridRevealed = false;
+
+    window.__pipeAdvance = function(){
+      if(gridRevealed) return false;   /* already revealed → let navigation proceed */
+      gridRevealed = true;
+      window.__pipeAdvance = null;
+
+      /* Switch track to grid layout */
+      stage.classList.add('grid-mode');
+
+      /* Reset hero inline styles so CSS grid takes over */
+      if(hero){
+        hero.style.transform = '';
+        hero.style.width = '';
+        hero.style.height = '';
+        hero.style.zIndex = '';
+        hero.style.position = '';
+        hero.style.top = '';
+        hero.style.left = '';
+        hero.style.opacity = '1';
+      }
+
+      /* Cascade the rest in with stagger — 3× slower */
+      rest.forEach((c, i) => {
+        c.style.pointerEvents = '';
+        animate(c,
+          {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+          {duration:1.05, delay:.12 + i * .12, easing:EASE_ENTRY_EXP}
+        );
+      });
+
+      /* Foot fades in after grid settles */
+      if(foot){
+        animate(foot,
+          {opacity:[0,1], transform:['translateY(6px)','translateY(0)']},
+          {duration:1.2, delay:.12 + rest.length * .12 + .3, easing:EASE_PROD}
+        );
+      }
+
+      return true;   /* consumed — don't advance slide */
+    };
+  }
+
+  /* ---------- recipe: finding-iceberg · slide 3 ($1 visible / $10 invisible) ----------
+     Stage 0: $1 and $10 numbers fade in (both halves)
+     Stage 1 (click): the 3 invisible-cost items fade in on the right (with the iceberg mass already visible behind, becoming the "context")
+     Stage 2 (click): exit to next slide */
+  function rFindingIceberg(slide, all){
+    const num1 = slide.querySelector('[data-anim="iceberg-num1"]');
+    const num10 = slide.querySelector('[data-anim="iceberg-num10"]');
+    const list = slide.querySelector('.iceberg-list');
+    const items = [...slide.querySelectorAll('.iceberg-item')];
+
+    /* reset */
+    if(num1){num1.style.opacity='0';num1.style.transform='translateY(14px)'}
+    if(num10){num10.style.opacity='0';num10.style.transform='translateY(14px)'}
+    if(list){list.style.opacity='0'}
+    items.forEach(it=>{it.style.opacity='0';it.style.transform='translateX(16px)'});
+    slide.dataset.stage = '0';
+
+    /* Stage 0: numbers in */
+    if(num1){
+      animate(num1, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.2, easing:EASE_ENTRY_EXP});
+    }
+    if(num10){
+      animate(num10, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.55, easing:EASE_ENTRY_EXP});
+    }
+
+    function revealList(){
+      if(list) list.style.opacity = '1';
+      items.forEach((it, i)=>{
+        animate(it, {opacity:[0,1], transform:['translateX(16px)','translateX(0)']},
+          {duration:.5, delay:i*.18, easing:EASE_ENTRY_EXP});
+      });
+    }
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage === 0){
+        slide.dataset.stage = '1';
+        revealList();
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: finding-jcurve · slide 4 (productivity J-curve) ----------
+     Stage 0: −14% and +40% numbers fade in
+     Stage 1 (click): the J-curve SVG path draws across the slide + axis labels reveal
+     Stage 2 (click): exit */
+  function rFindingJCurve(slide, all){
+    const numDown = slide.querySelector('[data-anim="jcurve-down"]');
+    const numUp = slide.querySelector('[data-anim="jcurve-up"]');
+    const svg = slide.querySelector('.jcurve-svg');
+    const path = slide.querySelector('.jcurve-path');
+    const inflect = slide.querySelector('.jcurve-inflect');
+    const endMarker = slide.querySelector('.jcurve-end');
+    const axis = slide.querySelector('.jcurve-axis');
+
+    /* reset */
+    if(numDown){numDown.style.opacity='0';numDown.style.transform='translateY(14px)'}
+    if(numUp){numUp.style.opacity='0';numUp.style.transform='translateY(14px)'}
+    if(svg){svg.style.opacity='0'}
+    if(path){path.style.strokeDashoffset='2200'}
+    if(inflect){inflect.style.opacity='0'}
+    if(endMarker){endMarker.style.opacity='0'}
+    if(axis){axis.style.opacity='0'}
+    slide.dataset.stage = '0';
+
+    /* Stage 0: numbers in */
+    if(numDown){
+      animate(numDown, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.2, easing:EASE_ENTRY_EXP});
+    }
+    if(numUp){
+      animate(numUp, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.55, easing:EASE_ENTRY_EXP});
+    }
+
+    function revealCurve(){
+      /* fade SVG container in */
+      if(svg) svg.style.opacity = '1';
+      /* draw the path via stroke-dashoffset transition (CSS-driven) */
+      requestAnimationFrame(()=>{
+        if(path) path.style.strokeDashoffset = '0';
+      });
+      /* mark inflection point at midpoint of curve animation */
+      setTimeout(()=>{ if(inflect) inflect.style.opacity = '1'; }, 900);
+      /* mark endpoint after curve completes */
+      setTimeout(()=>{ if(endMarker) endMarker.style.opacity = '1'; }, 1500);
+      /* axis labels fade in */
+      setTimeout(()=>{ if(axis) axis.style.opacity = '1'; }, 1700);
+    }
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage === 0){
+        slide.dataset.stage = '1';
+        revealCurve();
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: finding-value · slide 5 (70/20/10 + framework intro) ----------
+     Stage 0: 10% and 90% numbers fade in
+     Stage 1 (click): proportional bar (70/20/10) draws + bridge label fades in
+     Stage 2 (click): exit (leads to next slide — the framework stack) */
+  function rFindingValue(slide, all){
+    const numL = slide.querySelector('[data-anim="value-num-l"]');
+    const numR = slide.querySelector('[data-anim="value-num-r"]');
+    const bar = slide.querySelector('.value-bar');
+    const barPeople = slide.querySelector('.bar-people');
+    const barProcess = slide.querySelector('.bar-process');
+    const barTech = slide.querySelector('.bar-tech');
+    const bridge = slide.querySelector('.value-bridge');
+
+    /* reset */
+    if(numL){numL.style.opacity='0';numL.style.transform='translateY(14px)'}
+    if(numR){numR.style.opacity='0';numR.style.transform='translateY(14px)'}
+    if(bar){bar.style.opacity='0'}
+    if(barPeople){barPeople.style.width='0%'}
+    if(barProcess){barProcess.style.width='0%'}
+    if(barTech){barTech.style.width='0%'}
+    if(bridge){bridge.style.opacity='0'}
+    slide.dataset.stage = '0';
+
+    /* Stage 0: numbers in */
+    if(numL){
+      animate(numL, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.2, easing:EASE_ENTRY_EXP});
+    }
+    if(numR){
+      animate(numR, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.55, easing:EASE_ENTRY_EXP});
+    }
+
+    function revealBars(){
+      if(bar) bar.style.opacity = '1';
+      requestAnimationFrame(()=>{
+        if(barPeople) barPeople.style.width = '70%';
+        if(barProcess) barProcess.style.width = '20%';
+        if(barTech) barTech.style.width = '10%';
+      });
+      setTimeout(()=>{ if(bridge) bridge.style.opacity = '1'; }, 1400);
+    }
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage === 0){
+        slide.dataset.stage = '1';
+        revealBars();
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: hook-95 · slide 2 (95% zero return) ----------
+     Single static stage: massive 95% fades up on slide entry. No click-reveal. */
+  function rHook95(slide, all){
+    const num = slide.querySelector('[data-anim="hook-num"]');
+
+    /* reset */
+    if(num){num.style.opacity='0';num.style.transform='translateY(20px)'}
+
+    /* fade up */
+    if(num){
+      animate(num, {opacity:[0,1], transform:['translateY(20px)','translateY(0)']},
+        {duration:.85, delay:.25, easing:EASE_ENTRY_EXP});
+    }
+  }
+
+  /* ---------- recipe: jcurve-fresh · slide 3 (Productivity J-Curve) ----------
+     Sequence (auto, no click-reveal):
+       0.15s headline fades up
+       0.35s curve path begins drawing (2.4s ease)
+       2.6s  glow halo appears at curve start, then loops along path forever (6s loop) */
+  function rJCurveFresh(slide, all){
+    const headline = slide.querySelector('[data-anim="jcurve-headline"]');
+    const path = slide.querySelector('.jcurve-fresh-path');
+
+    /* reset */
+    if(headline){headline.style.opacity='0';headline.style.transform='translateY(14px)'}
+    if(path){path.style.strokeDashoffset='1700'}
+
+    /* headline */
+    if(headline){
+      animate(headline, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.15, easing:EASE_ENTRY_EXP});
+    }
+
+    /* curve draw — flip the dashoffset on next tick so the CSS transition kicks in */
+    requestAnimationFrame(()=>{
+      if(path) path.style.strokeDashoffset = '0';
+    });
+
+    /* moving halo is driven by inline <animate> + <animateMotion> on the SVG —
+       no JS needed; it auto-loops at 2.6s and runs forever. */
+  }
+
+  /* ---------- recipe: iceberg-img · slide 4 (Iceberg of Challenges, photo bg) ----------
+     Sequence (auto, no click-reveal):
+       0.15s headline fades up
+       0.85s 23% TECHNICAL side-label fades + slides in
+       1.30s 77% INVISIBLE big-label fades up (the highlight) */
+  function rIcebergImg(slide, all){
+    const headline = slide.querySelector('[data-anim="iceberg-headline"]');
+    const label23 = slide.querySelector('[data-anim="iceberg-23"]');
+    const label77 = slide.querySelector('[data-anim="iceberg-77"]');
+
+    /* reset */
+    if(headline){headline.style.opacity='0';headline.style.transform='translateY(14px)'}
+    if(label23){label23.style.opacity='0';label23.style.transform='translateX(-14px)'}
+    if(label77){label77.style.opacity='0';label77.style.transform='translateY(20px)'}
+
+    /* headline */
+    if(headline){
+      animate(headline, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.15, easing:EASE_ENTRY_EXP});
+    }
+
+    /* 23% side label */
+    if(label23){
+      animate(label23, {opacity:[0,1], transform:['translateX(-14px)','translateX(0)']},
+        {duration:.6, delay:.85, easing:EASE_ENTRY_EXP});
+    }
+
+    /* 77% highlight — the punchline */
+    if(label77){
+      animate(label77, {opacity:[0,1], transform:['translateY(20px)','translateY(0)']},
+        {duration:.85, delay:1.30, easing:EASE_ENTRY_EXP});
+    }
+  }
+
+  /* ---------- recipe: house-roman · slide 6 (House of Enterprise AI) ----------
+     Bottom-up reveal — foundation → columns → entablature → pediment:
+       0.15s headline
+       0.50s base / governance
+       1.00s col 1 Technology (CSS transition delay .5s)
+       1.25s col 2 Process    (CSS transition delay .75s)
+       1.50s col 3 People     (CSS transition delay 1s)
+       1.80s entablature      (CSS transition delay 1.3s)
+       2.20s pediment         (CSS transition delay 1.7s) */
+  function rHouseRoman(slide, all){
+    const headline = slide.querySelector('[data-anim="house-headline"]');
+    const base = slide.querySelector('.house-base');
+    const cols = [
+      slide.querySelector('.house-col-1'),
+      slide.querySelector('.house-col-2'),
+      slide.querySelector('.house-col-3'),
+    ];
+    const entab = slide.querySelector('.house-entablature');
+    const pediments = [...slide.querySelectorAll('.house-pediment')];
+
+    /* reset all to opacity 0 */
+    [headline, base, ...cols, entab, ...pediments].forEach(el=>{
+      if(el) el.style.opacity = '0';
+    });
+    if(headline) headline.style.transform = 'translateY(14px)';
+
+    /* headline */
+    if(headline){
+      animate(headline, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.15, easing:EASE_ENTRY_EXP});
+    }
+
+    /* base — JS-driven; columns/entab/pediment use CSS transition delays set inline */
+    setTimeout(()=>{ if(base) base.style.opacity = '1'; }, 500);
+
+    /* columns + entablature + pediment are purely CSS-transition driven
+       (the opacity:0 reset above overrides inline opacity, so we just set to 1
+       and each element's own transition-delay handles the stagger) */
+    setTimeout(()=>{
+      [...cols, entab, ...pediments].forEach(el=>{
+        if(el) el.style.opacity = '1';
+      });
+    }, 500);
+  }
+
+  /* ---------- recipe: pillar-fade · slides 7-11 (pillar deep-dives) ----------
+     Shared entry animation: headline fades up, content fades in with slight delay. */
+  function rPillarFade(slide, all){
+    const children = [...slide.querySelectorAll('.canvas-card > *')];
+    children.forEach((el,i)=>{
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(12px)';
+      animate(el, {opacity:[0,1], transform:['translateY(12px)','translateY(0)']},
+        {duration:.65, delay:.15 + i*.1, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: definition · slide 6 (Definition — word transforms) ----------
+     Each click highlights the next phrase in cardinal red and collapses
+     the surrounding dimmed text so the framework word reads as the label.
+     5 clicks total, then exit on 6th.
+
+     Phrase order matches data-word attributes:
+       0 → TECHNOLOGY   1 → PROCESS   2 → PEOPLE   3 → GOVERNANCE   4 → VALUE  */
+  function rDefinition(slide, all){
+    const phrases = [...slide.querySelectorAll('.def-phrase')];
+    const footer = slide.querySelector('.t-meta');
+
+    /* reset */
+    phrases.forEach(p=>{
+      p.style.color = 'var(--text-primary)';
+      p.style.fontWeight = '200';
+      p.style.opacity = '1';
+    });
+    slide.dataset.stage = '0';
+
+    function activate(idx){
+      phrases.forEach((p, i)=>{
+        if(i < idx){
+          /* already-revealed phrases: dim, show framework word */
+          p.style.color = 'var(--accent)';
+          p.style.fontWeight = '600';
+          p.style.opacity = '.55';
+          p.textContent = p.dataset.word;
+        } else if(i === idx){
+          /* current phrase: highlight cardinal, replace with framework word */
+          p.style.color = 'var(--accent)';
+          p.style.fontWeight = '600';
+          p.style.opacity = '1';
+          p.textContent = p.dataset.word;
+        } else {
+          /* future phrases: muted */
+          p.style.color = 'var(--text-primary)';
+          p.style.fontWeight = '200';
+          p.style.opacity = '.35';
+        }
+      });
+      if(footer) footer.textContent = idx < phrases.length - 1
+        ? `→ CLICK · ${phrases.length - 1 - idx} MORE`
+        : '→ CLICK TO CONTINUE';
+    }
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage < phrases.length){
+        slide.dataset.stage = String(stage + 1);
+        activate(stage);
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: bullet-reveal · click-by-click bullet points ----------
+     Each click reveals the next bullet by setting opacity:1 + translateX(0).
+     All bullets start hidden (set inline). After last bullet, exits on next click. */
+  function rBulletReveal(slide, all){
+    const bullets = [...slide.querySelectorAll('.bullet-item')];
+    bullets.forEach(b=>{ b.style.opacity='0'; b.style.transform='translateX(-16px)'; });
+    slide.dataset.stage = '0';
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage < bullets.length){
+        slide.dataset.stage = String(stage + 1);
+        bullets[stage].style.opacity = '1';
+        bullets[stage].style.transform = 'translateX(0)';
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  /* ---------- recipe: process-tracks · slide 9 (Process) ----------
+     Same entry pattern as jcurve-fresh.
+     0.15s headline fades up
+     0.30s sin curve draws (2.4s ease)
+     0.60s straight line draws (2.4s ease)
+     2.6s  sin halo appears + loops (8s, breathing 8.4s)
+     2.9s  straight ball appears + loops faster (5s) */
+  function rProcessTracks(slide, all){
+    const headline = slide.querySelector('[data-anim="process-headline"]');
+    const sinPath  = slide.querySelector('.process-sin-path');
+    const linePath = slide.querySelector('.process-line-path');
+
+    if(headline){headline.style.opacity='0';headline.style.transform='translateY(14px)'}
+    if(sinPath)  sinPath.style.strokeDashoffset  = '2200';
+    if(linePath) linePath.style.strokeDashoffset = '840';
+
+    if(headline){
+      animate(headline, {opacity:[0,1], transform:['translateY(14px)','translateY(0)']},
+        {duration:.7, delay:.15, easing:EASE_ENTRY_EXP});
+    }
+    requestAnimationFrame(()=>{
+      if(sinPath)  sinPath.style.strokeDashoffset  = '0';
+      if(linePath) linePath.style.strokeDashoffset = '0';
+    });
+    /* balls are driven by inline SVG animate — no JS needed */
+  }
+
+  /* ---------- recipe: flow-reveal · workflow steps flowchart ----------
+     Each click reveals: next box (fade up) + preceding arrow (fade in).
+     Nodes and arrows interleaved: node0, arrow0, node1, arrow1, ... node5 */
+  function rFlowReveal(slide, all){
+    const nodes = [...slide.querySelectorAll('.flow-node')];
+    const arrows = [...slide.querySelectorAll('.flow-arrow')];
+
+    nodes.forEach(n=>{ n.style.opacity='0'; n.style.transform='translateY(18px)'; });
+    arrows.forEach(a=>{ a.style.opacity='0'; });
+    slide.dataset.stage = '0';
+
+    window.__pipeAdvance = function(){
+      const stage = parseInt(slide.dataset.stage || '0', 10);
+      if(stage < nodes.length){
+        slide.dataset.stage = String(stage + 1);
+        // reveal the arrow before this node (if any)
+        if(stage > 0 && arrows[stage-1]){
+          arrows[stage-1].style.opacity = '1';
+        }
+        nodes[stage].style.opacity = '1';
+        nodes[stage].style.transform = 'translateY(0)';
+        return true;
+      }
+      window.__pipeAdvance = null;
+      return false;
+    };
+  }
+
+  const RECIPES = {
+    'hero': rHero,
+    'hook-95': rHook95,
+    'jcurve-fresh': rJCurveFresh,
+    'iceberg-img': rIcebergImg,
+    'definition': rDefinition,
+    'bullet-reveal': rBulletReveal,
+    'flow-reveal': rFlowReveal,
+    'process-tracks': rProcessTracks,
+    'house-roman': rHouseRoman,
+    'pillar-fade': rPillarFade,
+    'paper-carousel': rPaperCarousel,
+    'finding-iceberg': rFindingIceberg, /* deprecated · slide removed */
+    'finding-jcurve': rFindingJCurve,   /* deprecated · slide removed */
+    'finding-value': rFindingValue,     /* deprecated · slide removed */
+    'progression': rProgression,
+    'statement': rStatement,
+    'grid-reveal': rGridReveal,
+    'stack-build': rStackBuild,
+    'measure-up': rMeasureUp,
+    'bar-grow': rBarGrow,
+    'duo-mirror': rDuoMirror,
+    'split-statement': rSplitStatement,
+    'timeline-walk': rTimelineWalk,
+    'manifesto': rManifesto,
+    'three-forces': rThreeForces,
+    'loop-form': rLoopForm,
+    'matrix-fill': rMatrixFill,
+    'field-notes': rFieldNotes,
+    'system-diagram': rSystemDiagram,
+    'why-now': rWhyNow,
+    'four-cards': rFourCards,
+    'stacked-ledger': rStackedLedger,
+    'tech-spec': rTechSpec,
+    'image-hero': rImageHero,
+  };
+
+  function revealStatic(slide){
+    resetAnims(slide);
+    document.getAnimations?.().forEach(a=>a.cancel());
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink')
+      .forEach(el=>{
+        el.style.opacity='1';
+        el.style.transform='none';
+      });
+    /* paper-carousel: in low-power mode, show grid immediately */
+    const covers = slide.querySelectorAll('.paper-cover');
+    if(covers.length){
+      const stage = slide.querySelector('.paper-stage');
+      if(stage) stage.classList.add('grid-mode');
+      covers.forEach(c => {
+        c.style.opacity = '1';
+        c.style.transform = '';
+        c.style.width = '';
+        c.style.height = '';
+        c.style.position = '';
+        c.style.top = '';
+        c.style.left = '';
+        c.style.zIndex = '';
+        c.style.pointerEvents = '';
+      });
+    }
+  }
+
+  function playSlide(i){
+    const slide = slides[i];
+    if(!slide) return;
+    lastIdx = i;
+
+    if(window.__lowPowerMode){
+      revealStatic(slide);
+      return;
+    }
+
+    /* Clear any leftover pipe from a previous slide's recipe */
+    window.__pipeAdvance = null;
+
+    resetAnims(slide);
+
+    /* 关键:[data-anim] 容器很多时候只是占位标记,真正的几何动画在子元素上.
+       默认强制 reveal 所有 [data-anim] 容器, recipe 想做块入场时用 motion 的 {opacity:[0,1]} 会自动覆盖 */
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+
+    const all = [...slide.querySelectorAll('[data-anim]')];
+    const recipe = slide.dataset.animate;
+    const fn = RECIPES[recipe];
+    if(fn){ fn(slide, all); return; }
+
+    /* fallback: 平凡 fade */
+    if(all.length) animate(all, {opacity:[0,1], y:[12,0]},
+      {duration:.6, delay:i=>i*.08, easing:EASE_ENTRY_EXP});
+  }
+
+  window.__playSlide = playSlide;
+  window.__pipeAdvance = ()=>false;  /* 当前 deck 不用 pipeline recipe */
+
+  playSlide(window.__currentSlideIndex || 0);
+}
+</script>
+
+<script>
+/* ============== ASCII 点阵呼吸场 · IKB 封面/封底专用 ==============
+   sin/cos 二维噪声场驱动字符显隐,营造工业仪表板的"涌动呼吸"质感.
+   纯 canvas 2D, mix-blend-mode:screen 让字符在 IKB 底色上自然发亮.
+   用法:在需要呼吸场的容器(.canvas-card 或 split .half.b-accent)内首位插入
+        <canvas class="ascii-bg" aria-hidden="true">,本脚本会自动扫描并启动. */
+(function(){
+  const canvases = [...document.querySelectorAll('canvas.ascii-bg')];
+  if(!canvases.length) return;
+
+  const PALETTE = '   ...:::---+++***◦◦••▢▣';
+  const CELL = 16;
+  const FONT_SIZE = 13;
+
+  function setup(c){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = c.getBoundingClientRect();
+    if(rect.width < 4 || rect.height < 4) return false;
+    c.width = Math.round(rect.width * dpr);
+    c.height = Math.round(rect.height * dpr);
+    c.__dpr = dpr;
+    c.__w = rect.width;
+    c.__h = rect.height;
+    const ctx = c.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const mono = (getComputedStyle(document.documentElement).getPropertyValue('--mono') || 'JetBrains Mono, monospace').trim();
+    ctx.font = `500 ${FONT_SIZE}px ${mono}`;
+    ctx.textBaseline = 'top';
+    c.__ctx = ctx;
+    return true;
+  }
+
+  function draw(c, t){
+    if(!c.__ctx) return;
+    const ctx = c.__ctx, w = c.__w, h = c.__h;
+    ctx.clearRect(0, 0, w, h);
+    const cols = Math.ceil(w / CELL);
+    const rows = Math.ceil(h / CELL);
+    for(let r=0; r<rows; r++){
+      for(let cc=0; cc<cols; cc++){
+        const n = (
+          Math.sin(cc * 0.18 + t) +
+          Math.sin(r * 0.24 - t * 0.7) +
+          Math.sin((cc + r) * 0.12 + t * 0.45) +
+          Math.sin(Math.hypot(cc - cols * 0.5, r - rows * 0.5) * 0.16 - t * 0.55)
+        ) / 4; // [-1, 1]
+        const v = (n + 1) / 2; // [0, 1]
+        if(v < 0.22) continue;
+        const idx = Math.min(PALETTE.length - 1, Math.floor(v * PALETTE.length));
+        const ch = PALETTE[idx];
+        if(ch === ' ') continue;
+        const alpha = 0.08 + (v - 0.22) * 0.55;
+        ctx.fillStyle = `rgba(255,255,255,${alpha.toFixed(3)})`;
+        ctx.fillText(ch, cc * CELL, r * CELL);
+      }
+    }
+  }
+
+  function resizeAll(){ canvases.forEach(setup); }
+  let pending = null;
+  window.addEventListener('resize', ()=>{
+    if(window.__lowPowerMode) return;
+    if(pending) cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(resizeAll);
+  }, {passive:true});
+
+  let t0 = performance.now();
+  let frame = 0, asciiRAF = 0, running = false;
+  function tick(now){
+    if(!running || window.__lowPowerMode){running=false;asciiRAF=0;return;}
+    const t = (now - t0) / 1000 * 0.55;
+    frame++;
+    canvases.forEach(c=>{
+      // 离屏 slide 降帧:每 4 帧渲染一次,在屏 slide 每帧渲染
+      const slide = c.closest('.slide');
+      const rect = slide ? slide.getBoundingClientRect() : null;
+      const onscreen = rect && rect.right > 0 && rect.left < window.innerWidth;
+      if(!onscreen && (frame & 3) !== 0) return;
+      draw(c, t);
+    });
+    asciiRAF = requestAnimationFrame(tick);
+  }
+  function start(){
+    if(running || window.__lowPowerMode) return;
+    resizeAll();
+    t0 = performance.now();
+    frame = 0;
+    running = true;
+    asciiRAF = requestAnimationFrame(tick);
+  }
+  function stop(){
+    running = false;
+    if(asciiRAF) cancelAnimationFrame(asciiRAF);
+    if(pending) cancelAnimationFrame(pending);
+    asciiRAF = 0;
+    pending = null;
+    canvases.forEach(c=>{
+      if(c.__ctx) c.__ctx.clearRect(0,0,c.__w || 0,c.__h || 0);
+    });
+  }
+  addEventListener('swiss-low-power-change', e=>{e.detail.on ? stop() : start();});
+  start();
+})();
+</script>
+</body>
+</html>
