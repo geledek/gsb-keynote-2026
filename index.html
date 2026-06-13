@@ -1615,8 +1615,8 @@
         </span>
       </div>
 
-      <!-- THREE HORIZONTAL BARS — fills remaining 90% -->
-      <div class="layers-bars" style="flex:1;display:flex;flex-direction:column;gap:.6vh;min-height:0">
+      <!-- THREE HORIZONTAL BARS — fills remaining 90%; position:relative so .layer-pct can anchor to right edge -->
+      <div class="layers-bars" style="flex:1;display:flex;flex-direction:column;gap:.6vh;min-height:0;position:relative">
 
         <!-- TOP — Technology (revealed first) -->
         <div class="layer-bar" data-layer="technology" data-pct-value="10"
@@ -1626,12 +1626,12 @@
           <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--text-secondary)">
             Technology
           </span>
-          <span class="layer-pct" data-pct="technology"
-                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
-                       opacity:0;transition:opacity .45s ease .1s">
-            10%
-          </span>
         </div>
+        <span class="layer-pct" data-pct="technology"
+              style="position:absolute;right:0;top:0;height:calc((100% - 1.2vh) / 3);display:flex;align-items:center;padding-right:3vw;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
+                     opacity:0;transition:opacity .45s ease .1s;pointer-events:none">
+          10%
+        </span>
 
         <!-- MIDDLE — Process (revealed second) -->
         <div class="layer-bar" data-layer="process" data-pct-value="20"
@@ -1641,12 +1641,12 @@
           <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--ink)">
             Process
           </span>
-          <span class="layer-pct" data-pct="process"
-                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
-                       opacity:0;transition:opacity .45s ease .1s">
-            20%
-          </span>
         </div>
+        <span class="layer-pct" data-pct="process"
+              style="position:absolute;right:0;top:calc((100% - 1.2vh) / 3 + .6vh);height:calc((100% - 1.2vh) / 3);display:flex;align-items:center;padding-right:3vw;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:var(--text-helper);
+                     opacity:0;transition:opacity .45s ease .1s;pointer-events:none">
+          20%
+        </span>
 
         <!-- BOTTOM — People (revealed third, cardinal red — the dominant factor) -->
         <div class="layer-bar" data-layer="people" data-pct-value="70"
@@ -1656,12 +1656,12 @@
           <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:#fff">
             People
           </span>
-          <span class="layer-pct" data-pct="people"
-                style="margin-left:auto;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:rgba(255,255,255,.7);
-                       opacity:0;transition:opacity .45s ease .1s">
-            70%
-          </span>
         </div>
+        <span class="layer-pct" data-pct="people"
+              style="position:absolute;right:0;bottom:0;height:calc((100% - 1.2vh) / 3);display:flex;align-items:center;padding-right:3vw;font-family:var(--sans);font-weight:200;font-size:min(4.6vw,7.8vh);line-height:1;letter-spacing:-.03em;color:#fff;font-weight:300;
+                     opacity:0;transition:opacity .45s ease .1s;pointer-events:none">
+          70%
+        </span>
 
       </div>
     </div>
