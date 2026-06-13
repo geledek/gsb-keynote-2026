@@ -1473,12 +1473,15 @@
               stroke-dashoffset="1600"
               style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .35s"/>
 
-        <!-- glow halo · parked at left end of curve, breathing in place -->
+        <!-- glow halo · starts at left end, traverses the full curve over 6s, loops -->
         <circle class="jcurve-fresh-light-halo" cx="80" cy="240" r="18" fill="#fff" opacity="0">
           <animate attributeName="opacity" from="0" to=".55" begin="2.6s" dur=".4s" fill="freeze"/>
           <!-- breathing pulse: radius 18→28→18, 8.4s cycle -->
           <animate attributeName="r" values="18;28;18" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
           <animate attributeName="opacity" values=".55;.18;.55" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" additive="replace"/>
+          <!-- traversal: delta motion path matching curve d="M 80,240 C 200,255 360,420 520,380 C 660,345 800,120 960,30" -->
+          <animateMotion dur="6s" begin="2.8s" repeatCount="indefinite"
+            path="M 0,0 C 120,15 280,180 440,140 C 580,105 720,-120 880,-210"/>
         </circle>
       </svg>
     </div>
@@ -1517,8 +1520,8 @@
       </h2>
     </div>
 
-    <!-- 77% label · positioned over the upper waterline area -->
-    <div data-anim="iceberg-77" style="position:absolute;left:0;right:0;top:32%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none">
+    <!-- 77% label · centered both axes -->
+    <div data-anim="iceberg-77" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2;pointer-events:none">
       <div style="font-family:var(--sans);font-weight:200;font-size:min(32vw,46vh);line-height:.86;letter-spacing:-.05em;color:var(--accent-bright);font-feature-settings:'tnum';text-shadow:0 4px 28px rgba(0,0,0,.55)">
         77<span style="font-size:.42em;font-weight:300;opacity:.88;vertical-align:.55em;margin-left:.02em">%</span>
       </div>
