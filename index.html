@@ -1457,9 +1457,9 @@
         <line x1="60" y1="240" x2="980" y2="240" stroke="#fff" stroke-width="1" opacity=".5" stroke-dasharray="3 5"/>
 
         <!-- axis labels -->
-        <text x="60" y="14" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#fff" opacity=".6" letter-spacing="2">VALUE</text>
-        <text x="980" y="232" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#fff" opacity=".6" letter-spacing="2">TIME →</text>
-        <text x="50" y="244" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#fff" opacity=".5" letter-spacing="2">0</text>
+        <text x="60" y="14" font-family="ui-monospace, SFMono-Regular, monospace" font-size="22" font-weight="500" fill="#fff" opacity=".75" letter-spacing="3">VALUE</text>
+        <text x="980" y="226" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="22" font-weight="500" fill="#fff" opacity=".75" letter-spacing="3">TIME →</text>
+        <text x="50" y="244" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#fff" opacity=".5" letter-spacing="2">0</text>
 
         <!-- the curve · white on cardinal -->
         <path class="jcurve-fresh-path"
@@ -1473,14 +1473,12 @@
               stroke-dashoffset="1600"
               style="transition:stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1) .35s"/>
 
-        <!-- glow halo · white on cardinal -->
+        <!-- glow halo · parked at left end of curve, breathing in place -->
         <circle class="jcurve-fresh-light-halo" cx="80" cy="240" r="18" fill="#fff" opacity="0">
           <animate attributeName="opacity" from="0" to=".55" begin="2.6s" dur=".4s" fill="freeze"/>
           <!-- breathing pulse: radius 18→28→18, 8.4s cycle -->
           <animate attributeName="r" values="18;28;18" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1"/>
           <animate attributeName="opacity" values=".55;.18;.55" dur="8.4s" begin="2.8s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1;0.4 0 0.2 1" additive="replace"/>
-          <animateMotion dur="6s" begin="2.8s" repeatCount="indefinite"
-            path="M 0,0 C 120,15 280,180 440,140 C 580,105 720,-120 880,-210"/>
         </circle>
       </svg>
     </div>
