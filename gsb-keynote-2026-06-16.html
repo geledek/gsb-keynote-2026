@@ -1336,10 +1336,9 @@
       <div class="r"></div>
     </div>
 
-    <!-- Body: title at ~1/3 from top, footer pinned at bottom -->
     <div style="flex:1;padding:0;display:flex;flex-direction:column;position:relative;z-index:1">
 
-      <!-- spacer: pushes title down to ~1/3 from top -->
+      <!-- spacer -->
       <div style="flex:1"></div>
 
       <h1 data-anim="title" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(7vw,12vh);line-height:.96;letter-spacing:-.025em;color:#fff">
@@ -1347,16 +1346,37 @@
         <span style="font-weight:200;font-size:.55em;line-height:1.1;display:inline-block;margin-top:1.4vh;color:rgba(255,255,255,.92)">From Stanford's Playbook to Skills You Can Use</span>
       </h1>
 
-      <!-- spacer: fills space between title and footer -->
-      <div style="flex:2"></div>
+      <!-- spacer -->
+      <div style="flex:.6"></div>
 
-      <div data-anim="bottom" style="border-top:1px solid rgba(255,255,255,.22);padding-top:2vh">
-        <div style="display:flex;justify-content:space-between;align-items:end">
-          <div style="display:flex;flex-direction:column;gap:.4vh">
-            <div class="t-meta" style="color:rgba(255,255,255,.78)">RAY HAN · PHD CS (NTU) · SEP'22 · SAP ENTERPRISE AI</div>
-            <div class="t-meta" style="color:rgba(255,255,255,.5)">2026.06.16</div>
+      <!-- both speaker bios — mid-lower zone, readable from back row -->
+      <div data-anim="bottom" style="border-top:1px solid rgba(255,255,255,.22);padding-top:2.2vh;display:flex;flex-direction:column;gap:2vh">
+
+        <!-- Ray -->
+        <div style="display:flex;flex-direction:column;gap:.5vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(16px,1.2vw);color:#fff;letter-spacing:.01em">Ray Han</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.72);line-height:1.6">
+            PhD CS · NTU &nbsp;·&nbsp; MBA Strategy · Stanford GSB (Sep '22) &nbsp;·&nbsp; MS Computer Engineering · USC<br/>
+            10+ years Enterprise AI · AI Transformation Lead · SAP
           </div>
-          <div class="t-meta" style="color:rgba(255,255,255,.6)">→ ARROW KEYS · ESC FOR INDEX</div>
+        </div>
+
+        <!-- divider -->
+        <div style="height:1px;background:rgba(255,255,255,.18)"></div>
+
+        <!-- Arman -->
+        <div style="display:flex;flex-direction:column;gap:.5vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(16px,1.2vw);color:#fff;letter-spacing:.01em">Arman Tan</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.72);line-height:1.6">
+            MBA Strategy · Stanford GSB &nbsp;·&nbsp; MS Computer Engineering · USC<br/>
+            25+ years corporate strategy &amp; organisational transformation &nbsp;·&nbsp; AI adoption for leaders
+          </div>
+        </div>
+
+        <!-- date -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:1.4vh;border-top:1px solid rgba(255,255,255,.14)">
+          <div class="t-meta" style="color:rgba(255,255,255,.5)">2026.06.16</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.5)">→ ARROW KEYS · ESC FOR INDEX</div>
         </div>
       </div>
     </div>
@@ -1364,7 +1384,81 @@
 </section>
 
 <!-- ============================================================
-     SLIDE 2 · THE HOOK · 95% — zero return on GenAI
+     SLIDE 1B · STANFORD ENTERPRISE AI PLAYBOOK 2026
+     Hero cover + 4 key stats. Bridges intro to the 95% hook.
+     ============================================================ -->
+<section class="slide" data-layout="SWISS-PLAYBOOK" data-animate="pillar-fade">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l">THE EVIDENCE BASE</div>
+      <div class="r"></div>
+    </div>
+
+    <div style="flex:1;display:grid;grid-template-columns:5fr 7fr;gap:4vw;min-height:0;align-items:center">
+
+      <!-- LEFT: typographic report cover -->
+      <div style="display:flex;flex-direction:column;height:100%;max-height:72vh;background:var(--ink);padding:3.6vh 2.4vw;justify-content:space-between;position:relative;overflow:hidden">
+        <!-- decorative red bar at top -->
+        <div style="position:absolute;top:0;left:0;right:0;height:6px;background:var(--accent)"></div>
+        <!-- logo area -->
+        <div style="display:flex;flex-direction:column;gap:1.2vh;padding-top:1.6vh">
+          <div style="font-family:var(--mono);font-size:max(11px,.78vw);font-weight:700;letter-spacing:.22em;color:var(--accent);text-transform:uppercase">Stanford University</div>
+          <div style="font-family:var(--mono);font-size:max(10px,.7vw);font-weight:500;letter-spacing:.16em;color:rgba(255,255,255,.55);text-transform:uppercase">Graduate School of Business</div>
+        </div>
+        <!-- title -->
+        <div style="display:flex;flex-direction:column;gap:2vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.02em;color:#fff">
+            Enterprise AI<br/>Playbook
+          </div>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(14px,1.1vw);color:rgba(255,255,255,.65);line-height:1.4">
+            How leading companies successfully deploy AI in the enterprise
+          </div>
+        </div>
+        <!-- year / authors -->
+        <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:2vh;border-top:1px solid rgba(255,255,255,.18)">
+          <div style="font-family:var(--mono);font-size:max(12px,.82vw);font-weight:600;letter-spacing:.12em;color:#fff">2026</div>
+          <div style="font-family:var(--mono);font-size:max(10px,.72vw);letter-spacing:.1em;color:rgba(255,255,255,.5)">Pereira · Graylin · Brynjolfsson</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: 4 key stats -->
+      <div style="display:flex;flex-direction:column;gap:3.2vh;justify-content:center">
+        <div style="display:flex;flex-direction:column;gap:.8vh">
+          <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.6vw,6.2vh);line-height:1;letter-spacing:-.025em;color:var(--text-primary)">
+            What <span style="font-style:italic;color:var(--accent)">50+ companies</span> taught us.
+          </h2>
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.1vw);color:var(--text-secondary);line-height:1.5">Interviews across industries, company sizes, and deployment stages. Published 2026.</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6vh 2vw;border-top:1px solid var(--border-subtle);padding-top:2.4vh">
+
+          <div style="display:flex;flex-direction:column;gap:.6vh">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">61%</div>
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">of successful deployments had at least one prior failed attempt</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:.6vh">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">$10</div>
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">in invisible work for every $1 spent on technology</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:.6vh">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">77%</div>
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">of the hardest challenges are non-technical</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:.6vh">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">3×</div>
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">more likely to succeed with fundamentally redesigned workflows</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
      Paper bg (hard tonal break from cardinal cover).
      Single static stage: massive 95%, tiny source caption.
      ============================================================ -->
@@ -1465,7 +1559,7 @@
      Full-bleed iceberg photo as background. 77% INVISIBLE highlighted.
      23% TECHNICAL minor label above waterline. No SVG, no axis labels.
      ============================================================ -->
-<section class="slide dark" data-layout="SWISS-ICEBERG-IMG" data-animate="iceberg-img">
+<section class="slide dark" data-layout="SWISS-ICEBERG-IMG" data-animate="iceberg-img" style="background:transparent;position:relative;overflow:hidden">
   <!-- background image · absolute fill · sits behind canvas-card content -->
   <div class="iceberg-bg" style="position:absolute;inset:0;z-index:0;background:#0a0a0a">
     <img src="images/04-iceberg-bg.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;opacity:.95"/>
