@@ -31,6 +31,28 @@ Use inline `style=""` for one-off changes. Use existing classes for layout. Neve
 
 ---
 
+## After every add / remove / reorder: refresh the page numbers
+
+Page numbers (`02 OF 14`, `03 OF 14`, etc.) live as **hard-coded text** in each slide's footer — nothing renumbers them automatically. They go stale the moment you add, remove, or reorder a slide.
+
+**Currently stale.** The deck has 19 slides but footers still say things like `04 OF 14`, `05 OF 13`, `10 OF 10` — leftovers from earlier versions.
+
+After any structural change:
+
+1. Search for the pattern `OF [0-9]+` in `index.html`
+2. Update each footer to the correct `NN OF TOTAL` (zero-padded, current slide index + 1, total = full deck count)
+3. Reload the deck and click through every slide to confirm
+
+Quick way to count slides:
+
+```bash
+grep -c '<section class="slide"' index.html
+```
+
+If you don't want to maintain page numbers manually, delete them from the footer entirely — better no number than a wrong one in front of a Stanford GSB audience.
+
+---
+
 ## Current deck structure
 
 | # | Slide | `data-animate` | Notes |
@@ -69,8 +91,9 @@ All other slides auto-animate on entry.
 1. Copy an existing `<section>` block with a similar layout
 2. Change the content inside — keep `data-animate` matching an existing recipe
 3. Put any images in `images/` and reference as `src="images/filename.png"`
-4. Test locally: `open index.html`
-5. Push to `preview` branch, not `main`
+4. **Renumber every page footer** (`NN OF TOTAL`) — see the section above
+5. Test locally: `open index.html`
+6. Push to `preview` branch, not `main`
 
 ---
 
