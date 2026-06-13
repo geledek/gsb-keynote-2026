@@ -10,8 +10,8 @@
 
 ```bash
 git checkout preview
-# edit gsb-keynote-2026-06-16.html
-git add gsb-keynote-2026-06-16.html
+# edit index.html
+git add index.html
 git commit -m "slide: what you changed"
 git push
 ```

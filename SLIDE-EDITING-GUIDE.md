@@ -69,7 +69,7 @@ All other slides auto-animate on entry.
 1. Copy an existing `<section>` block with a similar layout
 2. Change the content inside — keep `data-animate` matching an existing recipe
 3. Put any images in `images/` and reference as `src="images/filename.png"`
-4. Test locally: `open gsb-keynote-2026-06-16.html`
+4. Test locally: `open index.html`
 5. Push to `preview` branch, not `main`
 
 ---
