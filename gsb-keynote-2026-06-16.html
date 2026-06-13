@@ -1392,71 +1392,16 @@
       <div class="r"></div>
     </div>
 
-    <div style="flex:1;display:grid;grid-template-columns:5fr 7fr;gap:4vw;min-height:0;align-items:center">
-
-      <!-- LEFT: typographic report cover -->
-      <div style="display:flex;flex-direction:column;height:100%;max-height:72vh;background:var(--ink);padding:3.6vh 2.4vw;justify-content:space-between;position:relative;overflow:hidden">
-        <!-- decorative red bar at top -->
-        <div style="position:absolute;top:0;left:0;right:0;height:6px;background:var(--accent)"></div>
-        <!-- logo area -->
-        <div style="display:flex;flex-direction:column;gap:1.2vh;padding-top:1.6vh">
-          <div style="font-family:var(--mono);font-size:max(11px,.78vw);font-weight:700;letter-spacing:.22em;color:var(--accent);text-transform:uppercase">Stanford University</div>
-          <div style="font-family:var(--mono);font-size:max(10px,.7vw);font-weight:500;letter-spacing:.16em;color:rgba(255,255,255,.55);text-transform:uppercase">Graduate School of Business</div>
-        </div>
-        <!-- title -->
-        <div style="display:flex;flex-direction:column;gap:2vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.2vw,5.4vh);line-height:1.1;letter-spacing:-.02em;color:#fff">
-            Enterprise AI<br/>Playbook
-          </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(14px,1.1vw);color:rgba(255,255,255,.65);line-height:1.4">
-            How leading companies successfully deploy AI in the enterprise
-          </div>
-        </div>
-        <!-- year / authors -->
-        <div style="display:flex;flex-direction:column;gap:.6vh;padding-top:2vh;border-top:1px solid rgba(255,255,255,.18)">
-          <div style="font-family:var(--mono);font-size:max(12px,.82vw);font-weight:600;letter-spacing:.12em;color:#fff">2026</div>
-          <div style="font-family:var(--mono);font-size:max(10px,.72vw);letter-spacing:.1em;color:rgba(255,255,255,.5)">Pereira · Graylin · Brynjolfsson</div>
-        </div>
-      </div>
-
-      <!-- RIGHT: 4 key stats -->
-      <div style="display:flex;flex-direction:column;gap:3.2vh;justify-content:center">
-        <div style="display:flex;flex-direction:column;gap:.8vh">
-          <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(3.6vw,6.2vh);line-height:1;letter-spacing:-.025em;color:var(--text-primary)">
-            What <span style="font-style:italic;color:var(--accent)">50+ companies</span> taught us.
-          </h2>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:max(15px,1.1vw);color:var(--text-secondary);line-height:1.5">Interviews across industries, company sizes, and deployment stages. Published 2026.</div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.6vh 2vw;border-top:1px solid var(--border-subtle);padding-top:2.4vh">
-
-          <div style="display:flex;flex-direction:column;gap:.6vh">
-            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">61%</div>
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">of successful deployments had at least one prior failed attempt</div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:.6vh">
-            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">$10</div>
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">in invisible work for every $1 spent on technology</div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:.6vh">
-            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">77%</div>
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">of the hardest challenges are non-technical</div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:.6vh">
-            <div style="font-family:var(--sans);font-weight:200;font-size:min(5vw,8vh);line-height:.88;letter-spacing:-.04em;color:var(--accent);font-feature-settings:'tnum'">3×</div>
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(14px,1vw);color:var(--text-secondary);line-height:1.4">more likely to succeed with fundamentally redesigned workflows</div>
-          </div>
-
-        </div>
-      </div>
+    <!-- centred hero: book cover image -->
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:1vh 0">
+      <img src="images/02-stanford-playbook-cover.png" alt="Stanford Enterprise AI Playbook 2026"
+           style="max-height:100%;max-width:52%;object-fit:contain;display:block;box-shadow:0 8px 40px rgba(0,0,0,.18)"/>
     </div>
   </div>
 </section>
 
-
+<!-- ============================================================
+     SLIDE 3 · THE HOOK · 95% — zero return on GenAI
      Paper bg (hard tonal break from cardinal cover).
      Single static stage: massive 95%, tiny source caption.
      ============================================================ -->
