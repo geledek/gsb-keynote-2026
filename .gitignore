@@ -1,7 +1,8 @@
-.DS_Store
 *.pdf
-backups/
+.DS_Store
 .playwright-mcp/
+.vercel
+backups/
+images.zip
 slide2-phase1.png
 slide2-phase2.png
-images.zip
