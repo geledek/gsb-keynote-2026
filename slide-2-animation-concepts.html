@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 2 Animation Concepts · Synthesis Visualization</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fafaf8;
+    --ink:#0a0a0a;
+    --grey-1:#f0f0ee;
+    --grey-2:#d4d4d2;
+    --grey-3:#737373;
+    --accent:#8C1515;       /* Stanford cardinal */
+    --accent-bright:#C4322D;
+    --secondary:#002FA7;    /* Klein blue */
+    --sans:"Inter","Helvetica Neue","Helvetica","Arial",sans-serif;
+    --mono:"JetBrains Mono","SF Mono","Consolas",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    width:100%;height:100%;
+    background:var(--paper);color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+
+  /* ============ Tab switcher ============ */
+  #tabs{
+    position:fixed;top:0;left:0;right:0;
+    z-index:100;
+    background:var(--paper);
+    border-bottom:1px solid var(--grey-2);
+    padding:14px 24px;
+    display:flex;gap:8px;align-items:center;
+    font-family:var(--mono);
+    font-size:13px;letter-spacing:.08em;
+  }
+  #tabs .label{
+    color:var(--grey-3);
+    margin-right:16px;
+    text-transform:uppercase;
+  }
+  #tabs button{
+    border:1px solid var(--grey-2);
+    background:transparent;
+    color:var(--ink);
+    padding:6px 14px;
+    cursor:pointer;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.04em;
+    transition:all .15s ease;
+  }
+  #tabs button:hover{border-color:var(--ink)}
+  #tabs button.active{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+  }
+  #tabs .replay{
+    margin-left:auto;
+    background:var(--accent)!important;
+    color:#fff!important;
+    border-color:var(--accent)!important;
+  }
+  #tabs .replay:hover{background:var(--accent-bright)!important;border-color:var(--accent-bright)!important}
+
+  /* ============ Stage ============ */
+  .stage{
+    position:fixed;
+    top:54px;left:0;right:0;bottom:0;
+    background:var(--paper);
+    overflow:hidden;
+    display:none;
+  }
+  .stage.active{display:block}
+
+  /* Common chrome */
+  .chrome{
+    position:absolute;top:24px;left:48px;right:48px;
+    display:flex;justify-content:space-between;
+    font-family:var(--mono);
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey-3);
+  }
+  .stage h2{
+    position:absolute;top:80px;left:48px;
+    font-weight:200;
+    font-size:48px;
+    line-height:1;
+    letter-spacing:-.025em;
+    max-width:60%;
+  }
+  .stage .meta-line{
+    position:absolute;top:64px;left:48px;
+    font-family:var(--mono);
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .stage .footnote{
+    position:absolute;bottom:32px;left:48px;right:48px;
+    display:flex;justify-content:space-between;
+    font-family:var(--mono);
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey-3);
+    border-top:1px solid var(--grey-2);
+    padding-top:14px;
+  }
+
+  /* ============================================================
+     OPTION A · FUNNEL / DISTILLATION
+     Papers cascade down into a funnel, single distilled output
+     emerges as skill list
+     ============================================================ */
+  #stage-a .funnel-stage{
+    position:absolute;
+    top:160px;left:48px;right:48px;bottom:80px;
+    display:grid;
+    grid-template-columns:1fr 280px 1fr;
+    gap:0;
+    align-items:center;
+  }
+  #stage-a .papers-cloud{
+    position:relative;
+    height:80%;
+  }
+  #stage-a .paper-a{
+    position:absolute;
+    width:64px;height:84px;
+    background:#fff;
+    border:1px solid var(--grey-2);
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    overflow:hidden;
+    opacity:0;
+  }
+  #stage-a .paper-a img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:top center;
+  }
+  #stage-a .funnel-svg{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #stage-a .output-a{
+    display:flex;flex-direction:column;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--ink);
+  }
+  #stage-a .output-a .skill-line{
+    opacity:0;
+    padding:6px 0;
+    border-bottom:1px solid var(--grey-2);
+  }
+  #stage-a .output-a .skill-line .arrow{
+    color:var(--accent);
+    font-weight:600;
+    margin-right:8px;
+  }
+  #stage-a .output-a .header-line{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+    margin-bottom:8px;
+    opacity:0;
+  }
+
+  /* ============================================================
+     OPTION B · COMPILER / BUILD PIPELINE
+     Source files (left) → processor (middle, animated) → output (right)
+     ============================================================ */
+  #stage-b{}
+  #stage-b .compiler-stage{
+    position:absolute;
+    top:160px;left:48px;right:48px;bottom:80px;
+    display:grid;
+    grid-template-columns:1fr 200px 1fr;
+    gap:32px;
+    align-items:start;
+    padding-top:20px;
+  }
+  #stage-b .source-files{
+    display:flex;flex-direction:column;
+    gap:4px;
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  #stage-b .source-files .header{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+    margin-bottom:8px;
+    border-bottom:1px solid var(--grey-2);
+    padding-bottom:6px;
+  }
+  #stage-b .src-file{
+    display:flex;align-items:center;gap:8px;
+    padding:4px 0;
+    opacity:0;
+  }
+  #stage-b .src-file .icon{
+    width:10px;height:10px;
+    background:var(--ink);
+    flex-shrink:0;
+  }
+  #stage-b .src-file .name{
+    color:var(--grey-3);
+    font-size:11px;
+    letter-spacing:.04em;
+  }
+  #stage-b .processor{
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:24px;
+    padding-top:80px;
+  }
+  #stage-b .gear{
+    width:80px;height:80px;
+    border:2px solid var(--accent);
+    border-radius:50%;
+    position:relative;
+    animation:gearSpin 3s linear infinite;
+  }
+  #stage-b .gear::before, #stage-b .gear::after{
+    content:"";
+    position:absolute;
+    background:var(--accent);
+  }
+  #stage-b .gear::before{
+    width:2px;height:24px;
+    top:-12px;left:50%;
+    transform:translateX(-50%);
+  }
+  #stage-b .gear::after{
+    width:24px;height:2px;
+    top:50%;left:-12px;
+    transform:translateY(-50%);
+  }
+  #stage-b .gear .inner{
+    position:absolute;inset:14px;
+    border:2px solid var(--accent);
+    border-radius:50%;
+    animation:gearSpin 2s linear infinite reverse;
+  }
+  #stage-b .gear .inner::before, #stage-b .gear .inner::after{
+    content:"";position:absolute;background:var(--accent);
+  }
+  #stage-b .gear .inner::before{width:2px;height:16px;top:-8px;left:50%;transform:translateX(-50%)}
+  #stage-b .gear .inner::after{width:16px;height:2px;top:50%;left:-8px;transform:translateY(-50%)}
+  @keyframes gearSpin{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+  }
+  #stage-b .processor .label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  #stage-b .processor .pulse-bar{
+    width:140px;height:2px;
+    background:var(--grey-2);
+    position:relative;
+    overflow:hidden;
+  }
+  #stage-b .processor .pulse-bar::after{
+    content:"";
+    position:absolute;
+    top:0;left:0;
+    width:30%;height:100%;
+    background:var(--accent);
+    animation:pulseSlide 1.5s ease-in-out infinite;
+  }
+  @keyframes pulseSlide{
+    0%{left:-30%}
+    100%{left:100%}
+  }
+  #stage-b .compiled-output{
+    display:flex;flex-direction:column;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  #stage-b .compiled-output .header{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+    margin-bottom:8px;
+    border-bottom:1px solid var(--grey-2);
+    padding-bottom:6px;
+  }
+  #stage-b .skill-out{
+    opacity:0;
+    padding:5px 0;
+    display:flex;align-items:center;gap:10px;
+    font-size:13px;
+  }
+  #stage-b .skill-out .check{
+    color:var(--accent);
+    font-weight:600;
+  }
+  #stage-b .skill-out .name{
+    color:var(--ink);
+    font-weight:500;
+  }
+
+  /* ============================================================
+     OPTION C · CONSTELLATION / NETWORK GRAPH
+     21 papers as nodes around a circle, connections drawing
+     between them, pulsing toward central skill library
+     ============================================================ */
+  #stage-c .galaxy{
+    position:absolute;
+    top:130px;left:0;right:0;bottom:80px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #stage-c svg.network{
+    width:90%;
+    max-width:900px;
+    height:90%;
+    overflow:visible;
+  }
+  #stage-c .net-node{
+    fill:#fff;
+    stroke:var(--grey-2);
+    stroke-width:1;
+    opacity:0;
+  }
+  #stage-c .net-node.center{
+    fill:var(--accent);
+    stroke:var(--accent);
+  }
+  #stage-c .net-line{
+    stroke:var(--grey-2);
+    stroke-width:.6;
+    fill:none;
+    stroke-dasharray:200;
+    stroke-dashoffset:200;
+    opacity:0;
+  }
+  #stage-c .net-label{
+    font-family:var(--mono);
+    font-size:9px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    fill:var(--grey-3);
+    opacity:0;
+  }
+  #stage-c .net-center-label{
+    font-family:var(--sans);
+    font-size:14px;
+    font-weight:500;
+    fill:#fff;
+    text-anchor:middle;
+    opacity:0;
+  }
+
+  /* ============================================================
+     OPTION D · ENGINE + STRATIGRAPHY (RECOMMENDED)
+     Papers stack vertically on left as strata, scanning beam
+     in middle, skills stream right with typewriter effect
+     ============================================================ */
+  #stage-d .engine-stage{
+    position:absolute;
+    top:130px;left:48px;right:48px;bottom:80px;
+    display:grid;
+    grid-template-columns:280px 80px 1fr;
+    gap:32px;
+    align-items:stretch;
+  }
+  #stage-d .strata{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  #stage-d .strata-header{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+    margin-bottom:12px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--grey-2);
+  }
+  #stage-d .stratum{
+    height:18px;
+    background:#fff;
+    border:1px solid var(--grey-2);
+    border-bottom:none;
+    display:flex;align-items:center;
+    padding:0 10px;
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink);
+    position:relative;
+    overflow:hidden;
+    opacity:0;
+    transform:translateX(-30px);
+  }
+  #stage-d .stratum:last-child{border-bottom:1px solid var(--grey-2)}
+  #stage-d .stratum::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:3px;
+    background:var(--accent);
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  #stage-d .stratum.scanned::before{opacity:1}
+  #stage-d .stratum-icon{
+    width:8px;height:8px;
+    background:var(--accent);
+    margin-right:8px;
+    flex-shrink:0;
+    opacity:.4;
+  }
+  #stage-d .scan-spine{
+    position:relative;
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+  }
+  #stage-d .scan-spine .scan-header{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  #stage-d .spine-line{
+    width:1px;
+    background:var(--grey-2);
+    position:relative;
+    margin-top:32px;
+  }
+  #stage-d .scan-beam{
+    position:absolute;
+    left:-2px;
+    width:5px;
+    height:30%;
+    background:linear-gradient(to bottom,
+      transparent 0%,
+      var(--accent) 30%,
+      var(--accent) 70%,
+      transparent 100%);
+    box-shadow:0 0 12px var(--accent);
+    top:0;
+    opacity:0;
+  }
+  #stage-d .skills-output{
+    display:flex;flex-direction:column;
+    gap:0;
+  }
+  #stage-d .skills-header{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+    margin-bottom:12px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--grey-2);
+  }
+  #stage-d .skill-d{
+    display:flex;align-items:center;gap:14px;
+    padding:8px 0;
+    border-bottom:1px solid var(--grey-2);
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--ink);
+    opacity:0;
+  }
+  #stage-d .skill-d .arrow{
+    color:var(--accent);
+    font-weight:600;
+    width:18px;
+  }
+  #stage-d .skill-d .name{
+    font-weight:500;
+    letter-spacing:-.005em;
+  }
+  #stage-d .skill-d .typed-cursor{
+    display:inline-block;
+    width:8px;height:14px;
+    background:var(--accent);
+    margin-left:4px;
+    animation:cursorBlink 1s steps(2) infinite;
+    vertical-align:middle;
+  }
+  @keyframes cursorBlink{
+    0%,49%{opacity:1}
+    50%,100%{opacity:0}
+  }
+
+  /* ============================================================
+     OPTION F · SWISS TWO-FRAME (minimalist)
+     Dense paper grid (left) → reduced to skills (right)
+     with scanning line transition
+     ============================================================ */
+  #stage-f .twoframe{
+    position:absolute;
+    top:130px;left:48px;right:48px;bottom:80px;
+    display:grid;
+    grid-template-columns:1fr 1px 1fr;
+    gap:48px;
+    align-items:stretch;
+  }
+  #stage-f .twoframe .label-l, #stage-f .twoframe .label-r{
+    position:absolute;
+    top:0;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--grey-3);
+  }
+  #stage-f .twoframe .label-l{left:0;color:var(--grey-3)}
+  #stage-f .twoframe .label-r{right:0;color:var(--accent);font-weight:600}
+  #stage-f .paper-grid{
+    position:relative;
+    margin-top:24px;
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:6px;
+    padding-right:12px;
+  }
+  #stage-f .paper-tile{
+    aspect-ratio:3/4;
+    background:#fff;
+    border:1px solid var(--grey-2);
+    overflow:hidden;
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  #stage-f .paper-tile img{
+    width:100%;height:100%;
+    object-fit:cover;object-position:top center;
+  }
+  #stage-f .vrule{
+    background:var(--grey-2);
+    position:relative;
+  }
+  #stage-f .scan-line{
+    position:absolute;
+    left:-30vw;
+    top:0;bottom:0;
+    width:60vw;
+    background:linear-gradient(to right,
+      transparent 0%,
+      rgba(140,21,21,.06) 45%,
+      rgba(140,21,21,.18) 50%,
+      rgba(140,21,21,.06) 55%,
+      transparent 100%);
+    pointer-events:none;
+    opacity:0;
+    z-index:50;
+  }
+  #stage-f .skills-side{
+    margin-top:24px;
+    display:flex;flex-direction:column;
+    gap:0;
+  }
+  #stage-f .skill-f{
+    padding:10px 0;
+    border-bottom:1px solid var(--grey-2);
+    display:flex;align-items:baseline;gap:14px;
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--ink);
+    opacity:0;
+  }
+  #stage-f .skill-f .num{
+    color:var(--accent);
+    font-weight:600;
+    width:22px;
+  }
+  #stage-f .skill-f .name{
+    font-weight:500;
+  }
+  #stage-f .skill-f .desc{
+    color:var(--grey-3);
+    font-size:11px;
+    margin-left:auto;
+    letter-spacing:.04em;
+  }
+</style>
+</head>
+<body>
+
+<div id="tabs">
+  <span class="label">SLIDE 2 · ANIMATION CONCEPTS</span>
+  <button data-stage="a" class="active">A · Funnel</button>
+  <button data-stage="b">B · Compiler</button>
+  <button data-stage="c">C · Constellation</button>
+  <button data-stage="d">D · Engine ★</button>
+  <button data-stage="f">F · Swiss 2-Frame</button>
+  <button class="replay" id="replay-btn">↻ Replay</button>
+</div>
+
+<!-- ============ STAGE A · FUNNEL ============ -->
+<div class="stage active" id="stage-a">
+  <div class="chrome">
+    <div>EVIDENCE BASE · 21 SOURCES, 2024–2026</div>
+    <div>02 / 26 · OPTION A · FUNNEL</div>
+  </div>
+  <div class="meta-line">SYNTHESIS</div>
+  <h2>21 papers in.<br/>8 skills out.</h2>
+
+  <div class="funnel-stage">
+    <div class="papers-cloud" id="papers-cloud-a">
+      <!-- papers populated by JS -->
+    </div>
+
+    <div class="funnel-svg">
+      <svg viewBox="0 0 220 320" width="220" height="320">
+        <!-- Funnel shape -->
+        <path d="M 20 30 L 200 30 L 130 180 L 130 280 L 90 280 L 90 180 Z"
+              fill="none"
+              stroke="#0a0a0a"
+              stroke-width="1.4"/>
+        <!-- Inner glow -->
+        <path d="M 30 40 L 190 40 L 125 175 L 125 270 L 95 270 L 95 175 Z"
+              fill="rgba(140,21,21,.04)"
+              stroke="none"/>
+        <!-- Pulsing center line -->
+        <line x1="110" y1="180" x2="110" y2="280"
+              stroke="#8C1515"
+              stroke-width="2"
+              stroke-dasharray="3 3"
+              id="funnel-pulse"/>
+        <!-- Output drop -->
+        <circle cx="110" cy="295" r="8"
+                fill="#8C1515"
+                opacity="0"
+                id="funnel-drop"/>
+        <!-- Labels -->
+        <text x="110" y="20" text-anchor="middle"
+              font-family="JetBrains Mono" font-size="9"
+              fill="#737373"
+              letter-spacing="2">INPUT · 21 PAPERS</text>
+        <text x="110" y="312" text-anchor="middle"
+              font-family="JetBrains Mono" font-size="9"
+              fill="#8C1515"
+              font-weight="600"
+              letter-spacing="2">OUTPUT</text>
+      </svg>
+    </div>
+
+    <div class="output-a" id="output-a">
+      <div class="header-line">8 EXECUTABLE SKILLS</div>
+      <div class="skill-line"><span class="arrow">→</span>ai-idea-diagnostic</div>
+      <div class="skill-line"><span class="arrow">→</span>pilot-design</div>
+      <div class="skill-line"><span class="arrow">→</span>roi-gate-pwc</div>
+      <div class="skill-line"><span class="arrow">→</span>agent-guardrail-imda</div>
+      <div class="skill-line"><span class="arrow">→</span>stack-diagnostic</div>
+      <div class="skill-line"><span class="arrow">→</span>buy-vs-build</div>
+      <div class="skill-line"><span class="arrow">→</span>readiness-conversation</div>
+      <div class="skill-line"><span class="arrow">→</span>maturity-assessment</div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <div>STANFORD · MIT · MCKINSEY · BCG · DELOITTE · PWC · ACCENTURE · NIST · EU · IMDA · WEF</div>
+    <div>SKILL LIBRARY · GITHUB.COM/GELEDEK</div>
+  </div>
+</div>
+
+<!-- ============ STAGE B · COMPILER ============ -->
+<div class="stage" id="stage-b">
+  <div class="chrome">
+    <div>EVIDENCE BASE · COMPILE TIME</div>
+    <div>02 / 26 · OPTION B · COMPILER</div>
+  </div>
+  <div class="meta-line">BUILD PIPELINE</div>
+  <h2>Sources in.<br/>Skills out.</h2>
+
+  <div class="compiler-stage">
+    <div class="source-files" id="source-files-b">
+      <div class="header">SOURCES (21)</div>
+      <!-- populated by JS -->
+    </div>
+
+    <div class="processor">
+      <div class="label">SYNTHESIZE</div>
+      <div class="gear"><div class="inner"></div></div>
+      <div class="pulse-bar"></div>
+      <div class="label" style="color:var(--grey-3);font-weight:400">→ COMPILE</div>
+    </div>
+
+    <div class="compiled-output" id="compiled-output-b">
+      <div class="header">SKILLS (8)</div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">ai-idea-diagnostic</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">pilot-design</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">roi-gate-pwc</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">agent-guardrail-imda</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">stack-diagnostic</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">buy-vs-build</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">readiness-conversation</span></div>
+      <div class="skill-out"><span class="check">✓</span><span class="name">maturity-assessment</span></div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <div>21 SOURCES · 2024–2026 · COMPILED INTO EXECUTABLE FORM</div>
+    <div>EACH SKILL = SKILL.md + REFERENCES + SOURCES</div>
+  </div>
+</div>
+
+<!-- ============ STAGE C · CONSTELLATION ============ -->
+<div class="stage" id="stage-c">
+  <div class="chrome">
+    <div>EVIDENCE BASE · KNOWLEDGE GRAPH</div>
+    <div>02 / 26 · OPTION C · CONSTELLATION</div>
+  </div>
+  <div class="meta-line">CROSS-SOURCE CONSENSUS</div>
+  <h2>21 sources.<br/>One pattern.</h2>
+
+  <div class="galaxy">
+    <svg class="network" viewBox="-300 -240 600 480" id="net-svg">
+      <!-- nodes and lines populated by JS -->
+    </svg>
+  </div>
+
+  <div class="footnote">
+    <div>NODES = SOURCES · LINES = CROSS-CITATIONS · CENTER = SKILL LIBRARY</div>
+    <div>WHERE THE SOURCES AGREE — THAT'S THE FRAMEWORK</div>
+  </div>
+</div>
+
+<!-- ============ STAGE D · ENGINE / STRATIGRAPHY (RECOMMENDED) ============ -->
+<div class="stage" id="stage-d">
+  <div class="chrome">
+    <div>EVIDENCE BASE · 21 SOURCES, 2024–2026</div>
+    <div>02 / 26 · OPTION D · ENGINE ★</div>
+  </div>
+  <div class="meta-line">SYNTHESIS</div>
+  <h2>21 papers, distilled.<br/>8 skills, executable.</h2>
+
+  <div class="engine-stage">
+    <!-- Left: stratigraphy of papers -->
+    <div class="strata">
+      <div class="strata-header">SOURCES (21)</div>
+      <div class="strata-list" id="strata-list">
+        <!-- strata populated by JS -->
+      </div>
+    </div>
+
+    <!-- Middle: scanning spine -->
+    <div class="scan-spine">
+      <div class="scan-header">DISTILL</div>
+      <div class="spine-line">
+        <div class="scan-beam" id="scan-beam"></div>
+      </div>
+    </div>
+
+    <!-- Right: skill output -->
+    <div class="skills-output">
+      <div class="skills-header" id="skills-header-d">SKILLS (8)</div>
+      <div class="skill-d" data-skill="ai-idea-diagnostic"><span class="arrow">→</span><span class="name">ai-idea-diagnostic</span></div>
+      <div class="skill-d" data-skill="pilot-design"><span class="arrow">→</span><span class="name">pilot-design</span></div>
+      <div class="skill-d" data-skill="roi-gate-pwc"><span class="arrow">→</span><span class="name">roi-gate-pwc</span></div>
+      <div class="skill-d" data-skill="agent-guardrail-imda"><span class="arrow">→</span><span class="name">agent-guardrail-imda</span></div>
+      <div class="skill-d" data-skill="stack-diagnostic"><span class="arrow">→</span><span class="name">stack-diagnostic</span></div>
+      <div class="skill-d" data-skill="buy-vs-build"><span class="arrow">→</span><span class="name">buy-vs-build</span></div>
+      <div class="skill-d" data-skill="readiness-conversation"><span class="arrow">→</span><span class="name">readiness-conversation</span></div>
+      <div class="skill-d" data-skill="maturity-assessment"><span class="arrow">→</span><span class="name">maturity-assessment</span></div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <div>STANFORD · MIT · MCKINSEY · BCG · DELOITTE · PWC · ACCENTURE · NIST · EU · IMDA · WEF</div>
+    <div>SKILL.MD · VERSIONED · FORKABLE · AGENT-EXECUTABLE</div>
+  </div>
+</div>
+
+<!-- ============ STAGE F · SWISS TWO-FRAME ============ -->
+<div class="stage" id="stage-f">
+  <div class="chrome">
+    <div>EVIDENCE BASE · 21 SOURCES → 8 SKILLS</div>
+    <div>02 / 26 · OPTION F · SWISS</div>
+  </div>
+  <div class="meta-line">REDUCTION</div>
+  <h2>21 → 8.</h2>
+
+  <div class="twoframe">
+    <div style="position:relative">
+      <div class="label-l">21 PAPERS · INPUT</div>
+      <div class="paper-grid" id="paper-grid-f">
+        <!-- 18 paper tiles populated by JS -->
+      </div>
+    </div>
+
+    <div class="vrule"></div>
+
+    <div style="position:relative">
+      <div class="label-r">8 SKILLS · OUTPUT</div>
+      <div class="skills-side" id="skills-side-f">
+        <div class="skill-f"><span class="num">01</span><span class="name">ai-idea-diagnostic</span><span class="desc">CONCEPT GATE</span></div>
+        <div class="skill-f"><span class="num">02</span><span class="name">pilot-design</span><span class="desc">90-DAY BRIEF</span></div>
+        <div class="skill-f"><span class="num">03</span><span class="name">roi-gate-pwc</span><span class="desc">FUNDING GATE</span></div>
+        <div class="skill-f"><span class="num">04</span><span class="name">agent-guardrail-imda</span><span class="desc">GOVERNANCE</span></div>
+        <div class="skill-f"><span class="num">05</span><span class="name">stack-diagnostic</span><span class="desc">TECHNOLOGY</span></div>
+        <div class="skill-f"><span class="num">06</span><span class="name">buy-vs-build</span><span class="desc">SOURCING</span></div>
+        <div class="skill-f"><span class="num">07</span><span class="name">readiness-conversation</span><span class="desc">PEOPLE</span></div>
+        <div class="skill-f"><span class="num">08</span><span class="name">maturity-assessment</span><span class="desc">STRATEGY</span></div>
+      </div>
+    </div>
+    <div class="scan-line" id="scan-line-f"></div>
+  </div>
+
+  <div class="footnote">
+    <div>21 PAPERS — STANFORD, MIT, MCKINSEY, BCG, DELOITTE, PWC, ACCENTURE, NIST, EU, IMDA, WEF</div>
+    <div>8 EXECUTABLE SKILLS — INSTALLABLE AS A CLAUDE CODE PLUGIN</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   PAPER LIST — 18 covers (21 minus 3 markdown-only sources)
+   Files in ../ppt/images/papers/
+   ============================================================ */
+const PAPERS = [
+  {file:'01-stanford-ai-index.jpg',         title:'Stanford AI Index 2026'},
+  {file:'02-mit-nanda.jpg',                 title:'MIT NANDA 2025'},
+  {file:'05-deloitte-ai-leaders.jpg',       title:'Deloitte AI Leaders 2026'},
+  {file:'06-pwc-roi.jpg',                   title:'PwC ROI 2026'},
+  {file:'07-pwc-agentic.jpg',               title:'PwC Agentic 2026'},
+  {file:'08-accenture-cointelligence.jpg',  title:'Accenture Co-Intelligence 2026'},
+  {file:'09-accenture-maturity.jpg',        title:'Accenture Maturity'},
+  {file:'11-nist-rmf.jpg',                  title:'NIST AI RMF'},
+  {file:'12-nist-playbook.jpg',             title:'NIST Playbook'},
+  {file:'13-nist-genai.jpg',                title:'NIST GenAI 600-1'},
+  {file:'14-eu-ai-act.jpg',                 title:'EU AI Act 2024'},
+  {file:'15-imda-agentic.jpg',              title:'IMDA Agentic 2026'},
+  {file:'16-wef-rai.jpg',                   title:'WEF Responsible AI'},
+  {file:'17-wef-strategic.jpg',             title:'WEF Strategic 2026'},
+  {file:'18-landing-ai.jpg',                title:'Landing AI Playbook'},
+  {file:'19-isg-genai.jpg',                 title:'ISG GenAI 2025'},
+  {file:'22-deloitte-q4.jpg',               title:'Deloitte GenAI Q4 2024'},
+  {file:'23-stanford-playbook.jpg',         title:'Stanford Enterprise Playbook'},
+];
+const PAPER_PATH = '../ppt/images/papers/';
+
+const SOURCE_FILES = [
+  'stanford-ai-index-2026.pdf',
+  'mit-nanda-genai-divide-2025.pdf',
+  'mckinsey-state-ai-2025.md',
+  'bcg-bffxai-2026.md',
+  'deloitte-ai-leaders-2026.pdf',
+  'pwc-roi-2026.pdf',
+  'pwc-agentic-playbook-2026.pdf',
+  'accenture-co-intelligence-2026.pdf',
+  'accenture-maturity-global.pdf',
+  'mit-cisr-2024.md',
+  'nist-ai-100-1.pdf',
+  'nist-ai-rmf-playbook.pdf',
+  'nist-ai-600-1.pdf',
+  'eu-ai-act-2024.pdf',
+  'imda-agentic-2026.pdf',
+  'wef-responsible-ai.pdf',
+  'wef-strategic-choices-2026.pdf',
+  'landing-ai-playbook.pdf',
+  'isg-genai-2025.pdf',
+  'deloitte-genai-q4-2024.pdf',
+  'hiten-shah-skill-library.md',
+];
+
+/* ============================================================
+   STAGE A · FUNNEL
+   ============================================================ */
+function buildStageA(){
+  const cloud = document.getElementById('papers-cloud-a');
+  cloud.innerHTML = '';
+  PAPERS.forEach((p, i)=>{
+    const el = document.createElement('div');
+    el.className = 'paper-a';
+    el.style.left = (Math.random() * 70) + '%';
+    el.style.top = (Math.random() * 60) + '%';
+    el.dataset.i = i;
+    el.innerHTML = `<img src="${PAPER_PATH}${p.file}" alt="${p.title}" onerror="this.style.background='#f0f0ee';this.style.padding='6px';this.style.fontFamily='var(--mono)';this.style.fontSize='8px';this.alt='${p.title}';"/>`;
+    cloud.appendChild(el);
+  });
+}
+
+function playStageA(){
+  buildStageA();
+  const papers = document.querySelectorAll('#papers-cloud-a .paper-a');
+  const drop = document.getElementById('funnel-drop');
+  const lines = document.querySelectorAll('#output-a .skill-line');
+  const header = document.querySelector('#output-a .header-line');
+
+  /* Reset */
+  papers.forEach(p=>{p.style.opacity='0';p.style.transform='translateY(0) rotate(0deg)';});
+  drop.setAttribute('opacity','0');
+  lines.forEach(l=>l.style.opacity='0');
+  header.style.opacity='0';
+
+  /* Phase 1 (0–1.5s): papers appear, scattered */
+  papers.forEach((p, i)=>{
+    setTimeout(()=>{
+      p.style.transition = 'opacity .3s ease';
+      p.style.opacity = '.7';
+    }, i * 80);
+  });
+
+  /* Phase 2 (1.5–3s): papers fall toward funnel center */
+  setTimeout(()=>{
+    papers.forEach((p, i)=>{
+      setTimeout(()=>{
+        p.style.transition = 'all 1s cubic-bezier(.5,0,.7,1)';
+        p.style.transform = `translate(${(50 - parseFloat(p.style.left || '0')) * 4}px, 200px) rotate(${(Math.random()-.5)*40}deg) scale(.3)`;
+        p.style.opacity = '0';
+      }, i * 40);
+    });
+  }, 1500);
+
+  /* Phase 3 (3.5s): drop appears, header fades in */
+  setTimeout(()=>{
+    drop.setAttribute('opacity', '1');
+    header.style.transition = 'opacity .4s ease';
+    header.style.opacity = '1';
+  }, 3300);
+
+  /* Phase 4 (3.7s+): skills typewriter */
+  lines.forEach((line, i)=>{
+    setTimeout(()=>{
+      line.style.transition = 'opacity .25s ease';
+      line.style.opacity = '1';
+    }, 3500 + i * 180);
+  });
+}
+
+/* ============================================================
+   STAGE B · COMPILER
+   ============================================================ */
+function buildStageB(){
+  const list = document.getElementById('source-files-b');
+  list.innerHTML = '<div class="header">SOURCES (21)</div>';
+  SOURCE_FILES.forEach((f, i)=>{
+    const el = document.createElement('div');
+    el.className = 'src-file';
+    el.innerHTML = `<div class="icon"></div><div class="name">${f}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function playStageB(){
+  buildStageB();
+  const files = document.querySelectorAll('#source-files-b .src-file');
+  const skills = document.querySelectorAll('#stage-b .skill-out');
+
+  files.forEach(f=>f.style.opacity='0');
+  skills.forEach(s=>s.style.opacity='0');
+
+  files.forEach((f, i)=>{
+    setTimeout(()=>{
+      f.style.transition = 'opacity .25s ease';
+      f.style.opacity = '1';
+    }, i * 80);
+  });
+
+  /* skills compile in after a delay */
+  setTimeout(()=>{
+    skills.forEach((s, i)=>{
+      setTimeout(()=>{
+        s.style.transition = 'opacity .3s ease, transform .3s ease';
+        s.style.transform = 'translateX(0)';
+        s.style.opacity = '1';
+      }, i * 200);
+    });
+  }, 2200);
+}
+
+/* ============================================================
+   STAGE C · CONSTELLATION
+   ============================================================ */
+function buildStageC(){
+  const svg = document.getElementById('net-svg');
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const nodes = PAPERS.length;
+  const radius = 200;
+  const positions = [];
+
+  for(let i=0; i<nodes; i++){
+    const angle = (i / nodes) * Math.PI * 2 - Math.PI/2;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+    positions.push({x, y});
+
+    /* node */
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', x);
+    c.setAttribute('cy', y);
+    c.setAttribute('r', 6);
+    c.setAttribute('class', 'net-node');
+    c.dataset.i = i;
+    svg.appendChild(c);
+
+    /* label */
+    const label = document.createElementNS(NS, 'text');
+    label.setAttribute('x', x * 1.15);
+    label.setAttribute('y', y * 1.15);
+    label.setAttribute('text-anchor', x > 10 ? 'start' : (x < -10 ? 'end' : 'middle'));
+    label.setAttribute('dominant-baseline', y > 10 ? 'hanging' : (y < -10 ? 'baseline' : 'middle'));
+    label.setAttribute('class', 'net-label');
+    label.dataset.i = i;
+    label.textContent = PAPERS[i].title.length > 18 ? PAPERS[i].title.substring(0,16)+'…' : PAPERS[i].title;
+    svg.appendChild(label);
+  }
+
+  /* center node (skill library) */
+  const center = document.createElementNS(NS, 'circle');
+  center.setAttribute('cx', 0);
+  center.setAttribute('cy', 0);
+  center.setAttribute('r', 32);
+  center.setAttribute('class', 'net-node center');
+  center.dataset.center = 'true';
+  svg.appendChild(center);
+
+  const centerText = document.createElementNS(NS, 'text');
+  centerText.setAttribute('x', 0);
+  centerText.setAttribute('y', -2);
+  centerText.setAttribute('class', 'net-center-label');
+  centerText.textContent = '8 SKILLS';
+  svg.appendChild(centerText);
+
+  const centerSubtext = document.createElementNS(NS, 'text');
+  centerSubtext.setAttribute('x', 0);
+  centerSubtext.setAttribute('y', 14);
+  centerSubtext.setAttribute('class', 'net-center-label');
+  centerSubtext.style.fontSize = '9px';
+  centerSubtext.style.opacity = '.7';
+  centerSubtext.textContent = 'SKILL LIBRARY';
+  svg.appendChild(centerSubtext);
+
+  /* lines from each node to center */
+  positions.forEach((p, i)=>{
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', p.x);
+    line.setAttribute('y1', p.y);
+    line.setAttribute('x2', 0);
+    line.setAttribute('y2', 0);
+    line.setAttribute('class', 'net-line');
+    line.dataset.i = i;
+    svg.appendChild(line);
+  });
+
+  /* cross-citation lines (random pairs) */
+  const crossLines = 12;
+  for(let i=0; i<crossLines; i++){
+    const a = Math.floor(Math.random() * nodes);
+    let b = Math.floor(Math.random() * nodes);
+    while(b === a) b = Math.floor(Math.random() * nodes);
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', positions[a].x);
+    line.setAttribute('y1', positions[a].y);
+    line.setAttribute('x2', positions[b].x);
+    line.setAttribute('y2', positions[b].y);
+    line.setAttribute('class', 'net-line cross');
+    line.dataset.cross = 'true';
+    svg.appendChild(line);
+  }
+}
+
+function playStageC(){
+  buildStageC();
+  const nodes = document.querySelectorAll('#net-svg .net-node:not(.center)');
+  const center = document.querySelector('#net-svg .net-node.center');
+  const labels = document.querySelectorAll('#net-svg .net-label');
+  const lines = document.querySelectorAll('#net-svg .net-line:not(.cross)');
+  const crossLines = document.querySelectorAll('#net-svg .net-line.cross');
+  const centerLabels = document.querySelectorAll('#net-svg .net-center-label');
+
+  /* reset */
+  nodes.forEach(n=>n.style.opacity='0');
+  labels.forEach(l=>l.style.opacity='0');
+  lines.forEach(l=>{l.style.strokeDashoffset='200';l.style.opacity='0'});
+  crossLines.forEach(l=>{l.style.strokeDashoffset='200';l.style.opacity='0'});
+  if(center) center.style.opacity = '0';
+  centerLabels.forEach(l=>l.style.opacity='0');
+
+  /* Phase 1: nodes appear in circle */
+  nodes.forEach((n, i)=>{
+    setTimeout(()=>{
+      n.style.transition='opacity .3s ease';
+      n.style.opacity='1';
+    }, i * 70);
+  });
+
+  /* Phase 2: labels fade */
+  labels.forEach((l, i)=>{
+    setTimeout(()=>{
+      l.style.transition='opacity .3s ease';
+      l.style.opacity='1';
+    }, i * 70 + 200);
+  });
+
+  /* Phase 3: cross-citation lines draw */
+  setTimeout(()=>{
+    crossLines.forEach((l, i)=>{
+      setTimeout(()=>{
+        l.style.transition='stroke-dashoffset 1s ease, opacity .3s ease';
+        l.style.opacity='.5';
+        l.style.strokeDashoffset='0';
+      }, i * 80);
+    });
+  }, 1500);
+
+  /* Phase 4: center node appears */
+  setTimeout(()=>{
+    if(center){
+      center.style.transition='opacity .5s ease, r .5s ease';
+      center.style.opacity='1';
+      center.setAttribute('r', '32');
+    }
+  }, 3000);
+
+  /* Phase 5: lines from each node converge to center */
+  setTimeout(()=>{
+    lines.forEach((l, i)=>{
+      setTimeout(()=>{
+        l.style.transition='stroke-dashoffset .8s ease, opacity .3s ease, stroke .3s ease';
+        l.style.stroke = '#8C1515';
+        l.style.opacity='.6';
+        l.style.strokeDashoffset='0';
+      }, i * 50);
+    });
+  }, 3300);
+
+  /* Phase 6: center labels */
+  setTimeout(()=>{
+    centerLabels.forEach(l=>{
+      l.style.transition='opacity .5s ease';
+      l.style.opacity='1';
+    });
+  }, 4500);
+}
+
+/* ============================================================
+   STAGE D · ENGINE / STRATIGRAPHY (RECOMMENDED)
+   ============================================================ */
+function buildStageD(){
+  const list = document.getElementById('strata-list');
+  list.innerHTML = '';
+  PAPERS.forEach((p, i)=>{
+    const el = document.createElement('div');
+    el.className = 'stratum';
+    el.dataset.i = i;
+    el.innerHTML = `<div class="stratum-icon"></div><span>${p.title}</span>`;
+    list.appendChild(el);
+  });
+}
+
+function playStageD(){
+  buildStageD();
+  const strata = document.querySelectorAll('#stage-d .stratum');
+  const beam = document.getElementById('scan-beam');
+  const skills = document.querySelectorAll('#stage-d .skill-d');
+
+  /* reset */
+  strata.forEach(s=>{
+    s.style.opacity='0';
+    s.style.transform='translateX(-30px)';
+    s.classList.remove('scanned');
+  });
+  beam.style.opacity='0';
+  beam.style.top='0';
+  skills.forEach(s=>{
+    s.style.opacity='0';
+    s.style.transform='translateX(20px)';
+  });
+
+  /* Phase 1 (0–2s): strata stack from top */
+  strata.forEach((s, i)=>{
+    setTimeout(()=>{
+      s.style.transition = 'opacity .3s ease, transform .4s cubic-bezier(.2,.8,.3,1)';
+      s.style.opacity='1';
+      s.style.transform='translateX(0)';
+    }, i * 90);
+  });
+
+  /* Phase 2 (2.2s): scan beam appears, sweeps down */
+  setTimeout(()=>{
+    beam.style.transition='opacity .3s ease';
+    beam.style.opacity='1';
+    /* Animate beam from top to bottom over the strata height */
+    const strataList = document.querySelector('#stage-d .strata-list');
+    const total = strataList.offsetHeight;
+    const start = 0;
+    const duration = 2500; /* ms */
+    const t0 = performance.now();
+    function step(now){
+      const elapsed = now - t0;
+      const ratio = Math.min(elapsed / duration, 1);
+      const eased = ratio < 0.5
+        ? 2 * ratio * ratio
+        : 1 - Math.pow(-2 * ratio + 2, 2) / 2;
+      const top = eased * (total - 30);
+      beam.style.top = top + 'px';
+
+      /* highlight strata as beam passes */
+      strata.forEach((s, idx)=>{
+        const stratumTop = idx * 19;
+        if(top >= stratumTop && !s.classList.contains('scanned')){
+          s.classList.add('scanned');
+        }
+      });
+
+      if(ratio < 1) requestAnimationFrame(step);
+      else {
+        /* fade beam out */
+        setTimeout(()=>{
+          beam.style.transition='opacity .4s ease';
+          beam.style.opacity='0';
+        }, 200);
+      }
+    }
+    requestAnimationFrame(step);
+  }, 2000);
+
+  /* Phase 3: skills emerge with typewriter feel as beam descends */
+  skills.forEach((skill, i)=>{
+    setTimeout(()=>{
+      skill.style.transition='opacity .3s ease, transform .4s cubic-bezier(.2,.8,.3,1)';
+      skill.style.opacity='1';
+      skill.style.transform='translateX(0)';
+    }, 2400 + i * 280);
+  });
+}
+
+/* ============================================================
+   STAGE F · SWISS TWO-FRAME
+   ============================================================ */
+function buildStageF(){
+  const grid = document.getElementById('paper-grid-f');
+  grid.innerHTML = '';
+  PAPERS.forEach((p, i)=>{
+    const el = document.createElement('div');
+    el.className = 'paper-tile';
+    el.innerHTML = `<img src="${PAPER_PATH}${p.file}" alt="${p.title}" onerror="this.style.background='#f0f0ee';this.style.opacity='.5'"/>`;
+    grid.appendChild(el);
+  });
+}
+
+function playStageF(){
+  buildStageF();
+  const tiles = document.querySelectorAll('#paper-grid-f .paper-tile');
+  const skills = document.querySelectorAll('#skills-side-f .skill-f');
+  const scan = document.getElementById('scan-line-f');
+
+  tiles.forEach(t=>t.style.opacity='0');
+  skills.forEach(s=>s.style.opacity='0');
+  scan.style.opacity='0';
+  scan.style.left='-30vw';
+
+  /* Phase 1: tiles fill grid quickly */
+  tiles.forEach((t, i)=>{
+    setTimeout(()=>{
+      t.style.opacity='1';
+    }, i * 40);
+  });
+
+  /* Phase 2: scan line sweeps across */
+  setTimeout(()=>{
+    scan.style.transition='opacity .3s ease';
+    scan.style.opacity='1';
+    scan.style.transition='left 1.4s cubic-bezier(.5,0,.5,1), opacity .3s ease';
+    scan.style.left='100vw';
+  }, 1200);
+
+  /* Phase 3: skills appear right side */
+  skills.forEach((s, i)=>{
+    setTimeout(()=>{
+      s.style.transition='opacity .3s ease';
+      s.style.opacity='1';
+    }, 2200 + i * 180);
+  });
+
+  /* Phase 4: dim left papers slightly to show they've been "processed" */
+  setTimeout(()=>{
+    tiles.forEach(t=>{
+      t.style.transition='opacity .5s ease';
+      t.style.opacity='.45';
+    });
+    scan.style.opacity='0';
+  }, 2400);
+}
+
+/* ============================================================
+   Tab switching + replay
+   ============================================================ */
+const stages = ['a','b','c','d','f'];
+const players = {a:playStageA, b:playStageB, c:playStageC, d:playStageD, f:playStageF};
+let current = 'a';
+
+function showStage(letter){
+  stages.forEach(s=>{
+    document.getElementById('stage-'+s).classList.toggle('active', s === letter);
+  });
+  document.querySelectorAll('#tabs button[data-stage]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.stage === letter);
+  });
+  current = letter;
+  if(players[letter]) players[letter]();
+}
+
+document.querySelectorAll('#tabs button[data-stage]').forEach(b=>{
+  b.onclick = ()=>showStage(b.dataset.stage);
+});
+document.getElementById('replay-btn').onclick = ()=>{
+  if(players[current]) players[current]();
+};
+
+/* boot */
+showStage('a');
+</script>
+</body>
+</html>

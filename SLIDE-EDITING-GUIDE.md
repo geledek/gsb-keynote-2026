@@ -1,141 +1,88 @@
-# How to Safely Edit Individual Slides in This Deck
+# Slide Editing Guide
 
-This deck is a **single-file HTML** produced by the guizang-ppt-skill (Swiss style, Stanford Cardinal theme). Because everything lives in one file, **the biggest risk is accidentally affecting other slides or the global system**.
-
-## Core Principle
-
-**Treat every `<section class="slide">` as a completely isolated unit.**
-
-Editing content, structure, or inline styles *inside one slide* will almost never touch other slides — **if and only if** you follow the rules below.
+Single-file HTML deck. One `<section class="slide">` per slide. Everything else is global — don't touch it unless you know what you're doing.
 
 ---
 
-## 1. Safe Editing Zones (Do This)
+## The one rule
 
-### ✅ Always edit inside one slide block only
+**Edit only inside one `<section class="slide">…</section>` block at a time.**
 
-```html
-<section class="slide" data-layout="S22" data-animate="image-reveal">
-  <!-- EVERYTHING you change should be between these two tags -->
-  ...
-</section>
-```
-
-**How to do it in practice:**
-
-1. In your editor, **select the entire slide** from the opening `<section` to its matching `</section>`.
-2. Make all changes only within that selection.
-3. Never let your cursor or search/replace leak outside that block.
-
-### ✅ Preferred techniques (in order)
-
-| Technique                    | When to use                                      | Risk to other slides | Example |
-|-----------------------------|--------------------------------------------------|----------------------|--------|
-| Inline `style="..."`        | One-off spacing, font sizes, widths, colors      | Zero                 | `style="margin-top: 4vh; font-size: min(5.2vw, 9vh)"` |
-| Existing utility classes    | Most layout needs (`grid-*`, `h-xl`, `lead`, `t-meta`, `frame-img`, etc.) | Very low | `class="frame-img r-21x9"` |
-| Local descriptive class     | Repeated pattern that only this slide needs      | Low (if name is unique) | `class="jcurve-stat"` (only used inside this slide) |
-| `data-anim="..."`           | Trigger existing animation recipes               | Zero (recipes are global but safe) | `data-anim="title"` |
-
-### ✅ Always keep these three attributes correct on the `<section>`
-
-- `data-layout="Sxx"` (S01–S22 or the special cover/closing ones)
-- `data-animate="..."` (must match a key in the `RECIPES` object at the bottom of the file)
-- `data-image-slot="..."` (required for any image in S15/S16/S22 slides)
+Use inline `style=""` for one-off changes. Use existing classes for layout. Never touch the `<style>` block or the `<script>` block at the bottom unless adding a new recipe.
 
 ---
 
-## 2. Danger Zones (Never Touch These When Editing One Slide)
+## Safe edits (inside a slide)
 
-These are the only parts of the file that can break **every** slide at once:
+| Change | How |
+|---|---|
+| Text content | Edit the text directly |
+| Font size / spacing | `style="font-size:min(5vw,8vh)"` |
+| Color | `style="color:var(--accent)"` or `style="color:#fff"` |
+| Swap an image | Change the `src="images/..."` path |
+| Add a bullet | Copy an existing `<li class="bullet-item">` block |
 
-| Area | Location | What happens if you break it | Rule |
-|------|----------|------------------------------|------|
-| `:root` variables | Top of `<style>` block | Changes the entire color system (Stanford Cardinal, greys, paper) | Only edit when you intentionally want to re-theme the whole deck |
-| Global component CSS | Inside the big `<style>` block (`.h-hero`, `.bar-row`, `.swiss-img-split`, `.canvas-card`, etc.) | Breaks layout or animation for all slides using that component | Add new components only with a clear comment. Never delete or rename existing ones |
-| Animation `RECIPES` object | Bottom `<script>` section | Animations stop working or become unpredictable | Only add new recipes here. Never delete existing ones |
-| `#deck`, `#nav`, canvas elements | Outside all slides | Breaks navigation, WebGL background, keyboard controls | Touch only when you know exactly what you're doing |
-| The big comment block at the top of the slides area | Lines ~1231–1249 | Misleads future editors (currently still contains old IKB text) | Update only when improving documentation |
+## Never do this
 
----
-
-## 3. Recommended Workflow (Do This Every Time)
-
-1. **Backup the slide** — Copy the entire `<section>...</section>` block into a comment or a scratch file before you start heavy editing.
-2. **Work in isolation** — Use your editor's "column selection" or "select enclosing tag" feature to stay inside one slide.
-3. **Use inline styles first** — 80% of tweaks (spacing, sizing, alignment) can be done with `style=""` without touching CSS.
-4. **Hard refresh** — After every change: `Cmd+Shift+R` (or `Ctrl+Shift+R`) in the browser.
-5. **Run the validator** when you:
-   - Add or change `data-layout`
-   - Add or change images (`data-image-slot`)
-   - Introduce new structural patterns
-   ```bash
-   node /path/to/guizang-ppt-skill/scripts/validate-swiss-deck.mjs ppt/index.html
-   ```
-6. **Test on actual presentation hardware** (projector + clicker) before the talk.
+- Global find/replace on CSS values
+- Delete CSS rules because they "look unused"
+- Change `--accent` in `:root` (affects every slide)
+- Push directly to `main` — always PR through `preview`
 
 ---
 
-## 4. Current Deck Structure (as of this writing)
+## Current deck structure
 
-| Slide | Line (approx) | `data-layout` | Purpose | Safe to edit? |
-|-------|---------------|---------------|---------|---------------|
-| Cover | 1250 | S01 + `.accent` | Title + center of gravity | Yes (inside the section) |
-| 77% Cold Open | 1278 | S09 | Big stat + native bar chart | Yes |
-| Grok Image Hero | 1319 | S22 | Boardroom photo + message | Yes — but keep `data-image-slot` |
-| J-curve | 1340 | S08 | Path image + explanation | Yes |
-
----
-
-## 5. Concrete Examples from This File
-
-### Good: Editing only one slide (recommended)
-
-```html
-<!-- Inside the J-curve slide only -->
-<div style="margin-top: 3vh; max-width: 48ch;">
-  This paragraph only affects this slide.
-</div>
-```
-
-### Good: Using an existing global class safely
-
-```html
-<h2 class="h-xl" style="font-weight:200; color: var(--accent);">
-  This uses the global .h-xl definition but only on this slide.
-</h2>
-```
-
-### Bad: What not to do
-
-- Doing a project-wide Find/Replace for `font-size: min(6vw` and accidentally hitting every title.
-- Deleting a CSS rule because "it looks unused on this slide" (it might be used on slide 4).
-- Changing `--accent` in `:root` because you want the red "a bit brighter on slide 3".
+| # | Slide | `data-animate` | Notes |
+|---|---|---|---|
+| 1 | Cover | `hero` | Cardinal red, ASCII bg |
+| 2 | 95% Hook | `hook-95` | Static — no click |
+| 3 | J-Curve | `jcurve-fresh` | Auto-animates on entry |
+| 4 | Iceberg | `iceberg-img` | Photo bg, dark slide |
+| 5 | Definition | `definition` | 5-click word transforms |
+| 6 | House of Enterprise AI | `pillar-fade` | Cardinal, church image |
+| 7 | Technology | `bullet-reveal` | 4-click bullets |
+| 8 | Process (tracks) | `process-tracks` | Auto-animates |
+| 9 | Workflow Steps | `flow-reveal` | 6-click flowchart |
+| 10 | People | `pillar-fade` | Table + training bar |
+| 11 | Governance | `pillar-fade` | Cardinal, hero stats |
+| 12 | FAKTS (Arman) | `bullet-reveal` | People resistance framework |
+| … | … | … | … |
+| Last | Skills | `pillar-fade` | Cardinal, repo CTA |
 
 ---
 
-## 6. When You Actually Need to Touch Global Code
+## Click-reveal slides
 
-Only in these situations:
+These slides require clicks to advance:
 
-- **Adding a new reusable component** → Add it to the `<style>` block with a comment like `/* === Custom component: J-curve callout (used on slide 04) === */`
-- **Adding a new animation recipe** → Add it inside the `RECIPES` object at the bottom.
-- **Changing Stanford branding colors** → Only edit inside `:root` (and update this guide).
-- **Fixing a global bug** that genuinely affects multiple slides.
+- **Definition (S5):** 5 clicks — each reveals one framework word
+- **Technology (S7):** 4 clicks — one bullet per click
+- **Workflow Steps (S9):** 6 clicks — one flowchart box per click
 
-In all other cases: **stay inside the `<section>`**.
-
----
-
-## 7. Quick Checklist Before Saving
-
-- [ ] Did I only edit inside one `<section class="slide">` block?
-- [ ] Did I preserve `data-layout`, `data-animate`, and `data-image-slot`?
-- [ ] Did I hard-refresh the browser?
-- [ ] If I added an image, is it in `images/` with the correct relative path?
-- [ ] If I changed layout structure, did I run the validator?
+All other slides auto-animate on entry.
 
 ---
 
-**Remember**: The power (and the danger) of this format is that **one file = one source of truth**. Respect the boundaries between slides and the global system, and you can iterate extremely fast without breaking previous work.
+## Adding a new slide
 
-This is the discipline that lets you safely build a 15-slide deck one slide at a time.
+1. Copy an existing `<section>` block with a similar layout
+2. Change the content inside — keep `data-animate` matching an existing recipe
+3. Put any images in `images/` and reference as `src="images/filename.png"`
+4. Test locally: `open gsb-keynote-2026-06-16.html`
+5. Push to `preview` branch, not `main`
+
+---
+
+## Images
+
+Only `images/04-iceberg-bg.png` is currently used. Add new images to `images/` with a descriptive lowercase-kebab filename.
+
+---
+
+## Deployment
+
+| Branch | URL |
+|---|---|
+| `main` | https://gsb-eai-ppt.vercel.app |
+| `preview` | Unique URL per push (shown in GitHub Actions) |
