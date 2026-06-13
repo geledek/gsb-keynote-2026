@@ -1,7 +1,11 @@
 {
   "cleanUrls": false,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/", "destination": "/gsb-keynote-2026-06-16.html" }
+  "redirects": [
+    {
+      "source": "/gsb-keynote-2026-06-16.html",
+      "destination": "/",
+      "permanent": false
+    }
   ]
 }
