@@ -1763,18 +1763,20 @@
       </h2>
 
       <!-- 4 boxes + 3 arrows.
-           Each box: big step name ALWAYS visible.
-           Example fades in on click (one per click, left→right). -->
+           Each box and preceding arrow appear together on click (left → right).
+           Step name vertically + horizontally centered; example pinned to bottom. -->
       <div style="display:flex;align-items:stretch;gap:0;flex:1;max-height:64vh;overflow:hidden">
 
         <!-- ============ STEP 1 — Pick ============ -->
-        <div class="flow-node" style="opacity:1;transform:none;
-             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Pick the right<br/>use case
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+             background:#fff;padding:3.4vh 1.6vw;text-align:center">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(3.6vw,6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+              Pick the right<br/>use case
+            </div>
           </div>
-          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
+          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;border-top:1px solid var(--border-subtle);padding-top:1.4vh;text-align:left">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
             <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
               Internal, low-stakes, repeatable.<br/>
@@ -1784,18 +1786,20 @@
         </div>
 
         <!-- arrow -->
-        <div class="flow-arrow" style="opacity:1;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
         <!-- ============ STEP 2 — Fix ============ -->
-        <div class="flow-node" style="opacity:1;transform:none;
-             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Fix the<br/>process first
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+             background:#fff;padding:3.4vh 1.6vw;text-align:center">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(3.6vw,6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+              Fix the<br/>process first
+            </div>
           </div>
-          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
+          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;border-top:1px solid var(--border-subtle);padding-top:1.4vh;text-align:left">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
             <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
               6-week procurement, 7 signers → cut to 3 signers <em>before</em> adding AI.
@@ -1804,18 +1808,20 @@
         </div>
 
         <!-- arrow -->
-        <div class="flow-arrow" style="opacity:1;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
         <!-- ============ STEP 3 — Redesign ============ -->
-        <div class="flow-node" style="opacity:1;transform:none;
-             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Redesign —<br/>don't decorate
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+             background:#fff;padding:3.4vh 1.6vw;text-align:center">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(3.6vw,6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+              Redesign —<br/>don't decorate
+            </div>
           </div>
-          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
+          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;border-top:1px solid var(--border-subtle);padding-top:1.4vh;text-align:left">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
             <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
               Old: humans draft → humans review.<br/>
@@ -1825,18 +1831,20 @@
         </div>
 
         <!-- arrow -->
-        <div class="flow-arrow" style="opacity:1;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+        <div class="flow-arrow" style="opacity:0;transition:opacity .3s ease;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
         <!-- ============ STEP 4 — Pilot ============ -->
-        <div class="flow-node" style="opacity:1;transform:none;
-             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Pilot first,<br/>then automate
+        <div class="flow-node" style="opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+             background:#fff;padding:3.4vh 1.6vw;text-align:center">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(3.6vw,6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+              Pilot first,<br/>then automate
+            </div>
           </div>
-          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
+          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;border-top:1px solid var(--border-subtle);padding-top:1.4vh;text-align:left">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
             <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
               Stage 1: AI suggests, human accepts.<br/>
@@ -3542,17 +3550,30 @@ if(motion){
   }
 
   /* ---------- recipe: flow-reveal · workflow steps with examples ----------
-     All four step boxes (label + subtitle) and arrows are visible from start.
-     Each click fades in the next .flow-example (left→right). */
+     All boxes start hidden. Each click reveals: next box (fade up) +
+     preceding arrow + that box's example, all together. */
   function rFlowReveal(slide, all){
+    const nodes = [...slide.querySelectorAll('.flow-node')];
+    const arrows = [...slide.querySelectorAll('.flow-arrow')];
     const examples = [...slide.querySelectorAll('.flow-example')];
+
+    nodes.forEach(n=>{ n.style.opacity='0'; n.style.transform='translateY(18px)'; });
+    arrows.forEach(a=>{ a.style.opacity='0'; });
     examples.forEach(e=>{ e.style.opacity='0'; });
     slide.dataset.stage = '0';
 
     window.__pipeAdvance = function(){
       const stage = parseInt(slide.dataset.stage || '0', 10);
-      if(stage < examples.length){
-        examples[stage].style.opacity = '1';
+      if(stage < nodes.length){
+        // reveal arrow before this node (if any)
+        if(stage > 0 && arrows[stage-1]){
+          arrows[stage-1].style.opacity = '1';
+        }
+        // reveal the node itself
+        nodes[stage].style.opacity = '1';
+        nodes[stage].style.transform = 'translateY(0)';
+        // and its example
+        if(examples[stage]) examples[stage].style.opacity = '1';
         slide.dataset.stage = String(stage + 1);
         return true;
       }
