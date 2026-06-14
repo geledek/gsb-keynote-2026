@@ -1763,20 +1763,37 @@
       </h2>
 
       <!-- 4 boxes + 3 arrows.
-           Each box: STEP N · big title · subtitle ALWAYS visible.
+           Each box: big step name ALWAYS visible.
            Example fades in on click (one per click, left→right). -->
       <div style="display:flex;align-items:stretch;gap:0;flex:1;max-height:64vh;overflow:hidden">
 
-        <!-- ============ STEP 1 ============ -->
+        <!-- ============ STEP 1 — Pick ============ -->
         <div class="flow-node" style="opacity:1;transform:none;
              flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:2.6vh 1.6vw;text-align:left;gap:1.4vh">
-          <div style="font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.18em;color:var(--accent);font-weight:600">STEP 1</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.6vw,4.6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Fix the<br/>process first
+             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+            Pick the right<br/>use case
           </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.2vw,2vh);line-height:1.35;color:var(--text-secondary)">
-            Don't automate broken workflows — they break faster with AI.
+          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
+            <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
+            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
+              Internal, low-stakes, repeatable.<br/>
+              Helpdesk · expense classification · meeting notes — <em>not</em> your customer chatbot.
+            </div>
+          </div>
+        </div>
+
+        <!-- arrow -->
+        <div class="flow-arrow" style="opacity:1;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
+          <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- ============ STEP 2 — Fix ============ -->
+        <div class="flow-node" style="opacity:1;transform:none;
+             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
+             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+            Fix the<br/>process first
           </div>
           <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
@@ -1791,40 +1808,12 @@
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
-        <!-- ============ STEP 2 ============ -->
+        <!-- ============ STEP 3 — Redesign ============ -->
         <div class="flow-node" style="opacity:1;transform:none;
              flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:2.6vh 1.6vw;text-align:left;gap:1.4vh">
-          <div style="font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.18em;color:var(--accent);font-weight:600">STEP 2</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.6vw,4.6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
-            Start back-office,<br/>not customer-facing
-          </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.2vw,2vh);line-height:1.35;color:var(--text-secondary)">
-            Pick low-stakes internal workflows where failure is invisible. Earn customer-facing later.
-          </div>
-          <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
-            <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
-            <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.05vw,1.85vh);line-height:1.4;color:var(--text-primary);font-style:italic">
-              Helpdesk · expense classification · meeting notes — <em>not</em> your customer chatbot.
-            </div>
-          </div>
-        </div>
-
-        <!-- arrow -->
-        <div class="flow-arrow" style="opacity:1;flex-shrink:0;display:flex;align-items:center;padding:0 .4vw">
-          <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- ============ STEP 3 ============ -->
-        <div class="flow-node" style="opacity:1;transform:none;
-             flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:2.6vh 1.6vw;text-align:left;gap:1.4vh">
-          <div style="font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.18em;color:var(--accent);font-weight:600">STEP 3</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.6vw,4.6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
             Redesign —<br/>don't decorate
-          </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.2vw,2vh);line-height:1.35;color:var(--text-secondary)">
-            Don't bolt AI onto your old process. Design a new process that <em>needs</em> AI to work.
           </div>
           <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
@@ -1840,16 +1829,12 @@
           <svg width="32" height="32" viewBox="0 0 28 28" fill="none"><path d="M4 14h18M16 7l8 7-8 7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
-        <!-- ============ STEP 4 ============ -->
+        <!-- ============ STEP 4 — Pilot ============ -->
         <div class="flow-node" style="opacity:1;transform:none;
              flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-start;
-             background:#fff;padding:2.6vh 1.6vw;text-align:left;gap:1.4vh">
-          <div style="font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.18em;color:var(--accent);font-weight:600">STEP 4</div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.6vw,4.6vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
+             background:#fff;padding:3.4vh 1.6vw;text-align:left;gap:1.8vh">
+          <div style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:min(2.8vw,4.8vh);line-height:1.1;letter-spacing:-.02em;color:var(--accent)">
             Pilot first,<br/>then automate
-          </div>
-          <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(1.2vw,2vh);line-height:1.35;color:var(--text-secondary)">
-            Start with AI as a recommender. Earn full autonomy after months of high-quality output.
           </div>
           <div class="flow-example" style="opacity:0;transition:opacity .5s ease;margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.4vh">
             <div style="font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.16em;color:var(--text-helper);font-weight:600;margin-bottom:.6vh">EXAMPLE</div>
