@@ -1867,24 +1867,78 @@
 <!-- ============================================================
      SLIDE 10 · PEOPLE — Hero statement
      ============================================================ -->
-<section class="slide accent" data-layout="SWISS-PEOPLE-HERO" data-animate="hero">
-  <div class="canvas-card">
+<section class="slide" data-layout="SWISS-PEOPLE-HERO" data-animate="tech-arch" data-stage="0">
+  <div class="canvas-card" style="padding:3.5vh 5vw 2.4vh;display:flex;flex-direction:column;gap:0;justify-content:space-between">
 
-    <div class="chrome-min">
-      <div class="l"></div>
-      <div class="r"></div>
+    <!-- TITLE + SUBTITLE -->
+    <div style="margin-bottom:2vh;flex-shrink:0">
+      <h2 style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(4.8vw,8vh);line-height:1;letter-spacing:-.03em;color:var(--text-primary);margin:0">
+        People
+      </h2>
+      <div style="font-family:var(--sans),var(--sans-zh);font-weight:300;font-size:min(2.6vw,4.4vh);line-height:1.2;letter-spacing:-.02em;color:var(--text-secondary);margin-top:1.2vh">
+        AI is a <span style="font-style:italic;color:var(--accent)">Team Sport</span>
+      </div>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0">
-      <h1 data-anim="title" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(9vw,15vh);line-height:.96;letter-spacing:-.04em;color:#fff">
-        Enterprise AI<br/>is a<br/>Team Sport.
-      </h1>
+    <!-- FOUR ROLE BARS — top-down, cardinal anchor at bottom -->
+    <div style="flex:1;display:flex;flex-direction:column;gap:.6vh;min-height:0;margin-bottom:2vh">
+
+      <!-- LAYER 1 (TOP) — CEO -->
+      <div class="arch-bar" data-arch="ceo"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-1);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--text-secondary)">
+          CEO
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(20px,2.2vw);color:var(--text-secondary);font-weight:600;letter-spacing:.12em;white-space:nowrap">
+          SET THE TONE
+        </span>
+      </div>
+
+      <!-- LAYER 2 — Managers -->
+      <div class="arch-bar" data-arch="managers"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-1);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--text-secondary)">
+          Managers
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(20px,2.2vw);color:var(--text-secondary);font-weight:600;letter-spacing:.12em;white-space:nowrap">
+          LAND THE CHANGE
+        </span>
+      </div>
+
+      <!-- LAYER 3 — HR -->
+      <div class="arch-bar" data-arch="hr"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--grey-2);min-height:0;
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:var(--ink)">
+          HR
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(20px,2.2vw);color:var(--ink);font-weight:600;letter-spacing:.12em;white-space:nowrap">
+          BUILD THE SYSTEM
+        </span>
+      </div>
+
+      <!-- LAYER 4 (BOTTOM) — Employees — Cardinal red, where value lives -->
+      <div class="arch-bar" data-arch="employees"
+           style="flex:1;display:flex;align-items:center;padding:0 3vw;background:var(--accent);min-height:0;border-bottom:3px solid var(--ink);
+                  opacity:0;transform:translateY(-20px);transition:opacity .5s cubic-bezier(.2,0,.38,.9),transform .5s cubic-bezier(.2,0,.38,.9)">
+        <span style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(6.4vw,10.5vh);line-height:1;letter-spacing:-.04em;color:#fff">
+          Employees
+        </span>
+        <span style="margin-left:auto;font-family:var(--mono);font-size:max(20px,2.2vw);color:#fff;font-weight:600;letter-spacing:.12em;white-space:nowrap">
+          MAKE IT REAL
+        </span>
+      </div>
+
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.22);padding-top:1.6vh">
-      <div class="t-meta" style="color:rgba(255,255,255,.6)">BCG 2026 · 70% of AI value sits in the People dimension</div>
-      <div class="t-meta" style="color:rgba(255,255,255,.6)">10 OF 18</div>
+    <!-- FOOTER -->
+    <div style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid var(--border-subtle);padding-top:1.6vh">
+      <div class="t-meta">BCG 2026 · 70% OF AI VALUE SITS IN THE PEOPLE DIMENSION</div>
+      <div class="t-meta">10 OF 18</div>
     </div>
+
   </div>
 </section>
 
