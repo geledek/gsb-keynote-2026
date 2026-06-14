@@ -14,6 +14,9 @@ jobs:
     name: Deploy to Preview
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/main'
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
@@ -21,10 +24,32 @@ jobs:
         run: npm install -g vercel@latest
 
       - name: Deploy to Vercel Preview
-        run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes
+        id: deploy
+        run: |
+          URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes 2>&1 | tee /tmp/vercel.log | grep -Eo 'https://[a-z0-9-]+\.vercel\.app' | head -1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "Preview URL: $URL"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Comment preview URL on PR
+        if: github.event_name == 'pull_request' && steps.deploy.outputs.url != ''
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: vercel-preview
+          message: |
+            ### 🔍 Preview deploy ready
+
+            **URL:** ${{ steps.deploy.outputs.url }}
+
+            Refreshes on every push to this branch. Last updated for commit `${{ github.event.pull_request.head.sha }}`.
+
+      - name: Write preview URL to job summary
+        if: steps.deploy.outputs.url != ''
+        run: |
+          echo "### Preview URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.deploy.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-production:
     name: Deploy to Production
