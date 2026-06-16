@@ -1,0 +1,88 @@
+<svg width="100%" viewBox="0 0 690 480" xmlns="http://www.w3.org/2000/svg">
+  <title>Change arc with Self-Interest</title>
+  <style>
+    .arc-path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw-arc 1.4s cubic-bezier(.4,0,.2,1) 0.1s forwards;
+    }
+    .dot-a { opacity: 0; animation: fade-in 0.3s ease 0.1s forwards; }
+    .dot-k { opacity: 0; animation: fade-in 0.3s ease 0.8s forwards; }
+    .dot-t { opacity: 0; animation: fade-in 0.3s ease 1.45s forwards; }
+    .lbl-a { opacity: 0; animation: fade-in 0.35s ease 0.15s forwards; }
+    .lbl-k { opacity: 0; animation: fade-in 0.35s ease 0.85s forwards; }
+    .lbl-t { opacity: 0; animation: fade-in 0.35s ease 1.5s forwards; }
+    .sub-a { opacity: 0; animation: fade-dim 0.35s ease 0.25s forwards; }
+    .sub-k { opacity: 0; animation: fade-dim 0.35s ease 0.95s forwards; }
+    .sub-t { opacity: 0; animation: fade-dim 0.35s ease 1.6s forwards; }
+    .self-block { opacity: 0; animation: fade-in 0.5s ease 1.9s forwards; }
+    @keyframes draw-arc { to { stroke-dashoffset: 0; } }
+    @keyframes fade-in  { to { opacity: 1; } }
+    @keyframes fade-dim { to { opacity: 0.5; } }
+  </style>
+
+  <!-- Upper background — exact slide accent colour -->
+  <rect width="690" height="380" fill="#8C1515"/>
+  <!-- Lower band for Self-Interest -->
+  <rect y="380" width="690" height="100" fill="#6e0e0e"/>
+  <!-- Divider -->
+  <line x1="48" y1="380" x2="642" y2="380" stroke="#f1ece2" stroke-opacity="0.18" stroke-width="1"/>
+
+  <!-- Arc curve -->
+  <path class="arc-path" d="M120 190 Q340 80 560 190"
+        pathLength="1"
+        fill="none" stroke="#f1ece2" stroke-opacity="0.5" stroke-width="2"/>
+
+  <!-- Dots -->
+  <circle class="dot-a" cx="120" cy="190" r="7" fill="#f1ece2"/>
+  <circle class="dot-k" cx="340" cy="132" r="7" fill="#f1ece2"/>
+  <circle class="dot-t" cx="560" cy="190" r="7" fill="#f1ece2"/>
+
+  <!-- Primary labels -->
+  <text class="lbl-a" x="120" y="280"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="52" font-weight="200" letter-spacing="-1"
+        fill="#f1ece2">Agency</text>
+  <text class="lbl-k" x="340" y="280"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="52" font-weight="200" letter-spacing="-1"
+        fill="#f1ece2">Knowledge</text>
+  <text class="lbl-t" x="560" y="280"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="52" font-weight="200" letter-spacing="-1"
+        fill="#f1ece2">Trust</text>
+
+  <!-- Sub-labels -->
+  <text class="sub-a" x="120" y="335"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="300"
+        fill="#f1ece2">Was I in the room?</text>
+  <text class="sub-k" x="340" y="335"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="300"
+        fill="#f1ece2">Do I understand it?</text>
+  <text class="sub-t" x="560" y="335"
+        text-anchor="middle"
+        font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="300"
+        fill="#f1ece2">Does it deliver?</text>
+
+  <!-- Self-Interest block -->
+  <g class="self-block">
+    <text x="340" y="413"
+          text-anchor="middle"
+          font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="300"
+          fill="#f1ece2" opacity="0.5">If none of the above —</text>
+    <text x="340" y="462"
+          text-anchor="middle"
+          font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="52" font-weight="200" font-style="italic" letter-spacing="-1"
+          fill="#f1ece2">Self-Interest</text>
+  </g>
+</svg>
