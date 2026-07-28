@@ -9,6 +9,33 @@ load-bearing.
 
 ---
 
+## Two deck architectures live in this repo
+
+There are **two different slide systems** here. Know which file you are in
+before you edit — the rules below differ.
+
+1. **`index.html` — hand-written `<section>` markup.** Session 1 keynote. Every
+   rule in this document (the one rule, safe edits, renumbering footers, tone
+   cadence, staged reveals) applies **only to this file**.
+
+2. **`shadow-ai.html` and `session2-intro.html` — JavaScript-array-driven.**
+   These two files (the Session 2 "Enterprise AI in Practice #2" materials) do
+   **not** use hand-written `<section>` markup. Slides are objects in a `const S = []`
+   array near the top of the `<script>` block; a `render(s, i)` function
+   dispatches on `s.type` to build each slide's DOM, and a mount loop wires up
+   dots, the Esc index overlay, and arrow-key nav. To add, edit, or reorder a
+   slide, **change the `S` array** (and, if the layout is new, its `render`
+   branch + matching CSS) — do not add `<section>` elements by hand. Page
+   numbers are generated automatically (`NN of TOTAL` in `go()`), so the manual
+   footer-renumbering rule does **not** apply. The `index.html` editing rules
+   above do not govern these two files. Both share the same visual system —
+   Inter / Newsreader / IBM Plex Mono fonts, red-`dark` and cream-`light` slide
+   themes (set per slide via `tone`), and the same navigation (arrow keys, dot
+   indicators, Esc for a slide index). `session2-intro.html` links onward into
+   `shadow-ai.html` from its final "bridge" slide.
+
+---
+
 ## The one rule
 
 **Edit only inside one `<section class="slide">…</section>` block at a time.**
